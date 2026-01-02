@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
+import { getAssetUrl } from '../../utils/urlUtils';
 import { BookOpen, Plus, Edit, Trash2, Eye, Users, Star } from 'lucide-react';
 
 const MyCourses = () => {
@@ -82,7 +83,7 @@ const MyCourses = () => {
                         {/* Course Thumbnail */}
                         <div className="relative h-48 bg-gradient-to-br from-purple-500 to-pink-500">
                             {course.thumbnail ? (
-                                <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                                <img src={getAssetUrl(course.thumbnail)} alt={course.title} className="w-full h-full object-cover" />
                             ) : (
                                 <div className="flex items-center justify-center h-full">
                                     <BookOpen size={48} className="text-white/50" />

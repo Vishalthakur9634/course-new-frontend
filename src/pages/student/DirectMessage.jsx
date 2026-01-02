@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
+import { getBackendUrl } from '../../utils/urlUtils';
 import {
     Send, Paperclip, Search, MoreVertical,
     Smile, Image as ImageIcon, Phone, Video,
@@ -8,7 +9,7 @@ import {
 } from 'lucide-react';
 import io from 'socket.io-client';
 
-const socket = io(import.meta.env.VITE_SERVER_URL || (import.meta.env.MODE === 'development' ? 'http://localhost:5001' : 'https://course-new-backend.onrender.com'));
+const socket = io(getBackendUrl());
 
 const DirectMessage = () => {
     const { userId } = useParams();

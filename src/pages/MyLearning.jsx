@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 import { PlayCircle, BookOpen } from 'lucide-react';
 
 const MyLearning = () => {
@@ -50,7 +51,7 @@ const MyLearning = () => {
                     {courses.map((course, index) => (
                         <Link to={`/course/${course._id || ''}/watch`} key={`course-${index}`} className="bg-dark-layer1 border border-dark-layer2 rounded-lg overflow-hidden hover:border-brand-primary transition-all group">
                             <div className="aspect-video bg-dark-layer2 relative">
-                                <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                                <img src={getAssetUrl(course.thumbnail)} alt={course.title} className="w-full h-full object-cover" />
                                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <PlayCircle size={48} className="text-brand-primary" />
                                 </div>

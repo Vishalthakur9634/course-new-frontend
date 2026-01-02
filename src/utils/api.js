@@ -1,9 +1,8 @@
 import axios from 'axios';
+import { getBackendUrl } from './urlUtils';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_SERVER_URL
-        ? `${import.meta.env.VITE_SERVER_URL}/api`
-        : (import.meta.env.MODE === 'development' ? '/api' : 'https://course-new-backend.onrender.com/api'),
+    baseURL: `${getBackendUrl()}/api`,
 });
 
 api.interceptors.request.use((config) => {

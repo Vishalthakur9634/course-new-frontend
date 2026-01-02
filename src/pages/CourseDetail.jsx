@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 import VideoPlayer from '../components/VideoPlayer';
 import CourseSidebar from '../components/CourseSidebar';
 import VideoTabs from '../components/VideoTabs';
@@ -170,8 +171,8 @@ const CourseDetail = () => {
                     {hasAccess ? (
                         activeVideo ? (
                             <VideoPlayer
-                                src={`/${activeVideo.videoUrl.replace(/\\/g, '/').replace(/^\/+/, '')}`}
-                                poster={activeVideo.thumbnailUrl}
+                                src={getAssetUrl(activeVideo.videoUrl)}
+                                poster={getAssetUrl(activeVideo.thumbnailUrl)}
                                 onProgress={handleProgress}
                             />
                         ) : (
@@ -373,3 +374,4 @@ const CourseDetail = () => {
 };
 
 export default CourseDetail;
+
