@@ -1,6 +1,11 @@
 export const getBackendUrl = () => {
-    return import.meta.env.VITE_SERVER_URL ||
+    const url = import.meta.env.VITE_SERVER_URL ||
         (import.meta.env.MODE === 'development' ? 'http://localhost:5001' : '');
+
+    // Debug log to help identify if VITE_SERVER_URL is missing
+    console.log(`[AssetURL] Backend URL: '${url}' (Env: ${import.meta.env.MODE}, VITE_SERVER_URL: ${import.meta.env.VITE_SERVER_URL})`);
+
+    return url;
 };
 
 export const getAssetUrl = (path) => {
