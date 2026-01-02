@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5001'); // Adjust based on your server URL
+const socket = io(import.meta.env.VITE_SERVER_URL || (import.meta.env.MODE === 'development' ? 'http://localhost:5001' : 'https://course-new-backend.onrender.com'));
 
 const DirectMessage = () => {
     const { userId } = useParams();
