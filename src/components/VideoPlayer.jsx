@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 import { Play, Pause, Volume2, VolumeX, Maximize, Settings, PictureInPicture, RotateCcw, RotateCw } from 'lucide-react';
+import { getAssetUrl } from '../utils/urlUtils';
 
 const VideoPlayer = ({ src, poster, onProgress }) => {
     const videoRef = useRef(null);
@@ -25,12 +26,13 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
         const video = videoRef.current;
         if (!video || !src) return;
 
-        const isHLS = src.includes('.m3u8');
+        const assetSrc = getAssetUrl(src);
+        const isHLS = assetSrc.includes('.m3u8');
 
         if (isHLS && Hls.isSupported()) {
             const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
             hlsRef.current = hls;
-            hls.loadSource(src);
+            hls.loadSource(assetSrc);
             hls.attachMedia(video);
 
             hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
@@ -42,7 +44,7 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
                 setAvailableQualities([{ index: -1, label: 'Auto' }, ...qualities]);
             });
         } else {
-            video.src = src;
+            video.src = assetSrc;
             video.load();
         }
 
@@ -181,7 +183,7 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 onClick={togglePlay}
-                poster={poster}
+                poster={getAssetUrl(poster)}
             />
 
             {/* CONTROLS OVERLAY */}

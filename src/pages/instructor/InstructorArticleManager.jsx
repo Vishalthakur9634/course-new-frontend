@@ -3,6 +3,7 @@ import { useToast } from '../../context/ToastContext';
 import api from '../../utils/api';
 import { PenTool, Plus, Trash2, Eye, Layout, Image as ImageIcon, Video, Check, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getAssetUrl } from '../../utils/urlUtils';
 
 const InstructorArticleManager = () => {
     const { addToast } = useToast();
@@ -84,7 +85,7 @@ const InstructorArticleManager = () => {
                         <div key={article._id} className="bg-dark-layer1 border border-white/10 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center gap-6 group hover:border-brand-primary/30 transition-all">
                             <div className="w-full md:w-48 aspect-video bg-dark-layer2 rounded-xl overflow-hidden flex-shrink-0">
                                 {article.coverImage ? (
-                                    <img src={article.coverImage} alt="" className="w-full h-full object-cover" />
+                                    <img src={getAssetUrl(article.coverImage)} alt="" className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-dark-muted"><ImageIcon size={24} /></div>
                                 )}
@@ -186,7 +187,7 @@ const InstructorArticleManager = () => {
                                             {formData.coverImage ? 'Change Image' : 'Upload Image'}
                                         </label>
                                         {formData.coverImage && (
-                                            <img src={formData.coverImage} alt="Preview" className="w-12 h-12 rounded-lg object-cover border border-white/10" />
+                                            <img src={getAssetUrl(formData.coverImage)} alt="Preview" className="w-12 h-12 rounded-lg object-cover border border-white/10" />
                                         )}
                                     </div>
                                 </div>

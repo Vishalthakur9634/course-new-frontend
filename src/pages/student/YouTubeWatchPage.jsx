@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../utils/api';
+import { getAssetUrl } from '../../utils/urlUtils';
 import VideoPlayer from '../../components/VideoPlayer';
 import VideoTabs from '../../components/VideoTabs';
 import {
@@ -118,7 +119,7 @@ const YouTubeWatchPage = () => {
                             {activeVideo ? (
                                 <VideoPlayer
                                     src={activeVideo.videoUrl}
-                                    poster={course.thumbnail}
+                                    poster={getAssetUrl(course.thumbnail)}
                                     onProgress={async (currentTime, duration, isGenuineComplete) => {
                                         // Update progress every time this is called (every 5 seconds from VideoPlayer)
                                         if (currentTime && duration) {

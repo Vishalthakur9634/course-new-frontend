@@ -3,7 +3,14 @@ export const getBackendUrl = () => {
         (import.meta.env.MODE === 'development' ? 'http://localhost:5001' : '');
 
     // Debug log to help identify if VITE_SERVER_URL is missing
-    console.log(`[AssetURL] Backend URL: '${url}' (Env: ${import.meta.env.MODE}, VITE_SERVER_URL: ${import.meta.env.VITE_SERVER_URL})`);
+    const mode = import.meta.env.MODE;
+    const envUrl = import.meta.env.VITE_SERVER_URL;
+
+    if (mode === 'production' && !envUrl) {
+        console.warn(`[AssetURL] WARNING: VITE_SERVER_URL is missing in production mode! Assets and API calls will fallback to current origin, which may cause 404s if backend is on Render.`);
+    }
+
+    console.log(`[AssetURL] Backend URL: '${url}' (Mode: ${mode}, VITE_SERVER_URL: ${envUrl || 'NOT_SET'})`);
 
     return url;
 };

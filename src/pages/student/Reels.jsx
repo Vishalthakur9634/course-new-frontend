@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
+import { getAssetUrl } from '../../utils/urlUtils';
 import {
     Heart, MessageCircle, Share2, Play, Pause, Volume2, VolumeX,
     User, ArrowLeft, ChevronUp, ChevronDown, Sparkles, Zap, Trophy,
@@ -360,8 +361,8 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
             {/* Background Video */}
             <video
                 ref={videoRef}
-                src={reel.videoUrl}
-                poster={reel.thumbnailUrl}
+                src={getAssetUrl(reel.videoUrl)}
+                poster={getAssetUrl(reel.thumbnailUrl)}
                 loop
                 muted={isMuted}
                 playsInline
@@ -441,7 +442,7 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
                         >
                             <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-white/20 shadow-xl relative z-10">
                                 {reel.instructorId?.avatar ? (
-                                    <img src={reel.instructorId.avatar} className="w-full h-full object-cover" />
+                                    <img src={getAssetUrl(reel.instructorId.avatar)} className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center font-black text-white text-xs uppercase italic">
                                         {reel.instructorId?.name?.[0]}
@@ -532,7 +533,7 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
                             comments.map((c, i) => (
                                 <div key={i} className="flex gap-3 group/comment animate-in slide-in-from-bottom-2 duration-300" style={{ animationDelay: `${i * 50}ms` }}>
                                     <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 flex-shrink-0">
-                                        {c.user?.avatar ? <img src={c.user.avatar} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-white/5 flex items-center justify-center font-black text-white/20 text-[10px]">{c.user?.name?.[0]}</div>}
+                                        {c.user?.avatar ? <img src={getAssetUrl(c.user.avatar)} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-white/5 flex items-center justify-center font-black text-white/20 text-[10px]">{c.user?.name?.[0]}</div>}
                                     </div>
                                     <div className="flex-1 space-y-1">
                                         <div className="flex items-end justify-between">

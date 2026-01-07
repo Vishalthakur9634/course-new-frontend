@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import Navbar from '../components/Navbar';
 import UploadReelModal from '../components/reels/UploadReelModal';
+import { getAssetUrl } from '../utils/urlUtils';
 
 const ReelsFeed = () => {
     const navigate = useNavigate();
@@ -186,7 +187,7 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
             {/* Video Player */}
             <video
                 ref={videoRef}
-                src={reel.videoUrl} // Already starts with /uploads
+                src={getAssetUrl(reel.videoUrl)} // Already starts with /uploads
                 className="w-full h-full object-cover md:max-w-[450px]" // Desktop keeps it phone-sized centered
                 loop
                 muted={isMuted}
@@ -230,7 +231,7 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
                     <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 rounded-full border border-white overflow-hidden">
                             {reel.instructorId?.avatar ? (
-                                <img src={reel.instructorId.avatar} alt="avatar" className="w-full h-full object-cover" />
+                                <img src={getAssetUrl(reel.instructorId.avatar)} alt="avatar" className="w-full h-full object-cover" />
                             ) : (
                                 <div className="w-full h-full bg-brand-primary flex items-center justify-center font-bold text-black">
                                     {reel.instructorId?.name?.[0] || 'I'}

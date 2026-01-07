@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
 import { getAssetUrl } from '../utils/urlUtils';
 import VideoPlayer from '../components/VideoPlayer';

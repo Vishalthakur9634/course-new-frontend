@@ -76,10 +76,10 @@ const GlobalCreateButton = ({ user }) => {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`p-3 md:p-4 rounded-full shadow-2xl shadow-brand-primary/30 transition-all duration-300 hover:scale-105 active:scale-95 ${isOpen ? 'bg-dark-layer2 text-white border border-white/20 rotate-45' : 'bg-brand-primary text-dark-bg'
+                className={`p-4 md:p-4 rounded-full shadow-2xl shadow-brand-primary/30 transition-all duration-300 hover:scale-105 active:scale-95 ${isOpen ? 'bg-dark-layer2 text-white border border-white/20 rotate-45' : 'bg-brand-primary text-dark-bg'
                     }`}
             >
-                {isOpen ? <Plus size={18} className="md:size-[24px]" /> : <Plus size={18} className="stroke-[3px] md:size-[24px] md:stroke-[3px]" />}
+                {isOpen ? <Plus size={24} className="md:size-[24px]" /> : <Plus size={24} className="stroke-[3px] md:size-[24px] md:stroke-[3px]" />}
             </button>
         </div>
     );

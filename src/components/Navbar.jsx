@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { getAssetUrl } from '../utils/urlUtils';
 import {
     LogOut, User, BookOpen, Award, Grid3x3,
     Users, DollarSign, Search, Bell, ShoppingCart,
@@ -160,7 +161,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
 
                         <Link to="/" className="flex items-center gap-1 md:gap-3 group">
                             <div className="w-4 h-4 md:w-9 md:h-9 bg-brand-primary rounded-[2px] md:rounded-lg flex items-center justify-center transition-all duration-300 border border-brand-primary/20 shadow-sm relative overflow-hidden">
-                                <Rocket size={22} className="text-dark-bg fill-current relative z-10 md:w-[22px] md:h-[22px]" />
+                                <Rocket size={24} className="text-dark-bg fill-current relative z-10 md:w-[24px] md:h-[24px]" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-[11px] md:text-lg font-bold uppercase tracking-tight leading-none text-white">
@@ -280,7 +281,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                 onClick={() => onOpenCommandPalette && onOpenCommandPalette()}
                                 className="p-1 rounded hover:bg-white/5 text-dark-muted hover:text-white transition-all"
                             >
-                                <Search size={18} />
+                                <Search size={24} />
                             </button>
                         </div>
 
@@ -296,7 +297,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                         onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                                         className={`p-1 md:p-3 rounded md:rounded-xl transition-all relative group ${isNotificationsOpen ? 'bg-brand-primary text-dark-bg' : 'hover:bg-white/5 text-dark-muted hover:text-white'}`}
                                     >
-                                        <Bell size={22} className="md:size-[22px]" />
+                                        <Bell size={24} className="md:size-[24px]" />
                                         <AnimatePresence>
                                             {unreadCount > 0 && (
                                                 <motion.span
@@ -322,7 +323,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                 >
                                     <div className="w-4 h-4 md:w-9 md:h-9 rounded-[2px] md:rounded-lg bg-dark-layer2 p-0.5 border border-white/10 group-hover:border-brand-primary transition-all overflow-hidden relative">
                                         <img
-                                            src={user.profilePicture || '/default-avatar.png'}
+                                            src={getAssetUrl(user.profilePicture || user.avatar) || '/default-avatar.png'}
                                             alt="Profile"
                                             className="w-full h-full object-cover rounded-[1px] md:rounded-lg"
                                         />
@@ -341,7 +342,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                             <div className="p-6 border-b border-white/5 bg-white/5 relative">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-14 h-14 rounded-xl bg-dark-layer2 p-1 border border-white/20 overflow-hidden">
-                                                        <img src={user.avatar || `https://ui-avatars.com/api/?name=${user.name}&background=ffcc00&color=000`} className="w-full h-full rounded-lg object-cover" alt="" />
+                                                        <img src={getAssetUrl(user.avatar) || `https://ui-avatars.com/api/?name=${user.name}&background=ffcc00&color=000`} className="w-full h-full rounded-lg object-cover" alt="" />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <p className="text-sm font-bold text-white truncate uppercase tracking-tight">{user.name}</p>
@@ -412,22 +413,22 @@ const Navbar = ({ onOpenCommandPalette }) => {
 
             {/* PROFESSIONAL COMPACT BOTTOM NAVIGATION */}
             {token && (
-                <div className="xl:hidden fixed bottom-0 left-0 right-0 h-[60px] bg-[#141414]/95 backdrop-blur-xl border-t border-white/10 z-[1000] pb-safe-area-bottom">
-                    <div className="flex items-center h-full overflow-x-auto no-scrollbar px-1">
+                <div className="xl:hidden fixed bottom-0 left-0 right-0 h-[72px] bg-[#141414]/95 backdrop-blur-xl border-t border-white/10 z-[1000] pb-safe-area-bottom">
+                    <div className="flex items-center h-full overflow-x-auto no-scrollbar px-4 gap-4">
                         {currentLinks.map((link) => (
                             <Link
                                 key={link.path}
                                 to={link.path}
-                                className={`flex flex-col items-center justify-center min-w-[56px] h-full px-1 transition-all relative ${location.pathname === link.path
+                                className={`flex flex-col items-center justify-center min-w-[64px] h-full px-2 transition-all relative ${location.pathname === link.path
                                     ? 'text-brand-primary'
                                     : 'text-dark-muted hover:text-white'
                                     }`}
                             >
-                                <div className={`p-1 rounded-lg mb-0.5 transition-all ${location.pathname === link.path ? 'bg-brand-primary/10' : 'bg-transparent'
+                                <div className={`p-1.5 rounded-lg mb-0.5 transition-all ${location.pathname === link.path ? 'bg-brand-primary/10' : 'bg-transparent'
                                     }`}>
-                                    <link.icon size={20} className={location.pathname === link.path ? 'fill-current' : ''} />
+                                    <link.icon size={24} className={location.pathname === link.path ? 'fill-current' : ''} />
                                 </div>
-                                <span className="text-[9px] font-bold uppercase tracking-wider truncate max-w-full -mt-0.5">
+                                <span className="text-[11px] font-bold uppercase tracking-wider truncate max-w-full -mt-0.5">
                                     {link.name}
                                 </span>
                                 {location.pathname === link.path && (

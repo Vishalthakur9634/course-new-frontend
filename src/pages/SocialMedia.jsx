@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import VideoPlayer from '../components/VideoPlayer';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getAssetUrl } from '../utils/urlUtils';
 
 const SocialMedia = () => {
     const { addToast } = useToast();
@@ -273,7 +274,7 @@ const SocialMedia = () => {
                     </button>
                     <div className="w-12 h-12 rounded-2xl bg-white/5 p-1 cursor-pointer hover:border-brand-primary/50 border border-transparent transition-all shadow-xl">
                         <div className="w-full h-full rounded-[14px] overflow-hidden">
-                            <img src={currentUser?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser?.name}`} className="w-full h-full object-cover" />
+                            <img src={getAssetUrl(currentUser?.avatar) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser?.name}`} className="w-full h-full object-cover" />
                         </div>
                     </div>
                 </div>
@@ -348,7 +349,7 @@ const SocialMedia = () => {
                                         onClick={() => setSelectedVideo({ ...short, media: [{ url: short.videoUrl, type: 'video' }] })}
                                         className="min-w-[240px] md:min-w-[280px] aspect-[9/16] bg-[#141414] rounded-[2.5rem] overflow-hidden group relative snap-center cursor-pointer border-2 border-white/5 hover:border-brand-primary/40 transition-all duration-700 shadow-3xl"
                                     >
-                                        <img src={short.thumbnailUrl || `https://images.unsplash.com/photo-1622353123309-844cd0a78625?w=400&h=600&fit=crop`} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-[4s]" />
+                                        <img src={getAssetUrl(short.thumbnailUrl) || `https://images.unsplash.com/photo-1622353123309-844cd0a78625?w=400&h=600&fit=crop`} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-[4s]" />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity"></div>
                                         <div className="absolute bottom-8 left-8 right-8 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
                                             <h4 className="text-base font-bold text-white line-clamp-2 leading-tight uppercase tracking-tight mb-3">{short.title}</h4>
@@ -404,7 +405,7 @@ const SocialMedia = () => {
                                         >
                                             <div className="relative aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-inner group-hover:border-brand-primary/40 transition-all duration-700">
                                                 <img
-                                                    src={vid.thumbnailUrl || (vid.media?.[0]?.type === 'image' ? vid.media[0].url : null) || `https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&auto=format&fit=crop`}
+                                                    src={getAssetUrl(vid.thumbnailUrl || (vid.media?.[0]?.type === 'image' ? vid.media[0].url : null)) || `https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&auto=format&fit=crop`}
                                                     className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-[3s]"
                                                 />
                                                 <div className="absolute inset-0 bg-[#0a0a0a]/20 group-hover:bg-transparent transition-colors duration-500"></div>
@@ -424,7 +425,7 @@ const SocialMedia = () => {
                                                     onClick={(e) => e.stopPropagation()}
                                                     className="shrink-0 w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-[#0a0a0a] overflow-hidden border border-white/10 group-hover:border-brand-primary/40 transition-all shadow-xl p-0.5"
                                                 >
-                                                    <img src={vid.authorId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${vid.authorId?.name}`} className="w-full h-full object-cover rounded-[10px] md:rounded-[14px]" />
+                                                    <img src={getAssetUrl(vid.authorId?.avatar) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${vid.authorId?.name}`} className="w-full h-full object-cover rounded-[10px] md:rounded-[14px]" />
                                                 </Link>
                                                 <div className="flex-1 min-w-0 space-y-2 md:space-y-3">
                                                     <h3 className="text-sm md:text-[15px] font-bold text-white line-clamp-2 leading-tight group-hover:text-brand-primary transition-colors duration-300 uppercase tracking-tight">
@@ -702,7 +703,7 @@ const SocialMedia = () => {
                                                     className="w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-brand-primary p-0.5 shadow-2xl shadow-brand-primary/20"
                                                 >
                                                     <div className="w-full h-full bg-[#0a0a0a] rounded-[14px] md:rounded-[22px] overflow-hidden border border-white/10">
-                                                        <img src={selectedVideo.authorId?.avatar} className="w-full h-full object-cover" />
+                                                        <img src={getAssetUrl(selectedVideo.authorId?.avatar)} className="w-full h-full object-cover" />
                                                     </div>
                                                 </Link>
                                                 <div className="space-y-1 md:space-y-2">
@@ -767,7 +768,7 @@ const SocialMedia = () => {
                                         {selectedVideo.comments?.length > 0 ? selectedVideo.comments?.map((comment, i) => (
                                             <div key={i} className="flex gap-6 group">
                                                 <div className="w-14 h-14 rounded-2xl bg-[#0a0a0a] shrink-0 overflow-hidden border border-white/10 p-0.5 group-hover:border-brand-primary/30 transition-all shadow-xl">
-                                                    <img src={comment.authorId?.avatar} className="w-full h-full object-cover rounded-[14px]" />
+                                                    <img src={getAssetUrl(comment.authorId?.avatar)} className="w-full h-full object-cover rounded-[14px]" />
                                                 </div>
                                                 <div className="flex-1 space-y-3">
                                                     <div className="flex items-center justify-between">
