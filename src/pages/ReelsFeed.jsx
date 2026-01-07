@@ -192,7 +192,10 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
                 loop
                 muted={isMuted}
                 playsInline
+                crossOrigin="anonymous"
                 onClick={togglePlay}
+                onLoadedData={() => console.log(`[ReelsFeed] Video loaded: ${getAssetUrl(reel.videoUrl)}`)}
+                onError={(e) => console.error(`[ReelsFeed] Video error: ${getAssetUrl(reel.videoUrl)}`, e)}
             />
 
             {/* Overlay Controls */}

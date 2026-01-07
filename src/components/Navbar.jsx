@@ -321,11 +321,11 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                                     className="flex items-center gap-0.5 p-0.5 rounded hover:bg-white/5 transition-all group"
                                 >
-                                    <div className="w-4 h-4 md:w-9 md:h-9 rounded-[2px] md:rounded-lg bg-dark-layer2 p-0.5 border border-white/10 group-hover:border-brand-primary transition-all overflow-hidden relative">
+                                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-dark-layer2 p-0.5 border border-white/10 group-hover:border-brand-primary transition-all overflow-hidden relative">
                                         <img
                                             src={getAssetUrl(user.profilePicture || user.avatar) || '/default-avatar.png'}
                                             alt="Profile"
-                                            className="w-full h-full object-cover rounded-[1px] md:rounded-lg"
+                                            className="w-full h-full object-cover rounded-lg"
                                         />
                                     </div>
                                     <ChevronDown size={6} className={`text-dark-muted group-hover:text-white transition-all ${showProfileMenu ? 'rotate-180' : ''}`} />
@@ -414,12 +414,12 @@ const Navbar = ({ onOpenCommandPalette }) => {
             {/* PROFESSIONAL COMPACT BOTTOM NAVIGATION */}
             {token && (
                 <div className="xl:hidden fixed bottom-0 left-0 right-0 h-[72px] bg-[#141414]/95 backdrop-blur-xl border-t border-white/10 z-[1000] pb-safe-area-bottom">
-                    <div className="flex items-center h-full overflow-x-auto no-scrollbar px-4 gap-4">
+                    <div className="flex items-center h-full overflow-x-auto no-scrollbar px-6 gap-8">
                         {currentLinks.map((link) => (
                             <Link
                                 key={link.path}
                                 to={link.path}
-                                className={`flex flex-col items-center justify-center min-w-[64px] h-full px-2 transition-all relative ${location.pathname === link.path
+                                className={`flex flex-col items-center justify-center min-w-[80px] h-full px-2 transition-all relative ${location.pathname === link.path
                                     ? 'text-brand-primary'
                                     : 'text-dark-muted hover:text-white'
                                     }`}

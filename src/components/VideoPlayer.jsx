@@ -184,6 +184,7 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
                 onLoadedMetadata={handleLoadedMetadata}
                 onClick={togglePlay}
                 poster={getAssetUrl(poster)}
+                crossOrigin="anonymous"
             />
 
             {/* CONTROLS OVERLAY */}

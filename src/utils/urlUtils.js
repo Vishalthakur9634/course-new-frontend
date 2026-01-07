@@ -16,7 +16,7 @@ export const getBackendUrl = () => {
 };
 
 export const getAssetUrl = (path) => {
-    if (!path) return '';
+    if (!path || typeof path !== 'string') return '';
     if (path.startsWith('http') || path.startsWith('data:')) return path;
 
     // Get the backend URL from environment variables or usage default
@@ -24,8 +24,9 @@ export const getAssetUrl = (path) => {
 
     // Remove any leading slash from path to avoid double slashes
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    const cleanBackendUrl = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
 
-    if (!backendUrl) return `/${cleanPath}`;
+    if (!cleanBackendUrl) return `/${cleanPath}`;
 
-    return `${backendUrl}/${cleanPath}`;
+    return `${cleanBackendUrl}/${cleanPath}`;
 };
