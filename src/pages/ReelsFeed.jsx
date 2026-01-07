@@ -161,7 +161,13 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
     useEffect(() => {
         if (isActive) {
             videoRef.current.currentTime = 0;
-            videoRef.current.play().then(() => setIsPlaying(true)).catch(e => console.log('Autoplay blocked', e));
+            const playPromise = videoRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => setIsPlaying(true)).catch(e => {
+                    console.log('Autoplay prevented:', e);
+                    setIsPlaying(false);
+                });
+            }
         } else {
             videoRef.current.pause();
             setIsPlaying(false);
@@ -188,7 +194,6 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
             <video
                 key={reel.videoUrl}
                 ref={videoRef}
-                src={getAssetUrl(reel.videoUrl)} // Already starts with /uploads
                 className="w-full h-full object-cover md:max-w-[450px]" // Desktop keeps it phone-sized centered
                 loop
                 muted={isMuted}
@@ -198,7 +203,9 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
                 onClick={togglePlay}
                 onLoadedData={() => console.log(`[ReelsFeed] Video loaded: ${getAssetUrl(reel.videoUrl)}`)}
                 onError={(e) => console.error(`[ReelsFeed] Video error: ${getAssetUrl(reel.videoUrl)}`, e)}
-            />
+            >
+                <source src={getAssetUrl(reel.videoUrl)} type="video/mp4" />
+            </video>
 
             {/* Overlay Controls */}
             <div className="absolute inset-0 md:max-w-[450px] mx-auto pointer-events-none flex flex-col justify-end pb-20 p-4 bg-gradient-to-t from-black/80 via-transparent to-transparent">

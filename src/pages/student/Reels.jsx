@@ -308,8 +308,13 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
 
     const togglePlay = () => {
         if (videoRef.current.paused) {
-            videoRef.current.play();
-            setIsPlaying(true);
+            const playPromise = videoRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => setIsPlaying(true)).catch(e => {
+                    console.log('Autoplay prevented:', e);
+                    setIsPlaying(false);
+                });
+            }
         } else {
             videoRef.current.pause();
             setIsPlaying(false);
@@ -360,20 +365,22 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
         <div className="h-[100dvh] w-full snap-start relative flex items-center justify-center bg-black overflow-hidden group/reel">
             {/* Background Video */}
             <video
-                key={reel.videoUrl} // Force re-mount on src change
+                key={reel.videoUrl}
                 ref={videoRef}
-                src={getAssetUrl(reel.videoUrl)}
                 poster={getAssetUrl(reel.thumbnailUrl)}
                 loop
                 muted={isMuted}
-                autoPlay // Try to leverage browser's native autoplay if possible
+                autoPlay
                 playsInline
                 crossOrigin="anonymous"
                 className="h-full w-full object-cover md:max-w-[480px] md:rounded-2xl transition-all"
                 onClick={togglePlay}
                 onLoadedData={() => console.log(`[Reels] Video loaded: ${getAssetUrl(reel.videoUrl)}`)}
                 onError={(e) => console.error(`[Reels] Video error: ${getAssetUrl(reel.videoUrl)}`, e)}
-            />
+            >
+                <source src={getAssetUrl(reel.videoUrl)} type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
 
             {/* Click/Tap Layer for double tap */}
             <div
