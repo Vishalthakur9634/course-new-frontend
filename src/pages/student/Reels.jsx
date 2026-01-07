@@ -391,8 +391,16 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
                 crossOrigin="anonymous"
                 className="h-full w-full object-cover md:max-w-[480px] md:rounded-2xl transition-all"
                 onClick={togglePlay}
-                onLoadedData={() => console.log(`[Reels] Video loaded: ${getAssetUrl(reel.videoUrl)}`)}
-                onError={(e) => console.error(`[Reels] Video error: ${getAssetUrl(reel.videoUrl)}`, e)}
+                onLoadedData={() => {
+                    console.log(`[Reels] Video loaded: ${getAssetUrl(reel.videoUrl)}`);
+                    setTestResult('SUCCESS');
+                }}
+                onError={(e) => {
+                    const errorCode = videoRef.current?.error?.code;
+                    const errorMsg = videoRef.current?.error?.message;
+                    console.error(`[Reels] Video error: ${errorCode} - ${errorMsg}`);
+                    setTestResult(`MEDIA_ERR_${errorCode || 'UNKNOWN'}`);
+                }}
             >
                 <source src={getAssetUrl(reel.videoUrl)} type="video/mp4" />
                 Your browser does not support the video tag.
