@@ -25,6 +25,7 @@ const Reels = () => {
     const [user, setUser] = useState(null);
     const [shareToast, setShareToast] = useState({ show: false, message: '' });
     const containerRef = useRef(null);
+    const [testResult, setTestResult] = useState(null);
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -78,8 +79,23 @@ const Reels = () => {
                 }
             }
             setReels(sortedData);
-            setActiveIndex(0); // Reset to top on refill
+            setActiveIndex(0);
             if (containerRef.current) containerRef.current.scrollTop = 0;
+
+            // Diagnostic test for the first reel
+            if (sortedData.length > 0) {
+                const testUrl = getAssetUrl(sortedData[0].videoUrl);
+                console.log(`[Diagnostic] Testing first reel URL: ${testUrl}`);
+                fetch(testUrl, { method: 'HEAD' })
+                    .then(res => {
+                        console.log(`[Diagnostic] URL Status: ${res.status} ${res.statusText}`);
+                        setTestResult(res.status === 200 ? 'SUCCESS' : `FAIL_${res.status}`);
+                    })
+                    .catch(err => {
+                        console.error(`[Diagnostic] URL Fetch Error:`, err);
+                        setTestResult(`ERROR_${err.message}`);
+                    });
+            }
         } catch (error) {
             console.error('Error fetching reels:', error);
         } finally {
@@ -381,6 +397,13 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
                 <source src={getAssetUrl(reel.videoUrl)} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
+
+            {/* Diagnostic Overlay */}
+            {testResult && testResult !== 'SUCCESS' && (
+                <div className="absolute top-24 left-4 right-4 z-50 p-2 bg-red-500/80 text-white text-[10px] font-mono rounded backdrop-blur-md">
+                    DEBUG: {testResult} for {getAssetUrl(reel.videoUrl)}
+                </div>
+            )}
 
             {/* Click/Tap Layer for double tap */}
             <div
