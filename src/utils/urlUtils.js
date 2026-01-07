@@ -46,8 +46,6 @@ export const getAssetUrl = (path) => {
 
     // ENSURE we don't return an empty string or malformed URL
     const finalUrl = `${cleanBackendUrl}/${cleanPath}`;
-    if (finalUrl.includes('.mp4')) {
-        console.log(`[AssetURL] Resolved Video: ${finalUrl}`);
-    }
+    console.log(`[AssetURL] Resolved: ${finalUrl}`);
     return finalUrl;
 };
