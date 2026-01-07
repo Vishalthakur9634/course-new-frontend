@@ -186,11 +186,13 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
         >
             {/* Video Player */}
             <video
+                key={reel.videoUrl}
                 ref={videoRef}
                 src={getAssetUrl(reel.videoUrl)} // Already starts with /uploads
                 className="w-full h-full object-cover md:max-w-[450px]" // Desktop keeps it phone-sized centered
                 loop
                 muted={isMuted}
+                autoPlay
                 playsInline
                 crossOrigin="anonymous"
                 onClick={togglePlay}

@@ -360,11 +360,13 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
         <div className="h-[100dvh] w-full snap-start relative flex items-center justify-center bg-black overflow-hidden group/reel">
             {/* Background Video */}
             <video
+                key={reel.videoUrl} // Force re-mount on src change
                 ref={videoRef}
                 src={getAssetUrl(reel.videoUrl)}
                 poster={getAssetUrl(reel.thumbnailUrl)}
                 loop
                 muted={isMuted}
+                autoPlay // Try to leverage browser's native autoplay if possible
                 playsInline
                 crossOrigin="anonymous"
                 className="h-full w-full object-cover md:max-w-[480px] md:rounded-2xl transition-all"

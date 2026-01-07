@@ -17,7 +17,23 @@ export const getBackendUrl = () => {
 
 export const getAssetUrl = (path) => {
     if (!path || typeof path !== 'string') return '';
-    if (path.startsWith('http') || path.startsWith('data:')) return path;
+
+    // If path is already a full URL, check if it's from a potentially old backend
+    // and needs to be pointed to the current one.
+    if (path.startsWith('http')) {
+        // If it already points to the current backend, return it
+        const backendUrl = getBackendUrl();
+        if (backendUrl && path.includes(backendUrl)) return path;
+
+        // If it's a known static path but with a different domain, strip the domain
+        if (path.includes('/uploads/')) {
+            path = '/uploads/' + path.split('/uploads/')[1];
+        } else {
+            return path;
+        }
+    }
+
+    if (path.startsWith('data:')) return path;
 
     // Get the backend URL from environment variables or usage default
     const backendUrl = getBackendUrl();
