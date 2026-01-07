@@ -26,6 +26,7 @@ const Reels = () => {
     const [shareToast, setShareToast] = useState({ show: false, message: '' });
     const containerRef = useRef(null);
     const [testResult, setTestResult] = useState(null);
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -287,6 +288,8 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
 
     useEffect(() => {
         if (isActive && videoRef.current) {
+            // Explicitly reload to pick up source changes/retries
+            videoRef.current.load();
             const playPromise = videoRef.current.play();
             if (playPromise !== undefined) {
                 playPromise
@@ -399,6 +402,12 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
                     const errorMsg = videoRef.current?.error?.message;
                     console.error(`[Reels] Video error: ${errorCode} - ${errorMsg}`);
                     setTestResult(`MEDIA_ERR_${errorCode || 'UNKNOWN'}`);
+
+                    // Auto-retry once on error if not already tried
+                    if (!retryCount) {
+                        console.log('[Reels] Attempting auto-retry...');
+                        setTimeout(() => setRetryCount(prev => prev + 1), 1000);
+                    }
                 }}
             >
                 <source src={getAssetUrl(reel.videoUrl)} type="video/mp4" />

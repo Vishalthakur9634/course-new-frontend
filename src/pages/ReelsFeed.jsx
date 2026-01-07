@@ -157,10 +157,12 @@ const ReelsFeed = () => {
 const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike, currentUser }, ref) => {
     const videoRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
-        if (isActive) {
+        if (isActive && videoRef.current) {
             videoRef.current.currentTime = 0;
+            videoRef.current.load(); // Force reload for new source
             const playPromise = videoRef.current.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => setIsPlaying(true)).catch(e => {
@@ -168,8 +170,6 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
                     setIsPlaying(false);
                 });
             }
-        } else {
-            videoRef.current.pause();
             setIsPlaying(false);
         }
     }, [isActive]);
@@ -192,17 +192,22 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
         >
             {/* Video Player */}
             <video
-                key={reel.videoUrl}
+                key={reel.videoUrl + retryCount}
                 ref={videoRef}
                 className="w-full h-full object-cover md:max-w-[450px]" // Desktop keeps it phone-sized centered
                 loop
                 muted={isMuted}
                 autoPlay
                 playsInline
-                crossOrigin="anonymous"
                 onClick={togglePlay}
                 onLoadedData={() => console.log(`[ReelsFeed] Video loaded: ${getAssetUrl(reel.videoUrl)}`)}
-                onError={(e) => console.error(`[ReelsFeed] Video error: ${getAssetUrl(reel.videoUrl)}`, e)}
+                onError={(e) => {
+                    const errorCode = videoRef.current?.error?.code;
+                    console.error(`[ReelsFeed] Video error: ${getAssetUrl(reel.videoUrl)} - Code: ${errorCode}`);
+                    if (!retryCount) {
+                        setTimeout(() => setRetryCount(prev => prev + 1), 1000);
+                    }
+                }}
             >
                 <source src={getAssetUrl(reel.videoUrl)} type="video/mp4" />
             </video>
