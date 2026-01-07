@@ -191,10 +191,10 @@ const VideoTabs = ({ video, course, currentTime }) => {
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`flex-1 min-w-[140px] py-5 px-6 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all relative ${activeTab === tab.id ? 'text-brand-primary' : 'text-dark-muted hover:text-white'
+                            className={`flex-1 min-w-[100px] md:min-w-[140px] py-3 md:py-5 px-2 md:px-6 text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 md:gap-3 transition-all relative ${activeTab === tab.id ? 'text-brand-primary' : 'text-dark-muted hover:text-white'
                                 }`}
                         >
-                            <tab.icon size={16} /> {tab.label}
+                            <tab.icon size={14} className="md:w-4 md:h-4" /> {tab.label}
                             {activeTab === tab.id && (
                                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-primary shadow-[0_0_15px_rgba(255,161,22,0.6)]" />
                             )}
@@ -204,16 +204,16 @@ const VideoTabs = ({ video, course, currentTime }) => {
             </div>
 
             {/* DOMAIN CONTENT */}
-            <div className="overflow-y-auto p-10 custom-scrollbar max-h-[600px]">
+            <div className="overflow-y-auto p-4 md:p-8 custom-scrollbar max-h-[500px] md:max-h-[600px]">
                 {activeTab === 'overview' && (
-                    <div className="space-y-12 animate-in fade-in duration-700">
-                        <div className="space-y-6">
-                            <div className="flex items-start justify-between gap-8">
-                                <div className="flex-1 space-y-4">
+                    <div className="space-y-8 md:space-y-12 animate-in fade-in duration-700">
+                        <div className="space-y-4 md:space-y-6">
+                            <div className="flex flex-col md:flex-row items-start justify-between gap-4 md:gap-8">
+                                <div className="flex-1 space-y-2 md:space-y-4">
                                     <div className="flex items-center gap-3">
-                                        <h2 className="text-2xl font-bold text-white line-clamp-2">{video.title}</h2>
+                                        <h2 className="text-xl md:text-2xl font-bold text-white line-clamp-2">{video.title}</h2>
                                     </div>
-                                    <p className="text-dark-muted text-sm leading-relaxed">{video.description || 'No description available.'}</p>
+                                    <p className="text-dark-muted text-xs md:text-sm leading-relaxed">{video.description || 'No description available.'}</p>
                                 </div>
                                 <button
                                     onClick={() => {
@@ -221,25 +221,25 @@ const VideoTabs = ({ video, course, currentTime }) => {
                                         navigator.clipboard.writeText(shareLink);
                                         alert('Course link copied!');
                                     }}
-                                    className="p-4 rounded-2xl bg-[#1a1a1a] border border-white/5 text-dark-muted hover:text-brand-primary hover:border-brand-primary/40 transition-all shadow-xl"
+                                    className="p-3 md:p-4 rounded-2xl bg-[#1a1a1a] border border-white/5 text-dark-muted hover:text-brand-primary hover:border-brand-primary/40 transition-all shadow-xl self-end md:self-start"
                                 >
-                                    <Share2 size={24} />
+                                    <Share2 size={20} className="md:w-6 md:h-6" />
                                 </button>
                             </div>
                         </div>
 
                         {course.instructorId && (
-                            <div className="bg-[#0a0a0a]/50 p-6 rounded-2xl border border-white/5 space-y-4">
-                                <h3 className="text-xs font-bold text-dark-muted uppercase tracking-wider opacity-40">Instructor</h3>
-                                <div className="flex items-center gap-6">
+                            <div className="bg-[#0a0a0a]/50 p-4 md:p-6 rounded-2xl border border-white/5 space-y-4">
+                                <h3 className="text-[10px] md:text-xs font-bold text-dark-muted uppercase tracking-wider opacity-40">Instructor</h3>
+                                <div className="flex items-center gap-4 md:gap-6">
                                     <UserLink
                                         user={course.instructorId}
-                                        avatarSize="w-16 h-16"
-                                        nameClass="text-lg font-bold text-white"
+                                        avatarSize="w-12 h-12 md:w-16 md:h-16"
+                                        nameClass="text-base md:text-lg font-bold text-white"
                                     />
                                     <div className="flex-1 space-y-1">
                                         {course.instructorId.instructorProfile?.bio && (
-                                            <p className="text-sm text-dark-muted leading-relaxed">
+                                            <p className="text-xs md:text-sm text-dark-muted leading-relaxed line-clamp-3 md:line-clamp-none">
                                                 {course.instructorId.instructorProfile.bio}
                                             </p>
                                         )}
@@ -248,9 +248,9 @@ const VideoTabs = ({ video, course, currentTime }) => {
                             </div>
                         )}
 
-                        <div className="space-y-4">
-                            <h3 className="text-xs font-bold text-dark-muted uppercase tracking-wider opacity-40">About this Course</h3>
-                            <p className="text-sm text-dark-muted leading-relaxed opacity-70 border-l border-white/10 pl-4">{course.description}</p>
+                        <div className="space-y-2 md:space-y-4">
+                            <h3 className="text-[10px] md:text-xs font-bold text-dark-muted uppercase tracking-wider opacity-40">About this Course</h3>
+                            <p className="text-xs md:text-sm text-dark-muted leading-relaxed opacity-70 border-l border-white/10 pl-4">{course.description}</p>
                         </div>
 
                         {video.resources && video.resources.length > 0 && (
@@ -262,20 +262,20 @@ const VideoTabs = ({ video, course, currentTime }) => {
                                             key={idx}
                                             href={resource.url}
                                             download
-                                            className="flex items-center justify-between p-6 bg-[#0a0a0a] rounded-2xl border border-white/5 hover:border-brand-primary/40 transition-all group"
+                                            className="flex items-center justify-between p-4 md:p-6 bg-[#0a0a0a] rounded-xl md:rounded-2xl border border-white/5 hover:border-brand-primary/40 transition-all group"
                                         >
-                                            <div className="flex items-center gap-5">
-                                                <div className="p-3 bg-brand-primary/10 rounded-xl text-brand-primary border border-brand-primary/20">
-                                                    <FileText size={24} />
+                                            <div className="flex items-center gap-4 md:gap-5">
+                                                <div className="p-2.5 md:p-3 bg-brand-primary/10 rounded-xl text-brand-primary border border-brand-primary/20">
+                                                    <FileText size={20} className="md:w-[24px] md:h-[24px]" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-white font-bold text-sm uppercase tracking-tight group-hover:text-brand-primary transition-colors">{resource.title}</p>
-                                                    <p className="text-[10px] text-dark-muted font-bold uppercase tracking-widest opacity-50 mt-1">
+                                                    <p className="text-white font-bold text-xs md:text-sm uppercase tracking-tight group-hover:text-brand-primary transition-colors">{resource.title}</p>
+                                                    <p className="text-[9px] md:text-[10px] text-dark-muted font-bold uppercase tracking-widest opacity-50 mt-1">
                                                         {resource.fileType} • {(resource.fileSize / 1024).toFixed(1)} KB
                                                     </p>
                                                 </div>
                                             </div>
-                                            <span className="text-[10px] font-black text-brand-primary uppercase tracking-widest px-4 py-2 bg-brand-primary/5 border border-brand-primary/20 rounded-xl group-hover:bg-brand-primary group-hover:text-dark-bg transition-all">
+                                            <span className="hidden sm:block text-[9px] md:text-[10px] font-black text-brand-primary uppercase tracking-widest px-3 md:px-4 py-2 bg-brand-primary/5 border border-brand-primary/20 rounded-lg md:rounded-xl group-hover:bg-brand-primary group-hover:text-dark-bg transition-all">
                                                 Download Artifact
                                             </span>
                                         </a>
@@ -329,21 +329,21 @@ const VideoTabs = ({ video, course, currentTime }) => {
                                             <UserLink
                                                 user={comment.user}
                                                 showAvatar={true}
-                                                avatarSize="w-14 h-14"
+                                                avatarSize="w-10 h-10 md:w-14 md:h-14"
                                                 nameClass="hidden"
                                             />
                                             {comment.user?.role === 'instructor' && (
-                                                <div className="absolute -bottom-1 -right-1 bg-brand-primary text-dark-bg p-1 rounded-full border-2 border-[#111]">
-                                                    <ShieldCheck size={12} />
+                                                <div className="absolute -bottom-1 -right-1 bg-brand-primary text-dark-bg p-0.5 md:p-1 rounded-full border-2 border-[#111]">
+                                                    <ShieldCheck size={10} className="md:w-[12px] md:h-[12px]" />
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex-1 space-y-4">
-                                            <div className="flex items-center gap-3">
+                                        <div className="flex-1 space-y-3 md:space-y-4">
+                                            <div className="flex items-center gap-2 md:gap-3">
                                                 <UserLink
                                                     user={comment.user}
                                                     showAvatar={false}
-                                                    nameClass={`font-bold uppercase tracking-tight text-sm ${comment.user?.role === 'instructor' ? 'text-brand-primary' : 'text-white'}`}
+                                                    nameClass={`font-bold uppercase tracking-tight text-[12px] md:text-sm ${comment.user?.role === 'instructor' ? 'text-brand-primary' : 'text-white'}`}
                                                 />
                                                 <span className="w-1.5 h-1.5 rounded-full bg-white/10" />
                                                 <span className="text-[9px] text-dark-muted font-black uppercase tracking-[0.2em] opacity-40">{new Date(comment.createdAt).toLocaleDateString()}</span>
@@ -386,24 +386,24 @@ const VideoTabs = ({ video, course, currentTime }) => {
                                             )}
 
                                             {comment.replies && comment.replies.length > 0 && (
-                                                <div className="space-y-6 mt-8 pl-8 border-l-2 border-white/5">
+                                                <div className="space-y-4 md:space-y-6 mt-6 md:mt-8 pl-4 md:pl-8 border-l-2 border-white/5">
                                                     {comment.replies.map((reply, idx) => (
-                                                        <div key={idx} className="flex gap-4">
+                                                        <div key={idx} className="flex gap-3 md:gap-4">
                                                             <UserLink
                                                                 user={reply.user}
-                                                                avatarSize="w-10 h-10"
+                                                                avatarSize="w-8 h-8 md:w-10 md:h-10"
                                                                 nameClass="hidden"
                                                             />
-                                                            <div className="flex-1">
-                                                                <div className="flex items-center gap-3 mb-1">
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="flex items-center gap-2 md:gap-3 mb-1">
                                                                     <UserLink
                                                                         user={reply.user}
                                                                         showAvatar={false}
-                                                                        nameClass={`font-bold uppercase tracking-tight text-xs ${reply.user?.role === 'instructor' ? 'text-brand-primary' : 'text-white'}`}
+                                                                        nameClass={`font-bold uppercase tracking-tight text-[10px] md:text-xs ${reply.user?.role === 'instructor' ? 'text-brand-primary' : 'text-white'}`}
                                                                     />
-                                                                    <span className="text-[8px] text-dark-muted font-black uppercase tracking-[0.2em] opacity-40">{new Date(reply.createdAt).toLocaleDateString()}</span>
+                                                                    <span className="text-[7px] md:text-[8px] text-dark-muted font-black uppercase tracking-[0.2em] opacity-40">{new Date(reply.createdAt).toLocaleDateString()}</span>
                                                                 </div>
-                                                                <p className="text-dark-muted text-xs leading-relaxed opacity-80">{reply.text}</p>
+                                                                <p className="text-dark-muted text-[11px] md:text-xs leading-relaxed opacity-80">{reply.text}</p>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -420,16 +420,16 @@ const VideoTabs = ({ video, course, currentTime }) => {
                 {activeTab === 'studentNotes' && (
                     <div className="flex flex-col h-full space-y-12 animate-in fade-in duration-700">
                         {/* Research Note Input */}
-                        <div className="bg-[#0a0a0a] p-10 rounded-[2.5rem] border border-white/5 shadow-2xl relative overflow-hidden group">
+                        <div className="bg-[#0a0a0a] p-5 md:p-10 rounded-2xl md:rounded-[2.5rem] border border-white/5 shadow-2xl relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 blur-[50px] rounded-full" />
-                            <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center justify-between mb-6 md:mb-8">
                                 <div className="flex items-center gap-4">
                                     <div className="p-3 bg-brand-primary/10 rounded-2xl text-brand-primary border border-brand-primary/20">
                                         <PenTool size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-base font-bold text-white">Add a Note</h3>
-                                        <p className="text-[10px] text-dark-muted uppercase tracking-wider mt-1">Timestamp: {formatTime(currentTime)}</p>
+                                        <h3 className="text-sm md:text-base font-bold text-white uppercase tracking-tight">Add a Note</h3>
+                                        <p className="text-[9px] md:text-[10px] text-dark-muted uppercase tracking-wider mt-1 opacity-50">Timestamp: {formatTime(currentTime)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -438,7 +438,7 @@ const VideoTabs = ({ video, course, currentTime }) => {
                                     value={newNoteContent}
                                     onChange={(e) => setNewNoteContent(e.target.value)}
                                     placeholder="Document critical observations at this curriculum node..."
-                                    className="w-full bg-[#111] border border-white/10 rounded-2xl p-6 text-sm text-white font-medium focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none min-h-[160px] resize-none transition-all placeholder:opacity-30"
+                                    className="w-full bg-[#111] border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 text-sm text-white font-medium focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 focus:outline-none min-h-[140px] md:min-h-[160px] resize-none transition-all placeholder:opacity-30"
                                 />
                                 <div className="flex gap-4">
                                     <div className="relative">
@@ -482,23 +482,23 @@ const VideoTabs = ({ video, course, currentTime }) => {
                             ) : (
                                 <div className="grid gap-6">
                                     {studentNotes.map((note) => (
-                                        <div key={note._id} className="group bg-[#111] border border-white/5 rounded-3xl p-8 hover:border-brand-primary/30 transition-all shadow-xl relative overflow-hidden">
+                                        <div key={note._id} className="group bg-[#111] border border-white/5 rounded-2xl md:rounded-3xl p-5 md:p-8 hover:border-brand-primary/30 transition-all shadow-xl relative overflow-hidden">
                                             <div className="absolute top-0 left-0 w-1 h-full bg-brand-primary/0 group-hover:bg-brand-primary transition-all duration-500" />
-                                            <div className="flex justify-between items-start mb-6">
+                                            <div className="flex justify-between items-start mb-4 md:mb-6">
                                                 <button
                                                     onClick={() => {
                                                         const player = document.querySelector('video');
                                                         if (player) player.currentTime = note.timestamp;
                                                     }}
-                                                    className="bg-brand-primary/10 text-brand-primary px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] border border-brand-primary/20 hover:bg-brand-primary hover:text-dark-bg transition-all shadow-lg"
+                                                    className="bg-brand-primary/10 text-brand-primary px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] border border-brand-primary/20 hover:bg-brand-primary hover:text-dark-bg transition-all shadow-lg"
                                                 >
-                                                    MATRIX OFFSET: {formatTime(note.timestamp)}
+                                                    OFFSET: {formatTime(note.timestamp)}
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteNote(note._id)}
-                                                    className="p-3 text-dark-muted hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                                                    className="p-2 md:p-3 text-dark-muted hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                                                 >
-                                                    <Trash2 size={18} />
+                                                    <Trash2 size={16} className="md:w-[18px] md:h-[18px]" />
                                                 </button>
                                             </div>
                                             <p className="text-dark-muted text-[15px] leading-relaxed font-medium opacity-90 whitespace-pre-wrap">{note.content}</p>
@@ -533,47 +533,47 @@ const VideoTabs = ({ video, course, currentTime }) => {
                 )}
 
                 {activeTab === 'notes' && (
-                    <div className="space-y-8 animate-in fade-in duration-700">
-                        <div className="flex items-center gap-5 border-b border-white/5 pb-8">
-                            <div className="p-4 bg-brand-primary/10 rounded-2xl text-brand-primary border border-brand-primary/20">
-                                <FileText size={32} />
+                    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-700">
+                        <div className="flex items-center gap-4 md:gap-5 border-b border-white/5 pb-6 md:pb-8">
+                            <div className="p-3 md:p-4 bg-brand-primary/10 rounded-xl md:rounded-2xl text-brand-primary border border-brand-primary/20">
+                                <FileText size={24} className="md:w-[32px] md:h-[32px]" />
                             </div>
                             <div>
-                                <h2 className="text-3xl font-bold text-white uppercase tracking-tight">Knowledge Summary</h2>
-                                <p className="text-[11px] font-bold text-dark-muted uppercase tracking-[0.4em] mt-1">Official Module Documentation</p>
+                                <h2 className="text-xl md:text-3xl font-bold text-white uppercase tracking-tight">Knowledge Summary</h2>
+                                <p className="text-[9px] md:text-[11px] font-bold text-dark-muted uppercase tracking-[0.4em] mt-1 opacity-50">Official Module Documentation</p>
                             </div>
                         </div>
 
                         {video.notePdf && (
-                            <div className="bg-[#0a0a0a] p-8 rounded-3xl border border-white/5 flex items-center justify-between group hover:border-brand-primary/30 transition-all shadow-2xl overflow-hidden relative">
+                            <div className="bg-[#0a0a0a] p-5 md:p-8 rounded-2xl md:rounded-3xl border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6 group hover:border-brand-primary/30 transition-all shadow-2xl overflow-hidden relative">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 blur-[50px] rounded-full" />
-                                <div className="flex items-center gap-6">
-                                    <div className="bg-red-500/10 p-4 rounded-2xl text-red-500 border border-red-500/20 shadow-xl">
-                                        <FileText size={32} />
+                                <div className="flex items-center gap-4 md:gap-6">
+                                    <div className="bg-red-500/10 p-3 md:p-4 rounded-xl md:rounded-2xl text-red-500 border border-red-500/20 shadow-xl">
+                                        <FileText size={24} className="md:w-[32px] md:h-[32px]" />
                                     </div>
                                     <div className="space-y-1">
-                                        <h3 className="text-white font-bold uppercase tracking-tight text-lg">Detailed Lecture Notes</h3>
-                                        <p className="text-[10px] text-dark-muted font-black uppercase tracking-widest opacity-50">High-Resolution PDF Artifact</p>
+                                        <h3 className="text-white font-bold uppercase tracking-tight text-base md:text-lg">Detailed Lecture Notes</h3>
+                                        <p className="text-[9px] md:text-[10px] text-dark-muted font-black uppercase tracking-widest opacity-50">High-Resolution PDF Artifact</p>
                                     </div>
                                 </div>
                                 <a
                                     href={video.notePdf}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="px-8 py-4 bg-[#111] text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl border border-white/10 hover:bg-brand-primary hover:text-dark-bg hover:border-brand-primary transition-all shadow-xl"
+                                    className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 bg-[#111] text-white text-[10px] md:text-[11px] font-black uppercase tracking-[0.3em] rounded-xl md:rounded-2xl border border-white/10 hover:bg-brand-primary hover:text-dark-bg hover:border-brand-primary transition-all shadow-xl text-center"
                                 >
                                     Download Matrix
                                 </a>
                             </div>
                         )}
 
-                        <div className="bg-[#0a0a0a] p-12 rounded-[2.5rem] border border-white/5 shadow-inner">
+                        <div className="bg-[#0a0a0a] p-6 md:p-12 rounded-2xl md:rounded-[2.5rem] border border-white/5 shadow-inner">
                             {video.summary ? (
-                                <p className="text-dark-muted text-[16px] leading-loose font-medium opacity-80 whitespace-pre-wrap">{video.summary}</p>
+                                <p className="text-dark-muted text-[14px] md:text-[16px] leading-loose font-medium opacity-80 whitespace-pre-wrap">{video.summary}</p>
                             ) : (
-                                <div className="py-20 text-center opacity-30 italic">
-                                    <Info className="mx-auto mb-6" size={48} />
-                                    <p className="text-[11px] font-bold uppercase tracking-[0.4em]">No technical summary indexed for this coordinate.</p>
+                                <div className="py-16 md:py-20 text-center opacity-30 italic">
+                                    <Info className="mx-auto mb-4 md:mb-6 md:w-[48px] md:h-[48px]" size={32} />
+                                    <p className="text-[9px] md:text-[11px] font-bold uppercase tracking-[0.4em]">No technical summary indexed for this coordinate.</p>
                                 </div>
                             )}
                         </div>
@@ -593,32 +593,32 @@ const VideoTabs = ({ video, course, currentTime }) => {
                         </div>
 
                         {assessment ? (
-                            <div className="bg-[#0a0a0a] p-12 rounded-[3rem] border border-white/5 shadow-3xl space-y-10 relative overflow-hidden group">
+                            <div className="bg-[#0a0a0a] p-6 md:p-12 rounded-2xl md:rounded-[3rem] border border-white/5 shadow-3xl space-y-8 md:space-y-10 relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-primary/5 blur-[100px] rounded-full group-hover:bg-brand-primary/10 transition-colors" />
-                                <div className="flex justify-between items-start">
-                                    <div className="space-y-4">
-                                        <h3 className="text-4xl font-black text-white uppercase tracking-tighter">{assessment.title}</h3>
-                                        <p className="text-dark-muted text-sm font-medium leading-relaxed opacity-70 max-w-xl">
+                                <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+                                    <div className="space-y-3 md:space-y-4">
+                                        <h3 className="text-2xl md:text-4xl font-black text-white uppercase tracking-tighter">{assessment.title}</h3>
+                                        <p className="text-dark-muted text-xs md:text-sm font-medium leading-relaxed opacity-70 max-w-xl">
                                             Execute this high-fidelity assessment to validate your mastery over the curriculum nodes. Verifies strategic and tactical comprehension.
                                         </p>
                                     </div>
-                                    <div className="bg-brand-primary/10 p-6 rounded-[2rem] border border-brand-primary/20 shadow-2xl shadow-brand-primary/10">
-                                        <Award size={48} className="text-brand-primary" />
+                                    <div className="bg-brand-primary/10 p-4 md:p-6 rounded-2xl md:rounded-[2rem] border border-brand-primary/20 shadow-2xl shadow-brand-primary/10 self-center md:self-start">
+                                        <Award size={32} className="text-brand-primary md:w-[48px] md:h-[48px]" />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="bg-[#111] p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-                                        <span className="text-[9px] font-black text-dark-muted uppercase tracking-[0.4em]">Question Nodes</span>
-                                        <span className="text-2xl font-bold text-white">{assessment.questions.length || 0}</span>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                                    <div className="bg-[#111] p-4 md:p-6 rounded-xl md:rounded-2xl border border-white/5 flex items-center justify-between md:flex-col md:items-start gap-2">
+                                        <span className="text-[8px] md:text-[9px] font-black text-dark-muted uppercase tracking-[0.4em]">Question Nodes</span>
+                                        <span className="text-xl md:text-2xl font-bold text-white">{assessment.questions.length || 0}</span>
                                     </div>
-                                    <div className="bg-[#111] p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-                                        <span className="text-[9px] font-black text-dark-muted uppercase tracking-[0.4em]">Threshold</span>
-                                        <span className="text-2xl font-bold text-brand-primary">{assessment.passingScore}%</span>
+                                    <div className="bg-[#111] p-4 md:p-6 rounded-xl md:rounded-2xl border border-white/5 flex items-center justify-between md:flex-col md:items-start gap-2">
+                                        <span className="text-[8px] md:text-[9px] font-black text-dark-muted uppercase tracking-[0.4em]">Threshold</span>
+                                        <span className="text-xl md:text-2xl font-bold text-brand-primary">{assessment.passingScore}%</span>
                                     </div>
-                                    <div className="bg-[#111] p-6 rounded-2xl border border-white/5 flex flex-col gap-2">
-                                        <span className="text-[9px] font-black text-dark-muted uppercase tracking-[0.4em]">Chronometer</span>
-                                        <span className="text-2xl font-bold text-white">{assessment.durationLimit > 0 ? `${assessment.durationLimit} MIN` : 'UNLIMITED'}</span>
+                                    <div className="bg-[#111] p-4 md:p-6 rounded-xl md:rounded-2xl border border-white/5 flex items-center justify-between md:flex-col md:items-start gap-2">
+                                        <span className="text-[8px] md:text-[9px] font-black text-dark-muted uppercase tracking-[0.4em]">Chronometer</span>
+                                        <span className="text-xl md:text-2xl font-bold text-white">{assessment.durationLimit > 0 ? `${assessment.durationLimit} MIN` : 'UNLIMITED'}</span>
                                     </div>
                                 </div>
 
@@ -639,41 +639,41 @@ const VideoTabs = ({ video, course, currentTime }) => {
                 )}
 
                 {activeTab === 'articles' && (
-                    <div className="space-y-12 animate-in fade-in duration-700">
-                        <div className="flex items-center gap-5 border-b border-white/5 pb-8">
-                            <div className="p-4 bg-brand-primary/10 rounded-2xl text-brand-primary border border-brand-primary/20">
-                                <PenTool size={32} />
+                    <div className="space-y-8 md:space-y-12 animate-in fade-in duration-700">
+                        <div className="flex items-center gap-4 md:gap-5 border-b border-white/5 pb-6 md:pb-8">
+                            <div className="p-3 md:p-4 bg-brand-primary/10 rounded-xl md:rounded-2xl text-brand-primary border border-brand-primary/20">
+                                <PenTool size={24} className="md:w-[32px] md:h-[32px]" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-white">Instructor Articles</h2>
-                                <p className="text-sm text-dark-muted mt-1">Additional reading from your instructor</p>
+                                <h2 className="text-xl md:text-2xl font-bold text-white uppercase tracking-tight">Instructor Articles</h2>
+                                <p className="text-[10px] md:text-sm text-dark-muted mt-1 opacity-50">Additional reading from your instructor</p>
                             </div>
                         </div>
 
                         {instructorArticles.length > 0 ? (
-                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-8">
                                 {instructorArticles.map(article => (
                                     <div
                                         key={article._id}
                                         onClick={() => navigate(`/blog/${article.slug}`)}
-                                        className="bg-[#0a0a0a] rounded-[2rem] border border-white/5 hover:border-brand-primary/40 transition-all cursor-pointer flex gap-8 p-6 group shadow-xl"
+                                        className="bg-[#0a0a0a] rounded-2xl md:rounded-[2rem] border border-white/5 hover:border-brand-primary/40 transition-all cursor-pointer flex gap-4 md:gap-8 p-4 md:p-6 group shadow-xl"
                                     >
-                                        <div className="w-32 h-32 bg-[#111] rounded-2xl overflow-hidden flex-shrink-0 shadow-lg border border-white/5">
+                                        <div className="w-20 h-20 md:w-32 md:h-32 bg-[#111] rounded-xl md:rounded-2xl overflow-hidden flex-shrink-0 shadow-lg border border-white/5">
                                             {article.coverImage ? (
                                                 <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-dark-muted bg-[#111]">
-                                                    <FileText size={32} />
+                                                    <FileText size={20} className="md:w-[32px] md:h-[32px]" />
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex-1 space-y-3 py-2">
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-[9px] font-black text-brand-primary uppercase tracking-[0.2em] bg-brand-primary/10 px-2 py-1 rounded border border-brand-primary/20">{article.category}</span>
-                                                <span className="text-[8px] text-dark-muted font-bold uppercase tracking-widest opacity-40">{new Date(article.createdAt).toLocaleDateString()}</span>
+                                        <div className="flex-1 space-y-2 md:space-y-3 py-1">
+                                            <div className="flex items-center gap-2 md:gap-3">
+                                                <span className="text-[8px] md:text-[9px] font-black text-brand-primary uppercase tracking-[0.2em] bg-brand-primary/10 px-2 py-0.5 md:py-1 rounded border border-brand-primary/20">{article.category}</span>
+                                                <span className="text-[7px] md:text-[8px] text-dark-muted font-bold uppercase tracking-widest opacity-40">{new Date(article.createdAt).toLocaleDateString()}</span>
                                             </div>
-                                            <h3 className="text-lg font-bold text-white uppercase tracking-tight group-hover:text-brand-primary transition-colors line-clamp-1">{article.title}</h3>
-                                            <p className="text-[12px] text-dark-muted line-clamp-2 leading-relaxed opacity-70">
+                                            <h3 className="text-sm md:text-lg font-bold text-white uppercase tracking-tight group-hover:text-brand-primary transition-colors line-clamp-1">{article.title}</h3>
+                                            <p className="text-[11px] md:text-[12px] text-dark-muted line-clamp-2 leading-relaxed opacity-70">
                                                 {article.content.substring(0, 100).replace(/<[^>]*>/g, '')}...
                                             </p>
                                         </div>
@@ -681,9 +681,9 @@ const VideoTabs = ({ video, course, currentTime }) => {
                                 ))}
                             </div>
                         ) : (
-                            <div className="py-24 text-center bg-[#0a0a0a]/30 rounded-[3rem] border border-white/5 border-dashed">
-                                <PenTool className="mx-auto text-dark-muted opacity-20 mb-8" size={64} />
-                                <p className="text-dark-muted text-sm">No articles published yet</p>
+                            <div className="py-20 md:py-24 text-center bg-[#0a0a0a]/30 rounded-3xl md:rounded-[3rem] border border-white/5 border-dashed">
+                                <PenTool className="mx-auto text-dark-muted opacity-20 mb-6 md:mb-8 md:w-[64px] md:h-[64px]" size={48} />
+                                <p className="text-dark-muted text-xs md:text-sm uppercase tracking-widest opacity-40">No articles published yet</p>
                             </div>
                         )}
                     </div>

@@ -45,7 +45,7 @@ const GlobalCreateButton = ({ user }) => {
     if (allowedActions.length === 0) return null;
 
     return (
-        <div className="fixed bottom-24 right-6 z-40 md:bottom-8 md:right-8">
+        <div className="fixed bottom-24 right-4 z-40 md:bottom-8 md:right-8">
             <AnimatePresence>
                 {isOpen && (
                     <div className="absolute bottom-16 right-0 flex flex-col items-end gap-3 mb-4">
@@ -76,10 +76,10 @@ const GlobalCreateButton = ({ user }) => {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`p-4 rounded-full shadow-2xl shadow-brand-primary/30 transition-all duration-300 hover:scale-105 active:scale-95 ${isOpen ? 'bg-dark-layer2 text-white border border-white/20 rotate-45' : 'bg-brand-primary text-dark-bg'
+                className={`p-2 md:p-4 rounded-full shadow-2xl shadow-brand-primary/30 transition-all duration-300 hover:scale-105 active:scale-95 ${isOpen ? 'bg-dark-layer2 text-white border border-white/20 rotate-45' : 'bg-brand-primary text-dark-bg'
                     }`}
             >
-                {isOpen ? <Plus size={24} /> : <Plus size={24} className="stroke-[3px]" />}
+                {isOpen ? <Plus size={12} className="md:size-[24px]" /> : <Plus size={12} className="stroke-[3px] md:size-[24px] md:stroke-[3px]" />}
             </button>
         </div>
     );

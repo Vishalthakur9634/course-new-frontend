@@ -75,7 +75,7 @@ const NotificationCenter = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="absolute right-0 top-full mt-4 w-[400px] bg-dark-layer1 border border-white/10 rounded-[2.5rem] shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+        <div className="absolute right-[-12px] md:right-0 top-full mt-4 w-[calc(100vw-24px)] md:w-[400px] bg-dark-layer1 border border-white/10 rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-300">
             {/* Header */}
             <div className="p-6 border-b border-white/5 flex items-center justify-between bg-dark-layer2/50">
                 <div className="flex items-center gap-3">

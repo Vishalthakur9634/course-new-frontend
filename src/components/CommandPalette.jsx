@@ -107,15 +107,15 @@ const CommandPalette = ({ isOpen, onClose }) => {
             />
 
             {/* Palette Container */}
-            <div className="relative w-full max-w-2xl glass-panel rounded-[2rem] border-brand-primary/20 shadow-[0_0_80px_rgba(0,242,255,0.15)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="relative w-full max-w-xl glass-panel rounded-[1.5rem] md:rounded-[2rem] border-brand-primary/20 shadow-[0_0_80px_rgba(0,242,255,0.15)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                 {/* Search Input */}
                 <div className="flex items-center gap-4 p-6 border-b border-white/5 bg-white/5">
-                    <Command className="text-brand-primary animate-pulse" size={24} />
+                    <Command className="text-brand-primary animate-pulse flex-shrink-0" size={20} />
                     <input
                         ref={inputRef}
                         type="text"
                         placeholder="INPUT MISSION COMMAND OR SCAN SECTORS..."
-                        className="flex-1 bg-transparent border-none text-xl font-black text-white uppercase tracking-widest placeholder:text-dark-muted/30 outline-none"
+                        className="flex-1 bg-transparent border-none text-base md:text-xl font-black text-white uppercase tracking-widest placeholder:text-dark-muted/30 outline-none"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
@@ -137,26 +137,26 @@ const CommandPalette = ({ isOpen, onClose }) => {
                             {allItems.map((item, index) => (
                                 <button
                                     key={item.id + index}
-                                    className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${selectedIndex === index ? 'bg-brand-primary text-dark-bg shadow-lg shadow-brand-primary/20' : 'hover:bg-white/5 text-dark-muted hover:text-white'
+                                    className={`w-full flex items-center justify-between p-3 md:p-4 rounded-xl md:rounded-2xl transition-all ${selectedIndex === index ? 'bg-brand-primary text-dark-bg shadow-lg shadow-brand-primary/20' : 'hover:bg-white/5 text-dark-muted hover:text-white'
                                         }`}
                                     onClick={() => handleNavigate(item.path)}
                                     onMouseEnter={() => setSelectedIndex(index)}
                                 >
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${selectedIndex === index ? 'bg-dark-bg/20 border-dark-bg/20' : 'bg-dark-layer2 border-white/5'
+                                    <div className="flex items-center gap-3 md:gap-4">
+                                        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center border ${selectedIndex === index ? 'bg-dark-bg/20 border-dark-bg/20' : 'bg-dark-layer2 border-white/5'
                                             }`}>
-                                            {item.icon}
+                                            <item.icon.type {...item.icon.props} size={16} className="md:w-[18px] md:h-[18px]" />
                                         </div>
                                         <div className="text-left">
-                                            <div className={`text-sm font-black uppercase tracking-tight ${selectedIndex === index ? 'text-dark-bg' : 'text-white'}`}>
+                                            <div className={`text-[12px] md:text-sm font-black uppercase tracking-tight ${selectedIndex === index ? 'text-dark-bg' : 'text-white'}`}>
                                                 {item.title}
                                             </div>
-                                            <div className={`text-[10px] font-bold uppercase tracking-widest opacity-60`}>
+                                            <div className={`text-[8px] md:text-[10px] font-bold uppercase tracking-widest opacity-60`}>
                                                 {item.category}
                                             </div>
                                         </div>
                                     </div>
-                                    {selectedIndex === index && <Zap size={18} className="animate-bounce" />}
+                                    {selectedIndex === index && <Zap size={16} className="animate-bounce" />}
                                 </button>
                             ))}
 

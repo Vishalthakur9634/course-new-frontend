@@ -235,9 +235,9 @@ const Reels = () => {
             {user && (
                 <button
                     onClick={() => setShowUploadModal(true)}
-                    className="fixed bottom-24 md:bottom-10 right-6 w-14 h-14 rounded-[2rem] bg-brand-primary text-dark-bg flex items-center justify-center shadow-[0_8px_30px_rgba(255,161,22,0.4)] hover:scale-110 active:scale-90 transition-all z-50 pointer-events-auto"
+                    className="fixed bottom-40 md:bottom-10 right-6 w-7 h-7 rounded-xl bg-brand-primary text-dark-bg flex items-center justify-center shadow-[0_8px_30px_rgba(255,161,22,0.4)] hover:scale-110 active:scale-90 transition-all z-50 pointer-events-auto"
                 >
-                    <Plus size={28} strokeWidth={3} />
+                    <Plus size={14} strokeWidth={3} />
                 </button>
             )}
 
@@ -392,7 +392,7 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
             )}
 
             {/* Right Action Sidebar (IG Style) - Fixed on right for mobile, relative for desktop */}
-            <div className="absolute right-4 bottom-24 flex flex-col items-center gap-5 z-30 md:right-[calc(50%-260px)] pointer-events-none">
+            <div className="absolute right-4 bottom-40 md:bottom-24 flex flex-col items-center gap-5 z-30 md:right-[calc(50%-260px)] pointer-events-none">
                 <div className="flex flex-col items-center gap-1 pointer-events-auto">
                     <button
                         onClick={handleLike}
@@ -431,7 +431,7 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
             </div>
 
             {/* Bottom Content Area */}
-            <div className="absolute left-0 right-0 bottom-0 p-6 pb-8 bg-gradient-to-t from-black via-black/60 to-transparent z-30 md:max-w-[480px] md:mx-auto md:rounded-b-2xl pointer-events-none">
+            <div className="absolute left-0 right-0 bottom-[60px] md:bottom-0 p-6 pb-8 bg-gradient-to-t from-black via-black/60 to-transparent z-30 md:max-w-[480px] md:mx-auto md:rounded-b-2xl pointer-events-none">
                 <div className="space-y-4 pointer-events-auto max-w-[80%]">
                     {/* User Profile Hook */}
                     <div className="flex items-center gap-3">

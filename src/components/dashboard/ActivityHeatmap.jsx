@@ -36,25 +36,25 @@ const ActivityHeatmap = () => {
     };
 
     return (
-        <div className="glass-panel p-6 rounded-[2.5rem] border-white/5 space-y-4">
+        <div className="glass-panel p-5 md:p-6 rounded-2xl md:rounded-[2.5rem] border-white/5 space-y-4">
             <div className="flex justify-between items-center">
-                <h3 className="text-xs font-black text-dark-muted uppercase tracking-widest">Orbit Log</h3>
-                <div className="flex gap-1 text-[9px] font-bold text-dark-muted">
+                <h3 className="text-[10px] md:text-xs font-black text-dark-muted uppercase tracking-widest">Orbit Log</h3>
+                <div className="flex gap-0.5 md:gap-1 text-[7px] md:text-[9px] font-bold text-dark-muted">
                     <span>Less</span>
-                    <div className="w-2 h-2 bg-white/5 rounded-sm"></div>
-                    <div className="w-2 h-2 bg-brand-primary/30 rounded-sm"></div>
-                    <div className="w-2 h-2 bg-brand-primary/50 rounded-sm"></div>
-                    <div className="w-2 h-2 bg-brand-primary/80 rounded-sm"></div>
-                    <div className="w-2 h-2 bg-brand-primary rounded-sm"></div>
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white/5 rounded-sm"></div>
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-brand-primary/30 rounded-sm"></div>
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-brand-primary/50 rounded-sm"></div>
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-brand-primary/80 rounded-sm"></div>
+                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-brand-primary rounded-sm"></div>
                     <span>More</span>
                 </div>
             </div>
 
-            <div className="flex flex-wrap gap-1 justify-center md:justify-start">
+            <div className="flex flex-wrap gap-0.5 md:gap-1 justify-center md:justify-start">
                 {data.map((day, i) => (
                     <motion.div
                         key={i}
-                        className={`w-2.5 h-2.5 rounded-sm ${getColor(day.intensity)}`}
+                        className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-sm ${getColor(day.intensity)}`}
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.001 }}

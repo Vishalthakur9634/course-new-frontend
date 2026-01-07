@@ -43,53 +43,53 @@ const InstructorDashboard = () => {
     return (
         <div className="space-y-8 pb-12">
             {/* Hero */}
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 md:p-8 text-white shadow-2xl relative overflow-hidden">
                 <div className="relative z-10">
-                    <h1 className="text-4xl font-bold mb-3">Instructor Dashboard</h1>
-                    <p className="text-lg opacity-90">Manage your courses, track revenue, and grow your audience.</p>
+                    <h1 className="text-2xl md:text-4xl font-bold mb-2 md:mb-3">Instructor Dashboard</h1>
+                    <p className="text-sm md:text-lg opacity-90">Manage your courses, track revenue, and grow your audience.</p>
                 </div>
                 <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-1/4 translate-x-1/4">
-                    <TrendingUp size={300} />
+                    <TrendingUp size={200} className="md:w-[300px] md:h-[300px]" />
                 </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-6 hover:border-blue-500 transition-colors group">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-5 md:p-6 hover:border-blue-500 transition-colors group">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="text-dark-muted font-medium">Total Courses</span>
+                        <span className="text-dark-muted font-medium text-sm">Total Courses</span>
                         <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                            <BookOpen size={24} />
+                            <BookOpen size={20} className="md:w-6 md:h-6" />
                         </div>
                     </div>
-                    <p className="text-3xl font-bold text-white">{stats?.totalCourses || 0}</p>
+                    <p className="text-2xl md:text-3xl font-bold text-white">{stats?.totalCourses || 0}</p>
                 </div>
-                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-6 hover:border-green-500 transition-colors group">
+                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-5 md:p-6 hover:border-green-500 transition-colors group">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="text-dark-muted font-medium">Total Students</span>
+                        <span className="text-dark-muted font-medium text-sm">Total Students</span>
                         <div className="p-2 bg-green-500/10 rounded-lg text-green-400 group-hover:bg-green-500 group-hover:text-white transition-colors">
-                            <Users size={24} />
+                            <Users size={20} className="md:w-6 md:h-6" />
                         </div>
                     </div>
-                    <p className="text-3xl font-bold text-white">{stats?.totalStudents || 0}</p>
+                    <p className="text-2xl md:text-3xl font-bold text-white">{stats?.totalStudents || 0}</p>
                 </div>
-                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-6 hover:border-yellow-500 transition-colors group">
+                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-5 md:p-6 hover:border-yellow-500 transition-colors group">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="text-dark-muted font-medium">Total Revenue</span>
+                        <span className="text-dark-muted font-medium text-sm">Total Revenue</span>
                         <div className="p-2 bg-yellow-500/10 rounded-lg text-yellow-400 group-hover:bg-yellow-500 group-hover:text-white transition-colors">
-                            <DollarSign size={24} />
+                            <DollarSign size={20} className="md:w-6 md:h-6" />
                         </div>
                     </div>
-                    <p className="text-3xl font-bold text-white">${stats?.totalRevenue?.toFixed(2) || 0}</p>
+                    <p className="text-2xl md:text-3xl font-bold text-white">${stats?.totalRevenue?.toFixed(2) || 0}</p>
                 </div>
-                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-6 hover:border-purple-500 transition-colors group">
+                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-5 md:p-6 hover:border-purple-500 transition-colors group">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="text-dark-muted font-medium">Avg Rating</span>
+                        <span className="text-dark-muted font-medium text-sm">Avg Rating</span>
                         <div className="p-2 bg-purple-500/10 rounded-lg text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
-                            <TrendingUp size={24} />
+                            <TrendingUp size={20} className="md:w-6 md:h-6" />
                         </div>
                     </div>
-                    <p className="text-3xl font-bold text-white">
+                    <p className="text-2xl md:text-3xl font-bold text-white">
                         {stats?.courses?.length > 0
                             ? (stats.courses.reduce((acc, curr) => acc + (curr.rating || 0), 0) / stats.courses.length).toFixed(1)
                             : '0.0'}
@@ -98,13 +98,13 @@ const InstructorDashboard = () => {
             </div>
 
             {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                 {/* Revenue Chart */}
-                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-6">
-                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <BarChart2 className="text-brand-primary" /> Revenue Trend
+                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-5 md:p-6">
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <BarChart2 className="text-brand-primary" size={20} /> Revenue Trend
                     </h3>
-                    <div className="h-64 flex items-end justify-between gap-2">
+                    <div className="h-48 md:h-64 flex items-end justify-between gap-2">
                         {analytics?.revenueTrend?.length > 0 ? analytics.revenueTrend.map((item, idx) => {
                             const height = (item.revenue / getMaxRevenue()) * 100;
                             return (
@@ -115,7 +115,7 @@ const InstructorDashboard = () => {
                                             style={{ height: `${height}%` }}
                                         ></div>
                                     </div>
-                                    <span className="text-xs text-dark-muted">{item.month.split('-')[1]}</span>
+                                    <span className="text-[10px] md:text-xs text-dark-muted">{item.month.split('-')[1]}</span>
                                     {/* Tooltip */}
                                     <div className="absolute bottom-full mb-2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                         ${item.revenue}
@@ -123,17 +123,17 @@ const InstructorDashboard = () => {
                                 </div>
                             );
                         }) : (
-                            <div className="w-full h-full flex items-center justify-center text-dark-muted">No revenue data yet</div>
+                            <div className="w-full h-full flex items-center justify-center text-dark-muted text-sm">No revenue data yet</div>
                         )}
                     </div>
                 </div>
 
                 {/* Enrollment Chart */}
-                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-6">
-                    <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <Users className="text-green-400" /> Enrollment Trend
+                <div className="bg-dark-layer1 border border-dark-layer2 rounded-xl p-5 md:p-6">
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <Users className="text-green-400" size={20} /> Enrollment Trend
                     </h3>
-                    <div className="h-64 flex items-end justify-between gap-2">
+                    <div className="h-48 md:h-64 flex items-end justify-between gap-2">
                         {analytics?.enrollmentTrend?.length > 0 ? analytics.enrollmentTrend.map((item, idx) => {
                             const height = (item.enrollments / getMaxEnrollments()) * 100;
                             return (
@@ -144,7 +144,7 @@ const InstructorDashboard = () => {
                                             style={{ height: `${height}%` }}
                                         ></div>
                                     </div>
-                                    <span className="text-xs text-dark-muted">{item.month.split('-')[1]}</span>
+                                    <span className="text-[10px] md:text-xs text-dark-muted">{item.month.split('-')[1]}</span>
                                     {/* Tooltip */}
                                     <div className="absolute bottom-full mb-2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                         {item.enrollments} Students
@@ -152,7 +152,7 @@ const InstructorDashboard = () => {
                                 </div>
                             );
                         }) : (
-                            <div className="w-full h-full flex items-center justify-center text-dark-muted">No enrollment data yet</div>
+                            <div className="w-full h-full flex items-center justify-center text-dark-muted text-sm">No enrollment data yet</div>
                         )}
                     </div>
                 </div>
@@ -160,19 +160,19 @@ const InstructorDashboard = () => {
 
             {/* Quick Actions */}
             <div className="flex gap-4 flex-wrap">
-                <Link to="/instructor/courses" className="bg-brand-primary text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 flex items-center gap-2 shadow-lg shadow-brand-primary/20">
-                    <Plus size={20} />
+                <Link to="/instructor/courses" className="flex-1 md:flex-none bg-brand-primary text-white px-4 md:px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 flex items-center justify-center md:justify-start gap-2 shadow-lg shadow-brand-primary/20 text-xs md:text-base">
+                    <Plus size={10} className="md:size-[20px]" />
                     Create New Course
                 </Link>
-                <Link to="/instructor/upload" className="bg-dark-layer1 border border-dark-layer2 text-white px-6 py-3 rounded-lg font-bold hover:bg-dark-layer2 flex items-center gap-2">
+                <Link to="/instructor/upload" className="flex-1 md:flex-none bg-dark-layer1 border border-dark-layer2 text-white px-6 py-3 rounded-lg font-bold hover:bg-dark-layer2 flex items-center justify-center md:justify-start gap-2 text-sm md:text-base">
                     <Upload size={20} />
                     Upload Content
                 </Link>
-                <Link to="/instructor/live" className="bg-dark-layer1 border border-dark-layer2 text-white px-6 py-3 rounded-lg font-bold hover:bg-dark-layer2 flex items-center gap-2">
+                <Link to="/instructor/live" className="flex-1 md:flex-none bg-dark-layer1 border border-dark-layer2 text-white px-6 py-3 rounded-lg font-bold hover:bg-dark-layer2 flex items-center justify-center md:justify-start gap-2 text-sm md:text-base">
                     <Video size={20} />
                     Live Session
                 </Link>
-                <Link to="/instructor/practice" className="bg-dark-layer1 border border-dark-layer2 text-white px-6 py-3 rounded-lg font-bold hover:bg-dark-layer2 flex items-center gap-2">
+                <Link to="/instructor/practice" className="flex-1 md:flex-none bg-dark-layer1 border border-dark-layer2 text-white px-6 py-3 rounded-lg font-bold hover:bg-dark-layer2 flex items-center justify-center md:justify-start gap-2 text-sm md:text-base">
                     <FileText size={20} />
                     Daily Practice
                 </Link>

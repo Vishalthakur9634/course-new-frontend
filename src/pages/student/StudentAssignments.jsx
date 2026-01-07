@@ -115,11 +115,11 @@ const StudentAssignments = () => {
             {/* Header Content */}
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-5xl font-black text-white italic tracking-tighter">My Tasks</h1>
+                    <h1 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter">My Tasks</h1>
                     <p className="text-dark-muted font-black uppercase tracking-[0.3em] text-[10px] mt-2 ml-1">Academic Performance Hub</p>
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex gap-4 w-full md:w-auto">
                     <select
                         value={selectedCourse?._id}
                         onChange={(e) => {
@@ -127,7 +127,7 @@ const StudentAssignments = () => {
                             setSelectedCourse(course);
                             if (course?._id) fetchAssignments(course._id);
                         }}
-                        className="bg-dark-layer1 border border-white/10 rounded-2xl px-6 py-4 text-white font-black text-xs uppercase tracking-widest focus:ring-2 focus:ring-brand-primary focus:outline-none shadow-xl"
+                        className="w-full md:w-auto bg-dark-layer1 border border-white/10 rounded-2xl px-6 py-4 text-white font-black text-xs uppercase tracking-widest focus:ring-2 focus:ring-brand-primary focus:outline-none shadow-xl"
                     >
                         {courses && courses.length > 0 && courses.filter(Boolean).map(course => (
                             <option key={course?._id} value={course?._id}>{course?.title}</option>
@@ -137,17 +137,17 @@ const StudentAssignments = () => {
             </header>
 
             {/* Assignments Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
                 {assignments.map(ass => {
                     const submission = submissions[ass._id];
                     const isDue = new Date(ass.dueDate) < new Date() && !submission;
 
                     return (
-                        <div key={ass._id} className="bg-dark-layer1 rounded-[3rem] p-10 border border-white/5 relative group hover:border-brand-primary/20 transition-all overflow-hidden">
-                            <div className="absolute top-0 right-0 p-8">
+                        <div key={ass._id} className="bg-dark-layer1 rounded-[2.5rem] p-6 md:p-10 border border-white/5 relative group hover:border-brand-primary/20 transition-all overflow-hidden">
+                            <div className="absolute top-0 right-0 p-6 md:p-8">
                                 {submission ? (
                                     <div className="flex flex-col items-end">
-                                        <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${submission.status === 'Graded' ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'bg-yellow-500 text-dark-bg shadow-lg shadow-yellow-500/20'
+                                        <div className={`px-3 py-1 md:px-4 md:py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${submission.status === 'Graded' ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'bg-yellow-500 text-dark-bg shadow-lg shadow-yellow-500/20'
                                             }`}>
                                             {submission.status === 'Graded' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
                                             {submission.status}
@@ -157,27 +157,27 @@ const StudentAssignments = () => {
                                         )}
                                     </div>
                                 ) : isDue ? (
-                                    <div className="px-4 py-1.5 bg-red-500/20 text-red-500 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                                    <div className="px-3 py-1 md:px-4 md:py-1.5 bg-red-500/20 text-red-500 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
                                         <AlertCircle size={12} /> Overdue
                                     </div>
                                 ) : (
-                                    <div className="px-4 py-1.5 bg-brand-primary/10 text-brand-primary rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                                    <div className="px-3 py-1 md:px-4 md:py-1.5 bg-brand-primary/10 text-brand-primary rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
                                         <Clock size={12} /> Pending
                                     </div>
                                 )}
                             </div>
 
                             <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <h2 className="text-3xl font-black text-white">{ass.title}</h2>
-                                    <div className="flex items-center gap-4 text-xs font-bold text-dark-muted uppercase tracking-widest">
+                                <div className="space-y-2 mt-8 md:mt-0">
+                                    <h2 className="text-2xl md:text-3xl font-black text-white">{ass.title}</h2>
+                                    <div className="flex items-center gap-4 text-[10px] md:text-xs font-bold text-dark-muted uppercase tracking-widest">
                                         <span className="flex items-center gap-1.5"><Calendar size={14} className="text-brand-primary" /> {new Date(ass.dueDate).toLocaleDateString()}</span>
                                         <span className="flex items-center gap-1.5"><Award size={14} className="text-purple-500" /> {ass.points} Points</span>
                                     </div>
                                 </div>
 
-                                <div className="bg-white/[0.02] p-6 rounded-3xl border border-white/5">
-                                    <p className="text-dark-muted font-medium leading-relaxed italic line-clamp-3">
+                                <div className="bg-white/[0.02] p-4 md:p-6 rounded-3xl border border-white/5">
+                                    <p className="text-dark-muted font-medium leading-relaxed italic line-clamp-3 text-sm">
                                         {ass.description}
                                     </p>
                                 </div>
@@ -193,18 +193,18 @@ const StudentAssignments = () => {
                                     </a>
                                 )}
 
-                                <div className="pt-6 border-t border-white/5">
+                                <div className="pt-4 md:pt-6 border-t border-white/5">
                                     {!submission ? (
                                         <button
                                             onClick={() => setShowSubmitModal(ass)}
-                                            className="w-full py-5 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-xs hover:bg-brand-primary hover:text-dark-bg transition-all flex items-center justify-center gap-3"
+                                            className="w-full py-4 md:py-5 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-xs hover:bg-brand-primary hover:text-dark-bg transition-all flex items-center justify-center gap-3"
                                         >
                                             <ArrowUpCircle size={20} /> Deploy Solution
                                         </button>
                                     ) : (
                                         <div className="space-y-4">
                                             {submission.status === 'Graded' && (
-                                                <div className="bg-brand-primary/5 p-6 rounded-3xl border border-brand-primary/20 space-y-3">
+                                                <div className="bg-brand-primary/5 p-4 md:p-6 rounded-3xl border border-brand-primary/20 space-y-3">
                                                     <h4 className="flex items-center gap-2 text-[10px] font-black text-brand-primary uppercase tracking-widest">
                                                         <MessageSquare size={14} /> Instructor Feedback
                                                     </h4>
@@ -228,12 +228,12 @@ const StudentAssignments = () => {
                 })}
 
                 {assignments.length === 0 && (
-                    <div className="lg:col-span-2 py-40 bg-dark-layer1 rounded-[4rem] border border-dashed border-white/10 flex flex-col items-center justify-center text-center px-10">
-                        <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5 shadow-inner">
-                            <BookOpen size={48} className="text-dark-muted" />
+                    <div className="lg:col-span-2 py-20 md:py-40 bg-dark-layer1 rounded-[3rem] md:rounded-[4rem] border border-dashed border-white/10 flex flex-col items-center justify-center text-center px-6 md:px-10">
+                        <div className="w-20 h-20 md:w-24 md:h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5 shadow-inner">
+                            <BookOpen size={32} className="text-dark-muted md:w-[48px] md:h-[48px]" />
                         </div>
-                        <h3 className="text-3xl font-black text-white italic mb-4">No Tasks Assigned</h3>
-                        <p className="text-dark-muted font-medium max-w-md">Your instructor hasn't posted any assignments for this course yet. Check back soon for new challenges!</p>
+                        <h3 className="text-2xl md:text-3xl font-black text-white italic mb-4">No Tasks Assigned</h3>
+                        <p className="text-dark-muted font-medium max-w-md text-sm md:text-base">Your instructor hasn't posted any assignments for this course yet.</p>
                     </div>
                 )}
             </div>
@@ -242,7 +242,7 @@ const StudentAssignments = () => {
             {showSubmitModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={() => setShowSubmitModal(null)}></div>
-                    <form onSubmit={handleSubmit} className="relative w-full max-w-xl bg-dark-layer1 border border-white/10 rounded-[3.5rem] p-12 shadow-3xl space-y-8 animate-in zoom-in-95 duration-300">
+                    <form onSubmit={handleSubmit} className="relative w-full max-w-xl bg-dark-layer1 border border-white/10 rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-12 shadow-3xl space-y-6 md:space-y-8 animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh]">
                         <header>
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-4 bg-brand-primary/10 rounded-3xl text-brand-primary">

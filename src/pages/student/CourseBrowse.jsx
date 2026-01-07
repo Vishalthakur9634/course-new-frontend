@@ -132,12 +132,12 @@ const CourseBrowse = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-bg pb-20 pt-24 px-4 md:px-8 max-w-[1600px] mx-auto">
+        <div className="min-h-screen bg-dark-bg pb-28 pt-24 px-4 md:px-8 max-w-[1600px] mx-auto">
 
             {/* Header & Search */}
-            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 mb-12">
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 mb-6 md:mb-12">
                 <div>
-                    <h1 className="text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase mb-2">
+                    <h1 className="text-3xl md:text-6xl font-black text-white italic tracking-tighter uppercase mb-2">
                         Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-purple-500">Universe</span>
                     </h1>
                     <p className="text-dark-muted font-bold text-sm tracking-widest uppercase">

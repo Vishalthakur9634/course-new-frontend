@@ -287,11 +287,11 @@ const AppLayout = ({ children }) => {
                         />
                     </ResizablePanel>
                 )}
-                <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 flex flex-col min-h-0 custom-scrollbar relative">
+                <main className="flex-1 overflow-y-auto p-1 md:p-8 pb-24 md:pb-8 flex flex-col min-h-0 custom-scrollbar relative">
                     {children}
                 </main>
             </div>
-            {user && <MobileNav user={user} />}
+            {/* MobileNav removed in favor of Navbar bottom bar */}
             {user && <GlobalCreateButton user={user} />}
             <CommandPalette
                 isOpen={isCommandPaletteOpen}

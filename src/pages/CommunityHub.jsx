@@ -112,7 +112,7 @@ const CommunityHub = () => {
     };
 
     return (
-        <div className="fixed inset-0 top-[64px] bg-[#0a0a0a] font-inter overflow-hidden flex flex-col text-gray-300">
+        <div className="fixed inset-0 top-[64px] bg-[#0a0a0a] font-inter overflow-hidden flex flex-col text-gray-300 pb-20 md:pb-0">
             {/* Ambient Lighting */}
             <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-brand-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -178,34 +178,34 @@ const CommunityHub = () => {
                     <motion.header
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mb-10 flex flex-col md:flex-row items-end md:items-center justify-between gap-6"
+                        className="mb-6 md:mb-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 px-4 md:px-0"
                     >
-                        <div className="space-y-2">
-                            <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none italic">
+                        <div className="space-y-1 md:space-y-2">
+                            <h2 className="text-2xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none italic">
                                 {selectedCommunity?.name || 'Global'} <span className="text-brand-primary">Archive</span>
                             </h2>
-                            <div className="flex items-center gap-3">
-                                <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] animate-pulse"></div>
-                                <span className="text-[10px] font-black text-dark-muted uppercase tracking-[0.3em] opacity-40">Intelligence Retrieval Matrix Feed</span>
+                            <div className="flex items-center gap-2 md:gap-3">
+                                <div className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] animate-pulse"></div>
+                                <span className="text-[8px] md:text-[10px] font-black text-dark-muted uppercase tracking-[0.2em] md:tracking-[0.3em] opacity-40">Intelligence Retrieval Matrix Feed</span>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-3 w-full md:w-auto">
                             <div className="relative flex-1 md:flex-none">
-                                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-dark-muted" size={16} />
+                                <Search size={14} className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-dark-muted md:w-4 md:h-4" />
                                 <input
                                     type="text"
                                     placeholder="SEARCH ARCHIVE..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="bg-[#111] border border-white/5 rounded-xl py-3.5 pl-14 pr-6 text-[10px] font-black text-white placeholder:text-dark-muted uppercase tracking-widest focus:outline-none focus:border-brand-primary/30 transition-all w-full md:w-80 shadow-2xl"
+                                    className="bg-[#111] border border-white/5 rounded-xl py-3 md:py-3.5 pl-10 md:pl-14 pr-4 md:pr-6 text-[8px] md:text-[10px] font-black text-white placeholder:text-dark-muted uppercase tracking-widest focus:outline-none focus:border-brand-primary/30 transition-all w-full md:w-80 shadow-2xl"
                                 />
                             </div>
                             <button
                                 onClick={() => setShowCreatePost(true)}
-                                className="bg-brand-primary text-dark-bg p-3.5 rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-brand-primary/10 border border-brand-primary/20"
+                                className="bg-brand-primary text-dark-bg p-1.5 md:p-3.5 rounded-lg md:rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-brand-primary/10 border border-brand-primary/20"
                             >
-                                <Plus size={24} />
+                                <Plus size={10} className="md:w-6 md:h-6" />
                             </button>
                         </div>
                     </motion.header>
@@ -226,7 +226,7 @@ const CommunityHub = () => {
                         ))}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar no-scrollbar pr-2 pb-12 space-y-10">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar no-scrollbar pr-2 pb-32 space-y-10">
                         {loading ? (
                             <div className="flex flex-col items-center justify-center py-40 gap-6">
                                 <div className="w-10 h-10 border-2 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin"></div>
@@ -381,7 +381,7 @@ const CommunityHub = () => {
                                 } catch (error) { console.error('Transmission fail'); }
                                 finally { setIsUploading(false); }
                             }}
-                            className="relative w-full max-w-2xl bg-[#141414] border border-white/10 rounded-[2.5rem] p-10 md:p-14 shadow-3xl space-y-10 max-h-[90vh] overflow-y-auto no-scrollbar"
+                            className="relative w-full max-w-2xl bg-[#141414] border border-white/10 rounded-[2.5rem] p-6 md:p-14 shadow-3xl space-y-10 max-h-[90vh] overflow-y-auto no-scrollbar"
                         >
                             <header className="flex justify-between items-start">
                                 <div className="space-y-2">

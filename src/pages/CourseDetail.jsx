@@ -16,7 +16,7 @@ const CourseDetail = () => {
     const [activeVideo, setActiveVideo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [progressMap, setProgressMap] = useState({});
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
     const [videoTime, setVideoTime] = useState(0);
 
     const [hasAccess, setHasAccess] = useState(false);
@@ -39,6 +39,17 @@ const CourseDetail = () => {
         }
 
         fetchCourseData();
+
+        // Handle resize for sidebar
+        const handleResize = () => {
+            if (window.innerWidth >= 768) {
+                setSidebarOpen(true);
+            } else {
+                setSidebarOpen(false);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, [id]);
 
     const checkWishlistStatus = async (userId) => {
@@ -115,6 +126,9 @@ const CourseDetail = () => {
     const handleVideoSelect = (video) => {
         if (!hasAccess) return;
         setActiveVideo(video);
+        if (window.innerWidth < 768) {
+            setSidebarOpen(false);
+        }
     };
 
     const handleProgress = async (currentTime, duration) => {
@@ -148,14 +162,13 @@ const CourseDetail = () => {
         fetchCourseData();
     };
 
-    const [sidebarWidth, setSidebarWidth] = useState(380);
     const [videoHeight, setVideoHeight] = useState(65);
 
     if (loading) return <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a] text-white font-bold uppercase tracking-widest text-[10px]">Analyzing Curriculum Matrix...</div>;
     if (!course) return <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a] text-white font-bold uppercase tracking-widest text-[10px]">Course Not Found</div>;
 
     return (
-        <div className="flex h-screen bg-[#0a0a0a] relative font-inter text-white overflow-hidden">
+        <div className="flex flex-col md:flex-row h-screen bg-[#0a0a0a] relative font-inter text-white overflow-hidden">
             {showPaymentModal && (
                 <PaymentModal
                     course={course}
@@ -165,9 +178,9 @@ const CourseDetail = () => {
             )}
 
             {/* HIGH-FIDELITY CONTENT AREA */}
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
                 {/* STRATEGIC VIDEO PLAYER */}
-                <div className="bg-black w-full relative flex-shrink-0 flex items-center justify-center aspect-video md:aspect-auto" style={{ height: `${videoHeight}vh` }}>
+                <div className={`bg-black w-full relative flex-shrink-0 flex items-center justify-center aspect-video md:aspect-auto`} style={{ height: window.innerWidth >= 768 ? `${videoHeight}vh` : 'auto' }}>
                     {hasAccess ? (
                         activeVideo ? (
                             <VideoPlayer
@@ -179,32 +192,32 @@ const CourseDetail = () => {
                             <div className="text-dark-muted font-bold text-[10px] uppercase tracking-[0.4em] opacity-30">Select a syllabus module to begin</div>
                         )
                     ) : (
-                        <div className="absolute inset-0 bg-[#0a0a0a] flex flex-col items-center justify-center p-8 text-center">
-                            <div className="bg-[#141414] p-12 rounded-[2.5rem] border border-white/5 max-w-xl w-full shadow-3xl space-y-8 relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-[#0a0a0a] flex flex-col items-center justify-center p-4 md:p-8 text-center">
+                            <div className="bg-[#141414] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border border-white/5 max-w-xl w-full shadow-3xl space-y-6 md:space-y-8 relative overflow-hidden group">
                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-primary to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
-                                <div className="w-20 h-20 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary mx-auto border border-brand-primary/20 shadow-xl">
-                                    <Lock size={36} />
+                                <div className="w-16 h-16 md:w-20 md:h-20 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary mx-auto border border-brand-primary/20 shadow-xl">
+                                    <Lock size={32} className="md:w-9 md:h-9" />
                                 </div>
-                                <div className="space-y-3">
-                                    <h2 className="text-4xl font-bold uppercase tracking-tight">Access Restricted</h2>
-                                    <p className="text-dark-muted text-[11px] font-bold uppercase tracking-widest opacity-60">Professional Enrollment Required to Access Curriculum</p>
-                                </div>
-
-                                <div className="py-8 border-y border-white/5 space-y-2">
-                                    <p className="text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] opacity-40">Program Investment</p>
-                                    <p className="text-6xl font-bold text-white tracking-tighter">${course.price}</p>
+                                <div className="space-y-2 md:space-y-3">
+                                    <h2 className="text-2xl md:text-4xl font-bold uppercase tracking-tight">Access Restricted</h2>
+                                    <p className="text-dark-muted text-[10px] md:text-[11px] font-bold uppercase tracking-widest opacity-60">Professional Enrollment Required to Access Curriculum</p>
                                 </div>
 
-                                <div className="flex flex-col sm:flex-row gap-5 pt-4">
+                                <div className="py-6 md:py-8 border-y border-white/5 space-y-2">
+                                    <p className="text-[9px] md:text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] opacity-40">Program Investment</p>
+                                    <p className="text-4xl md:text-6xl font-bold text-white tracking-tighter">${course.price}</p>
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row gap-4 md:gap-5 pt-4">
                                     <button
                                         onClick={() => setShowPaymentModal(true)}
-                                        className="flex-1 bg-brand-primary hover:brightness-110 text-dark-bg font-bold py-5 rounded-2xl text-[11px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-brand-primary/20"
+                                        className="flex-1 bg-brand-primary hover:brightness-110 text-dark-bg font-bold py-4 md:py-5 rounded-2xl text-[10px] md:text-[11px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-brand-primary/20"
                                     >
                                         Execute Enrollment
                                     </button>
                                     <button
                                         onClick={toggleWishlist}
-                                        className={`px-8 rounded-2xl border transition-all flex items-center justify-center ${isWishlisted
+                                        className={`px-8 py-4 md:py-0 rounded-2xl border transition-all flex items-center justify-center ${isWishlisted
                                             ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
                                             : 'border-white/10 hover:border-brand-primary/40 text-white bg-[#0a0a0a]'
                                             }`}
@@ -213,12 +226,12 @@ const CourseDetail = () => {
                                     </button>
                                 </div>
 
-                                <div className="flex items-center justify-center gap-8 pt-4">
-                                    <div className="flex items-center gap-2.5 text-[9px] font-bold text-dark-muted uppercase tracking-widest">
-                                        <ShieldCheck size={16} className="text-green-500" /> Secure Registry
+                                <div className="flex items-center justify-center gap-4 md:gap-8 pt-4">
+                                    <div className="flex items-center gap-2.5 text-[8px] md:text-[9px] font-bold text-dark-muted uppercase tracking-widest">
+                                        <ShieldCheck size={14} className="text-green-500 md:w-4 md:h-4" /> Secure Registry
                                     </div>
-                                    <div className="flex items-center gap-2.5 text-[9px] font-bold text-dark-muted uppercase tracking-widest">
-                                        <Award size={16} className="text-brand-primary" /> Verified Credential
+                                    <div className="flex items-center gap-2.5 text-[8px] md:text-[9px] font-bold text-dark-muted uppercase tracking-widest">
+                                        <Award size={14} className="text-brand-primary md:w-4 md:h-4" /> Verified Credential
                                     </div>
                                 </div>
                             </div>
@@ -227,9 +240,9 @@ const CourseDetail = () => {
                 </div>
 
                 {/* DOMAIN DETAILS MATRIX */}
-                <div className="flex-1 overflow-y-auto p-12 space-y-16 custom-scrollbar">
-                    <header className="flex flex-col md:flex-row md:items-start justify-between gap-10 pb-12 border-b border-white/5">
-                        <div className="space-y-6 max-w-4xl">
+                <div className="flex-1 overflow-y-auto p-4 md:p-12 space-y-8 md:space-y-16 custom-scrollbar pb-24 md:pb-12">
+                    <header className="flex flex-col md:flex-row md:items-start justify-between gap-6 md:gap-10 pb-8 md:pb-12 border-b border-white/5">
+                        <div className="space-y-4 md:space-y-6 max-w-4xl">
                             <div className="flex items-center gap-4">
                                 <span className="px-3 py-1 bg-brand-primary/10 text-brand-primary border border-brand-primary/20 rounded-lg text-[10px] font-bold uppercase tracking-widest">
                                     {course.category || 'Strategic Track'}
@@ -238,8 +251,8 @@ const CourseDetail = () => {
                                     <Users size={14} className="text-brand-primary" /> {course.enrollmentCount || 0} Domain Learners
                                 </div>
                             </div>
-                            <h1 className="text-5xl font-bold uppercase tracking-tighter leading-none text-white">{course.title}</h1>
-                            <p className="text-dark-muted text-[13px] font-medium leading-loose opacity-70 max-w-2xl">{course.description}</p>
+                            <h1 className="text-3xl md:text-5xl font-bold uppercase tracking-tighter leading-none text-white">{course.title}</h1>
+                            <p className="text-dark-muted text-xs md:text-[13px] font-medium leading-loose opacity-70 max-w-2xl">{course.description}</p>
                         </div>
                         <div className="flex items-center gap-4">
                             <button
@@ -249,15 +262,15 @@ const CourseDetail = () => {
                                     navigator.clipboard.writeText(shareLink);
                                     alert('Link copied to clipboard!');
                                 }}
-                                className="p-4 rounded-2xl bg-[#141414] border border-white/5 text-dark-muted hover:text-brand-primary hover:border-brand-primary/40 transition-all shadow-xl"
+                                className="p-3 md:p-4 rounded-2xl bg-[#141414] border border-white/5 text-dark-muted hover:text-brand-primary hover:border-brand-primary/40 transition-all shadow-xl"
                             >
                                 <Share2 size={24} />
                             </button>
                         </div>
                     </header>
 
-                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-16">
-                        <div className="xl:col-span-2 space-y-16">
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 md:gap-16">
+                        <div className="xl:col-span-2 space-y-8 md:space-y-16">
                             {hasAccess && activeVideo && (
                                 <VideoTabs
                                     video={activeVideo}
@@ -266,17 +279,17 @@ const CourseDetail = () => {
                                 />
                             )}
 
-                            <div className="bg-[#141414] p-10 rounded-[2.5rem] border border-white/5 shadow-2xl space-y-8">
+                            <div className="bg-[#141414] p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border border-white/5 shadow-2xl space-y-6 md:space-y-8">
                                 <div className="flex items-center gap-4">
                                     <div className="p-2.5 bg-brand-primary/10 rounded-xl border border-brand-primary/20">
                                         <Activity size={20} className="text-brand-primary" />
                                     </div>
-                                    <h3 className="text-xl font-bold uppercase tracking-tight text-white">Validation Performance</h3>
+                                    <h3 className="text-lg md:text-xl font-bold uppercase tracking-tight text-white">Validation Performance</h3>
                                 </div>
-                                <div className="space-y-6">
+                                <div className="space-y-4 md:space-y-6">
                                     <div className="flex justify-between items-end text-[10px] font-bold uppercase tracking-[0.3em]">
                                         <span className="text-dark-muted opacity-40">Completion Matrix Rate</span>
-                                        <span className="text-3xl font-black text-brand-primary tracking-tighter">
+                                        <span className="text-2xl md:text-3xl font-black text-brand-primary tracking-tighter">
                                             {Math.round((Object.values(progressMap).filter(p => p.completed).length / (course.videos.length || 1)) * 100)}%
                                         </span>
                                     </div>
@@ -295,7 +308,8 @@ const CourseDetail = () => {
                             <Reviews courseId={id} />
                         </div>
 
-                        <aside className="space-y-12">
+                        <aside className="space-y-12 hidden xl:block">
+                            {/* Desktop specific aside content if any */}
                         </aside>
                     </div>
                 </div>
@@ -303,25 +317,25 @@ const CourseDetail = () => {
 
             {/* SYLLABUS MATRIX SIDEBAR */}
             <div
-                className={`fixed inset-y-0 right-0 z-40 transform ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'} md:relative md:translate-x-0 transition-all duration-700 ease-in-out bg-[#0a0a0a] border-l border-white/5 flex flex-col shadow-[20px_0_60px_rgba(0,0,0,0.8)]`}
-                style={{ width: sidebarOpen ? sidebarWidth : 0 }}
+                className={`fixed inset-y-0 right-0 z-[60] bg-[#0a0a0a] border-l border-white/5 flex flex-col shadow-[20px_0_60px_rgba(0,0,0,0.8)] transition-all duration-500 ease-in-out pt-20 md:pt-0 ${sidebarOpen ? 'translate-x-0 w-full md:w-[380px]' : 'translate-x-full w-full md:w-[380px]'}`}
             >
-                <div className="p-10 border-b border-white/5 flex justify-between items-center bg-[#141414]/30">
+                <div className="p-6 md:p-10 border-b border-white/5 flex justify-between items-center bg-[#141414]/30">
                     <div className="space-y-1">
                         <h3 className="text-xs font-bold text-white uppercase tracking-[0.4em]">Syllabus <span className="text-brand-primary">Matrix</span></h3>
                         <p className="text-[9px] font-bold text-dark-muted uppercase tracking-widest opacity-40">{course.videos.length} Modules Registered</p>
                     </div>
-                    <button onClick={() => setSidebarOpen(false)} className="md:hidden p-3 bg-white/5 rounded-xl text-dark-muted">
+                    <button onClick={() => setSidebarOpen(false)} className="md:hidden p-3 bg-white/5 rounded-xl text-dark-muted hover:text-white">
                         <X size={20} />
                     </button>
+                    {/* Desktop Collapse Button could go here */}
                 </div>
 
-                <div className="flex-1 overflow-y-auto no-scrollbar py-6">
+                <div className="flex-1 overflow-y-auto no-scrollbar py-4 md:py-6">
                     {course.videos.map((video, index) => (
                         <div
                             key={video._id}
                             onClick={() => handleVideoSelect(video)}
-                            className={`px-8 py-8 border-b border-white/5 cursor-pointer transition-all flex gap-5 relative group ${activeVideo?._id === video._id ? 'bg-brand-primary/5' : 'hover:bg-white/[0.03]'
+                            className={`px-6 md:px-8 py-6 md:py-8 border-b border-white/5 cursor-pointer transition-all flex gap-5 relative group ${activeVideo?._id === video._id ? 'bg-brand-primary/5' : 'hover:bg-white/[0.03]'
                                 } ${!hasAccess ? 'opacity-30 grayscale cursor-not-allowed' : ''}`}
                         >
                             {activeVideo?._id === video._id && (
@@ -365,7 +379,7 @@ const CourseDetail = () => {
             {/* Mobile Nav Toggle */}
             <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="md:hidden absolute bottom-24 right-6 z-50 bg-brand-primary text-dark-bg p-4 rounded-full shadow-2xl"
+                className="md:hidden absolute bottom-6 right-6 z-50 bg-brand-primary text-dark-bg p-4 rounded-full shadow-2xl hover:scale-105 transition-transform"
             >
                 {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -374,4 +388,3 @@ const CourseDetail = () => {
 };
 
 export default CourseDetail;
-

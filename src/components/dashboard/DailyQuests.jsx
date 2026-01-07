@@ -16,7 +16,7 @@ const DailyQuests = () => {
     };
 
     return (
-        <div className="glass-panel p-6 rounded-[2.5rem] border-white/5 space-y-6">
+        <div className="glass-panel p-5 md:p-6 rounded-2xl md:rounded-[2.5rem] border-white/5 space-y-4 md:space-y-6 flex flex-col h-full">
             <div className="flex justify-between items-center">
                 <h3 className="text-xs font-black text-dark-muted uppercase tracking-widest">Daily Ops</h3>
                 <div className="flex items-center gap-1 text-stellar-gold">
@@ -33,8 +33,8 @@ const DailyQuests = () => {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer group ${quest.completed
-                                    ? 'bg-brand-primary/10 border-brand-primary/30'
-                                    : 'bg-dark-layer2 border-white/5 hover:border-white/20'
+                                ? 'bg-brand-primary/10 border-brand-primary/30'
+                                : 'bg-dark-layer2 border-white/5 hover:border-white/20'
                                 }`}
                             onClick={() => toggleQuest(quest.id)}
                         >

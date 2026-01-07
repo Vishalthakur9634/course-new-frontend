@@ -229,10 +229,10 @@ const SocialMedia = () => {
     ];
 
     return (
-        <div className="flex flex-col h-screen bg-[#0a0a0a] text-white overflow-hidden font-inter">
+        <div className="flex flex-col min-h-screen md:h-screen bg-[#0a0a0a] text-white overflow-x-hidden md:overflow-hidden font-inter">
 
-            {/* HIGH-FIDELITY NAVIGATION */}
-            <header className="h-20 bg-[#141414] border-b border-white/5 px-8 flex items-center justify-between gap-10 z-50 shadow-2xl">
+            {/* HIGH-FIDELITY NAVIGATION - Hidden on Mobile to avoid layout collision */}
+            <header className="hidden md:flex h-20 bg-[#141414] border-b border-white/5 px-8 items-center justify-between gap-10 z-50 shadow-2xl">
                 <div className="flex items-center gap-8">
                     <button
                         onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
@@ -281,9 +281,9 @@ const SocialMedia = () => {
 
             <div className="flex flex-1 overflow-hidden">
 
-                {/* STRATEGIC SIDEBAR */}
+                {/* STRATEGIC SIDEBAR - Hidden on Mobile */}
                 <aside
-                    className={`${isSidebarCollapsed ? 'w-24' : 'w-80'} bg-[#0a0a0a]/50 border-r border-white/5 flex flex-col transition-all duration-700 overflow-y-auto no-scrollbar py-10`}
+                    className={`${isSidebarCollapsed ? 'w-24' : 'w-80'} hidden md:flex bg-[#0a0a0a]/50 border-r border-white/5 flex-col transition-all duration-700 overflow-y-auto no-scrollbar py-10`}
                 >
                     {sidebarItems.map((item, idx) => {
                         if (item.type === 'divider') {
@@ -327,7 +327,7 @@ const SocialMedia = () => {
                         ))}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-8 space-y-20 z-10 mb-20">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 space-y-8 md:space-y-20 z-10 mb-20">
                         {/* STRATEGIC SHORTS PERFORMANCE */}
                         <section className="space-y-10">
                             <div className="flex items-center justify-between px-2">
@@ -341,7 +341,7 @@ const SocialMedia = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex gap-8 overflow-x-auto pb-8 no-scrollbar snap-x">
+                            <div className="flex gap-5 md:gap-8 overflow-x-auto pb-6 md:pb-8 no-scrollbar snap-x px-2 md:px-0">
                                 {shorts.map((short, i) => (
                                     <div
                                         key={i}
@@ -377,7 +377,7 @@ const SocialMedia = () => {
                             </div>
 
                             {loading ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10 px-2 md:px-0">
                                     {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                                         <div key={i} className="space-y-6 animate-pulse bg-[#141414]/30 p-6 rounded-[2.5rem] border border-white/5">
                                             <div className="aspect-video bg-white/5 rounded-3xl"></div>
@@ -418,19 +418,27 @@ const SocialMedia = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="flex gap-5 px-2">
-                                                <div className="shrink-0 w-14 h-14 rounded-2xl bg-[#0a0a0a] overflow-hidden border border-white/10 group-hover:border-brand-primary/40 transition-all shadow-xl p-0.5">
-                                                    <img src={vid.authorId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${vid.authorId?.name}`} className="w-full h-full object-cover rounded-[14px]" />
-                                                </div>
-                                                <div className="flex-1 min-w-0 space-y-3">
-                                                    <h3 className="text-[15px] font-bold text-white line-clamp-2 leading-tight group-hover:text-brand-primary transition-colors duration-300 uppercase tracking-tight">
+                                            <div className="flex gap-4 md:gap-5 px-1 md:px-2">
+                                                <Link
+                                                    to={`/instructor/profile/${vid.authorId?._id || vid.authorId?.id}`}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="shrink-0 w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-[#0a0a0a] overflow-hidden border border-white/10 group-hover:border-brand-primary/40 transition-all shadow-xl p-0.5"
+                                                >
+                                                    <img src={vid.authorId?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${vid.authorId?.name}`} className="w-full h-full object-cover rounded-[10px] md:rounded-[14px]" />
+                                                </Link>
+                                                <div className="flex-1 min-w-0 space-y-2 md:space-y-3">
+                                                    <h3 className="text-sm md:text-[15px] font-bold text-white line-clamp-2 leading-tight group-hover:text-brand-primary transition-colors duration-300 uppercase tracking-tight">
                                                         {vid.title}
                                                     </h3>
-                                                    <div className="flex flex-col gap-1.5 opacity-60">
-                                                        <p className="text-[10px] font-bold text-dark-muted flex items-center gap-2 hover:text-white transition-colors uppercase tracking-widest">
-                                                            {vid.authorId?.name} {vid.authorId?.role === 'instructor' && <Shield size={12} className="text-brand-primary" />}
-                                                        </p>
-                                                        <div className="flex justify-between items-center text-xs font-medium text-gray-500 px-2">
+                                                    <div className="flex flex-col gap-1 md:gap-1.5 opacity-60">
+                                                        <Link
+                                                            to={`/instructor/profile/${vid.authorId?._id || vid.authorId?.id}`}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            className="text-[9px] md:text-[10px] font-bold text-dark-muted flex items-center gap-2 hover:text-white transition-colors uppercase tracking-widest"
+                                                        >
+                                                            {vid.authorId?.name} {vid.authorId?.role === 'instructor' && <Shield size={10} className="md:w-3 md:h-3 text-brand-primary" />}
+                                                        </Link>
+                                                        <div className="flex justify-between items-center text-[10px] md:text-xs font-medium text-gray-500">
                                                             <span>{vid.viewCount || 0} views</span>
                                                             <span>{new Date(vid.createdAt).toLocaleDateString()}</span>
                                                         </div>
@@ -464,19 +472,19 @@ const SocialMedia = () => {
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-primary to-transparent" />
 
                             {/* Left: Metadata Matrix */}
-                            <div className="flex-1 flex flex-col p-16 overflow-y-auto no-scrollbar border-r border-white/5">
-                                <header className="flex items-center justify-between mb-16">
-                                    <div className="space-y-2">
-                                        <h2 className="text-4xl font-bold uppercase tracking-tight">Contribution <span className="text-brand-primary">Center</span></h2>
-                                        <p className="text-[10px] font-bold text-dark-muted uppercase tracking-[0.5em] opacity-40">Architecting Content Synchronization</p>
+                            <div className="flex-1 flex flex-col p-6 md:p-16 overflow-y-auto no-scrollbar border-b md:border-b-0 md:border-r border-white/5">
+                                <header className="flex items-center justify-between mb-8 md:mb-16">
+                                    <div className="space-y-1 md:space-y-2">
+                                        <h2 className="text-2xl md:text-4xl font-bold uppercase tracking-tight">Contribution <span className="text-brand-primary">Center</span></h2>
+                                        <p className="text-[8px] md:text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] opacity-40">Architecting Content Synchronization</p>
                                     </div>
-                                    <button onClick={() => setIsUploadOpen(false)} className="p-4 bg-[#0a0a0a] hover:bg-red-500/10 rounded-2xl hover:text-red-500 transition-all border border-white/10 shadow-xl group">
-                                        <X size={24} className="group-hover:rotate-90 transition-transform" />
+                                    <button onClick={() => setIsUploadOpen(false)} className="p-3 md:p-4 bg-[#0a0a0a] hover:bg-red-500/10 rounded-xl md:rounded-2xl hover:text-red-500 transition-all border border-white/10 shadow-xl group">
+                                        <X size={20} className="md:w-6 md:h-6 group-hover:rotate-90 transition-transform" />
                                     </button>
                                 </header>
 
-                                <form onSubmit={handleUpload} className="space-y-12">
-                                    <div className="flex gap-4 p-2 bg-[#0a0a0a] rounded-2xl border border-white/5 shadow-inner">
+                                <form onSubmit={handleUpload} className="space-y-8 md:space-y-12">
+                                    <div className="flex gap-2 md:gap-4 p-1.5 md:p-2 bg-[#0a0a0a] rounded-xl md:rounded-2xl border border-white/5 shadow-inner">
                                         {[
                                             { id: 'video', label: 'Module', icon: Layers },
                                             { id: 'short', label: 'Insight', icon: Film },
@@ -486,53 +494,53 @@ const SocialMedia = () => {
                                                 key={t.id}
                                                 type="button"
                                                 onClick={() => setUploadData({ ...uploadData, type: t.id })}
-                                                className={`flex-1 py-4 rounded-xl flex items-center justify-center gap-3 font-bold uppercase text-[10px] tracking-[0.2em] transition-all duration-500 ${uploadData.type === t.id ? 'bg-brand-primary text-dark-bg shadow-xl' : 'text-dark-muted hover:text-white'}`}
+                                                className={`flex-1 py-3 md:py-4 rounded-lg md:rounded-xl flex items-center justify-center gap-2 md:gap-3 font-bold uppercase text-[8px] md:text-[10px] tracking-[0.1em] md:tracking-[0.2em] transition-all duration-500 ${uploadData.type === t.id ? 'bg-brand-primary text-dark-bg shadow-xl' : 'text-dark-muted hover:text-white'}`}
                                             >
-                                                <t.icon size={16} /> {t.label}
+                                                <t.icon size={14} className="md:w-4 md:h-4" /> {t.label}
                                             </button>
                                         ))}
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-10">
-                                        <div className="space-y-3">
-                                            <label className="text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] ml-4">Registry Title</label>
+                                    <div className="grid grid-cols-1 gap-6 md:gap-10">
+                                        <div className="space-y-2 md:space-y-3">
+                                            <label className="text-[8px] md:text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] ml-3 md:ml-4">Registry Title</label>
                                             <input
                                                 type="text"
                                                 placeholder="Architecture Title..."
                                                 value={uploadData.title}
                                                 onChange={e => setUploadData({ ...uploadData, title: e.target.value })}
-                                                className="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 text-xl font-bold border-transparent focus:border-brand-primary outline-none transition-all placeholder:text-dark-muted/20 uppercase tracking-tight shadow-inner"
+                                                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-6 text-lg md:text-xl font-bold border-transparent focus:border-brand-primary outline-none transition-all placeholder:text-dark-muted/20 uppercase tracking-tight shadow-inner"
                                                 required
                                             />
                                         </div>
 
-                                        <div className="space-y-3">
-                                            <label className="text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] ml-4">Briefing Overview</label>
+                                        <div className="space-y-2 md:space-y-3">
+                                            <label className="text-[8px] md:text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] ml-3 md:ml-4">Briefing Overview</label>
                                             <textarea
                                                 placeholder="Document the technical objectives of this contribution..."
                                                 value={uploadData.description}
                                                 onChange={e => setUploadData({ ...uploadData, description: e.target.value })}
-                                                className="w-full bg-[#0a0a0a] border border-white/10 rounded-[2.5rem] p-10 text-[13px] font-medium opacity-80 focus:opacity-100 focus:border-brand-primary outline-none h-48 resize-none transition-all placeholder:text-dark-muted/20 leading-relaxed shadow-inner"
+                                                className="w-full bg-[#0a0a0a] border border-white/10 rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-10 text-[12px] md:text-[13px] font-medium opacity-80 focus:opacity-100 focus:border-brand-primary outline-none h-32 md:h-48 resize-none transition-all placeholder:text-dark-muted/20 leading-relaxed shadow-inner"
                                             />
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-8">
-                                            <div className="space-y-3">
-                                                <label className="text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] ml-4">Domain Category</label>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                                            <div className="space-y-2 md:space-y-3">
+                                                <label className="text-[8px] md:text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] ml-3 md:ml-4">Domain Category</label>
                                                 <select
                                                     value={uploadData.category}
                                                     onChange={e => setUploadData({ ...uploadData, category: e.target.value })}
-                                                    className="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl p-5 text-[11px] font-bold uppercase tracking-[0.2em] outline-none focus:border-brand-primary appearance-none hover:bg-white/5 transition-colors cursor-pointer shadow-inner"
+                                                    className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-5 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] outline-none focus:border-brand-primary appearance-none hover:bg-white/5 transition-colors cursor-pointer shadow-inner"
                                                 >
                                                     {categories.filter(c => c !== 'All').map(c => <option key={c} value={c} className="bg-[#141414]">{c.toUpperCase()}</option>)}
                                                 </select>
                                             </div>
-                                            <div className="space-y-3">
-                                                <label className="text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] ml-4">Network Target</label>
+                                            <div className="space-y-2 md:space-y-3">
+                                                <label className="text-[8px] md:text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] ml-3 md:ml-4">Network Target</label>
                                                 <select
                                                     value={uploadData.communityId || ''}
                                                     onChange={e => setUploadData({ ...uploadData, communityId: e.target.value })}
-                                                    className="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl p-5 text-[11px] font-bold uppercase tracking-[0.2em] outline-none focus:border-brand-primary appearance-none hover:bg-white/5 transition-colors cursor-pointer shadow-inner"
+                                                    className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl md:rounded-2xl p-4 md:p-5 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] outline-none focus:border-brand-primary appearance-none hover:bg-white/5 transition-colors cursor-pointer shadow-inner"
                                                 >
                                                     <option value="" className="bg-[#141414]">CORE FEED</option>
                                                     {communities.map(c => <option key={c._id} value={c._id} className="bg-[#141414]">{c.name.toUpperCase()}</option>)}
@@ -544,9 +552,9 @@ const SocialMedia = () => {
                                     <button
                                         type="submit"
                                         disabled={uploadProgress > 0}
-                                        className="w-full py-8 bg-brand-primary text-dark-bg font-bold rounded-[2.5rem] flex items-center justify-center gap-5 uppercase text-[11px] tracking-[0.5em] hover:scale-[1.01] active:scale-95 transition-all shadow-3xl shadow-brand-primary/20 border border-brand-primary"
+                                        className="w-full py-5 md:py-8 bg-brand-primary text-dark-bg font-bold rounded-xl md:rounded-[2.5rem] flex items-center justify-center gap-4 md:gap-5 uppercase text-[10px] md:text-[11px] tracking-[0.3em] md:tracking-[0.5em] hover:scale-[1.01] active:scale-95 transition-all shadow-3xl shadow-brand-primary/20 border border-brand-primary"
                                     >
-                                        {uploadProgress > 0 ? <Loader className="animate-spin" /> : <Send size={28} className="rotate-[-10deg]" />}
+                                        {uploadProgress > 0 ? <Loader className="animate-spin" /> : <Send size={24} className="md:w-7 md:h-7 rotate-[-10deg]" />}
                                         Commit to Matrix
                                     </button>
                                 </form>
@@ -689,18 +697,23 @@ const SocialMedia = () => {
                                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight uppercase">{selectedVideo.title}</h1>
                                         <div className="flex flex-wrap items-center justify-between gap-10 py-10 border-y border-white/5">
                                             <div className="flex items-center gap-8">
-                                                <div className="w-20 h-20 rounded-3xl bg-brand-primary p-0.5 shadow-2xl shadow-brand-primary/20">
-                                                    <div className="w-full h-full bg-[#0a0a0a] rounded-[22px] overflow-hidden border border-white/10">
+                                                <Link
+                                                    to={`/instructor/profile/${selectedVideo.authorId?._id || selectedVideo.authorId?.id}`}
+                                                    className="w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-brand-primary p-0.5 shadow-2xl shadow-brand-primary/20"
+                                                >
+                                                    <div className="w-full h-full bg-[#0a0a0a] rounded-[14px] md:rounded-[22px] overflow-hidden border border-white/10">
                                                         <img src={selectedVideo.authorId?.avatar} className="w-full h-full object-cover" />
                                                     </div>
+                                                </Link>
+                                                <div className="space-y-1 md:space-y-2">
+                                                    <Link
+                                                        to={`/instructor/profile/${selectedVideo.authorId?._id || selectedVideo.authorId?.id}`}
+                                                        className="text-sm md:text-xl font-bold uppercase text-white tracking-widest leading-none flex items-center gap-2 md:gap-3 hover:text-brand-primary transition-colors"
+                                                    >
+                                                        {selectedVideo.authorId?.name} <Shield size={14} className="md:w-[18px] md:h-[18px] text-brand-primary" />
+                                                    </Link>
+                                                    <p className="text-[10px] md:text-xs text-gray-500 font-medium">Verified Creator</p>
                                                 </div>
-                                                <div className="space-y-2">
-                                                    <p className="text-xl font-bold uppercase text-white tracking-widest leading-none flex items-center gap-3">
-                                                        {selectedVideo.authorId?.name} <Shield size={18} className="text-brand-primary" />
-                                                    </p>
-                                                    <p className="text-xs text-gray-500 font-medium">Verified Creator</p>
-                                                </div>
-                                                <button className="ml-10 px-8 py-3 bg-white text-dark-bg rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-brand-primary transition-all shadow-xl active:scale-95">Subscribe</button>
                                             </div>
                                             <div className="flex items-center gap-6">
                                                 <div className="flex bg-[#0a0a0a] border border-white/10 rounded-2xl p-1.5 shadow-xl">

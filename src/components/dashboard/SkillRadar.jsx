@@ -30,18 +30,18 @@ const SkillRadar = ({ courses }) => {
     const data = processData();
 
     return (
-        <div className="glass-panel p-6 rounded-[2.5rem] border-white/5 space-y-4 h-[350px] relative overflow-hidden">
+        <div className="glass-panel p-5 md:p-6 rounded-2xl md:rounded-[2.5rem] border-white/5 space-y-3 md:space-y-4 h-[300px] md:h-[350px] relative overflow-hidden flex flex-col">
             <div className="absolute top-0 right-0 p-32 bg-brand-primary/5 blur-3xl rounded-full pointer-events-none"></div>
             <div className="flex justify-between items-center relative z-10">
-                <h3 className="text-xs font-black text-dark-muted uppercase tracking-widest">Skills Overview</h3>
-                <span className="text-[10px] font-bold text-brand-primary uppercase">Updated Today</span>
+                <h3 className="text-[10px] md:text-xs font-black text-dark-muted uppercase tracking-widest">Skills Overview</h3>
+                <span className="text-[8px] md:text-[10px] font-bold text-brand-primary uppercase">Updated Today</span>
             </div>
 
-            <div className="w-full h-[280px] px-4">
+            <div className="w-full h-[230px] md:h-[280px] px-2 md:px-4">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0} aspect={1.5}>
-                    <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+                    <RadarChart cx="50%" cy="50%" outerRadius="65%" data={data}>
                         <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 'bold' }} />
+                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 8, fontWeight: 'bold' }} />
                         <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="transparent" />
                         <Radar
                             name="Skills"

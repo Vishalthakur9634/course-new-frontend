@@ -15,9 +15,9 @@ const PracticeWorkspace = ({ problem, editorCode, setEditorCode, onRun, output, 
     }, [problem, setEditorCode]);
 
     return (
-        <div className="flex-1 flex flex-col lg:flex-row gap-4 h-full overflow-hidden">
+        <div className="flex-1 flex flex-col lg:flex-row gap-4 h-auto md:h-full md:overflow-hidden">
             {/* Left: Problem Description */}
-            <div className="w-full lg:w-1/3 bg-dark-layer1 rounded-xl border border-dark-layer2 flex flex-col overflow-hidden shadow-xl">
+            <div className="w-full lg:w-1/3 bg-dark-layer1 rounded-xl border border-dark-layer2 flex flex-col md:overflow-hidden shadow-xl min-h-[300px] md:min-h-0">
                 <div className="p-4 border-b border-dark-layer2 bg-dark-layer2/30">
                     <div className="flex items-center gap-2 mb-2">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${problem.type === 'coding' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
@@ -231,7 +231,7 @@ const StudentPractice = () => {
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col md:flex-row gap-6 min-h-0">
+            <div className="flex-1 flex flex-col md:flex-row gap-6 min-h-0 h-auto md:h-full">
                 {/* Left Drawer: Problem List / Course Selector */}
                 <div className="w-full md:w-80 flex-shrink-0 flex flex-col gap-4 min-h-0">
                     <div className="bg-dark-layer1 p-4 rounded-xl border border-dark-layer2 shadow-lg">
@@ -247,7 +247,7 @@ const StudentPractice = () => {
                         </select>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 bg-dark-layer1/50 rounded-xl border border-dark-layer2 p-4 shadow-inner">
+                    <div className="flex-1 md:overflow-y-auto custom-scrollbar space-y-3 bg-dark-layer1/50 rounded-xl border border-dark-layer2 p-4 shadow-inner max-h-[300px] md:max-h-none overflow-y-auto">
                         <label className="text-dark-muted font-bold text-[10px] uppercase tracking-widest mb-3 block">Available Problems</label>
                         {problems.map((problem) => (
                             <button
