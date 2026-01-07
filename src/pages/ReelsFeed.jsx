@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Heart, MessageCircle, Share2, ArrowLeft, Plus, Play, Pause, Volume2, VolumeX, MoreVertical } from 'lucide-react';
+import { Heart, MessageCircle, Share2, ArrowLeft, Plus, Play, Pause, Volume2, VolumeX, MoreVertical, X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import Navbar from '../components/Navbar';
@@ -156,20 +156,67 @@ const ReelsFeed = () => {
 // Sub-component for individual reel
 const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike, currentUser }, ref) => {
     const videoRef = useRef(null);
+    const playPromiseRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [retryCount, setRetryCount] = useState(0);
+    const [testResult, setTestResult] = useState(null);
 
     useEffect(() => {
-        if (isActive && videoRef.current) {
-            videoRef.current.currentTime = 0;
-            videoRef.current.load(); // Force reload for new source
-            const playPromise = videoRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => setIsPlaying(true)).catch(e => {
-                    console.log('Autoplay prevented:', e);
-                    setIsPlaying(false);
-                });
+        const video = videoRef.current;
+        if (!video) return;
+
+        // Cleanup function to abort pending play promises
+        return () => {
+            if (playPromiseRef.current) {
+                video.pause();
+                playPromiseRef.current = null;
             }
+        };
+    }, []);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (isActive) {
+            // Cancel any pending play promise
+            if (playPromiseRef.current) {
+                video.pause();
+            }
+
+            video.currentTime = 0;
+            video.load();
+
+            const playTimeout = setTimeout(() => {
+                const playPromise = video.play();
+
+                if (playPromise !== undefined) {
+                    playPromiseRef.current = playPromise;
+
+                    playPromise
+                        .then(() => {
+                            if (isActive && video === videoRef.current) {
+                                setIsPlaying(true);
+                                playPromiseRef.current = null;
+                            }
+                        })
+                        .catch(e => {
+                            if (e.name !== 'AbortError' && e.name !== 'NotAllowedError') {
+                                console.log('Playback error:', e.name, e.message);
+                            }
+                            setIsPlaying(false);
+                            playPromiseRef.current = null;
+                        });
+                }
+            }, 100);
+
+            return () => clearTimeout(playTimeout);
+        } else {
+            if (playPromiseRef.current) {
+                video.pause();
+                playPromiseRef.current = null;
+            }
+            video.pause();
             setIsPlaying(false);
         }
     }, [isActive]);
@@ -200,10 +247,27 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
                 autoPlay
                 playsInline
                 onClick={togglePlay}
-                onLoadedData={() => console.log(`[ReelsFeed] Video loaded: ${getAssetUrl(reel.videoUrl)}`)}
+                onLoadedData={() => {
+                    console.log(`[ReelsFeed] Video loaded: ${getAssetUrl(reel.videoUrl)}`);
+                    setTestResult('SUCCESS');
+                }}
                 onError={(e) => {
-                    const errorCode = videoRef.current?.error?.code;
-                    console.error(`[ReelsFeed] Video error: ${getAssetUrl(reel.videoUrl)} - Code: ${errorCode}`);
+                    const video = videoRef.current;
+                    let errorType = 'UNKNOWN';
+
+                    if (video?.error) {
+                        const code = video.error.code;
+                        if (code === 1) errorType = 'ABORTED';
+                        else if (code === 2) errorType = 'NETWORK_ERROR';
+                        else if (code === 3) errorType = 'DECODE_ERROR';
+                        else if (code === 4) errorType = 'SOURCE_NOT_SUPPORTED';
+                        else errorType = `CODE_${code}`;
+                    } else if (video?.networkState === 3) {
+                        errorType = '404_NOT_FOUND (FILE MISSING)';
+                    }
+
+                    console.error(`[ReelsFeed] Playback Error: ${errorType}`);
+                    setTestResult(errorType);
                     if (!retryCount) {
                         setTimeout(() => setRetryCount(prev => prev + 1), 1000);
                     }
@@ -211,6 +275,38 @@ const ReelItem = React.forwardRef(({ reel, isActive, isMuted, toggleMute, onLike
             >
                 <source src={getAssetUrl(reel.videoUrl)} type="video/mp4" />
             </video>
+
+            {/* Diagnostic Overlay */}
+            {testResult && testResult !== 'SUCCESS' && (
+                <div className="absolute top-24 left-4 right-4 z-[100] p-4 bg-red-600/95 text-white rounded-2xl backdrop-blur-2xl border border-white/20 shadow-[0_0_50px_rgba(220,38,38,0.5)] flex flex-col gap-3 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-white/20 rounded-lg">
+                            <X size={20} className="text-white" />
+                        </div>
+                        <div>
+                            <h4 className="font-black text-[12px] uppercase tracking-widest">Playback Blocked</h4>
+                            <p className="text-[10px] font-bold opacity-80 uppercase">{testResult}</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-black/20 p-3 rounded-xl space-y-2">
+                        <p className="text-[9px] font-medium leading-relaxed italic opacity-90">
+                            {testResult.includes('404')
+                                ? "This specific video file is physically missing from the server's uploads directory. Please re-upload this reel through the instructor portal."
+                                : "A network or decoding error occurred. Attempting to synchronize..."}
+                        </p>
+                    </div>
+
+                    <a
+                        href={getAssetUrl(reel.videoUrl)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-white text-red-600 px-4 py-2 rounded-xl text-center font-black uppercase tracking-tighter text-[11px] hover:bg-white/90 transition-all pointer-events-auto"
+                    >
+                        Verify File Manually
+                    </a>
+                </div>
+            )}
 
             {/* Overlay Controls */}
             <div className="absolute inset-0 md:max-w-[450px] mx-auto pointer-events-none flex flex-col justify-end pb-20 p-4 bg-gradient-to-t from-black/80 via-transparent to-transparent">

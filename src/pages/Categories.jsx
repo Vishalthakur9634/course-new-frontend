@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 import { Grid, BookOpen, Layers, Search, TrendingUp, Star } from 'lucide-react';
 
 const Categories = () => {
@@ -101,7 +102,7 @@ const Categories = () => {
                         >
                             <div className="aspect-video relative overflow-hidden bg-[#262626]">
                                 <img
-                                    src={course.thumbnail}
+                                    src={getAssetUrl(course.thumbnail)}
                                     alt={course.title}
                                     className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000"
                                 />

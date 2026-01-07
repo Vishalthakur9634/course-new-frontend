@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 import {
     User, BookOpen, Star, Award, Globe, Github, Linkedin, Twitter,
     CheckCircle, Clock, MapPin, Film, PenTool, Camera, Layout,
@@ -215,7 +216,7 @@ const InstructorProfile = () => {
                             className={`relative w-48 h-48 md:w-64 md:h-64 rounded-2xl bg-[#0a0a0a] border border-white/10 shadow-2xl transition-all overflow-hidden ${isOwner ? 'cursor-pointer hover:border-brand-primary/50' : ''}`}
                         >
                             {instructor.avatar ? (
-                                <img src={instructor.avatar} className="w-full h-full object-cover transition-transform duration-700 group-hover/avatar:scale-105" alt={instructor.name} />
+                                <img src={getAssetUrl(instructor.avatar)} className="w-full h-full object-cover transition-transform duration-700 group-hover/avatar:scale-105" alt={instructor.name} />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-8xl font-bold text-white/5 uppercase">
                                     {instructor.name.charAt(0)}
@@ -327,7 +328,7 @@ const InstructorProfile = () => {
                             <Link key={course._id} to={`/course/${course._id}`}
                                 className="group bg-[#1a1a1a] border border-white/5 rounded-2xl overflow-hidden hover:border-brand-primary/30 transition-all flex flex-col h-full shadow-lg">
                                 <div className="aspect-[16/9] relative overflow-hidden bg-[#262626]">
-                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                    <img src={getAssetUrl(course.thumbnail)} alt={course.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     <div className="absolute top-4 right-4">
                                         <div className="bg-brand-primary text-dark-bg px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest">
                                             {course.category}
@@ -365,7 +366,7 @@ const InstructorProfile = () => {
                                 className="aspect-[9/16] bg-[#1a1a1a] rounded-2xl overflow-hidden border border-white/5 hover:border-brand-primary/30 transition-all group relative cursor-pointer"
                                 onClick={() => navigate(`/reels?instructorId=${instructor._id}`)}
                             >
-                                <img src={reel.thumbnailUrl || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000'} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-60 group-hover:opacity-100" alt={reel.title} />
+                                <img src={getAssetUrl(reel.thumbnailUrl) || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000'} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-60 group-hover:opacity-100" alt={reel.title} />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-6 flex flex-col justify-end">
                                     <h4 className="text-white font-bold text-[11px] line-clamp-2 uppercase tracking-tight mb-3">{reel.title}</h4>
                                     <div className="flex items-center justify-between">
@@ -389,7 +390,7 @@ const InstructorProfile = () => {
                                 className="group bg-[#1a1a1a] border border-white/5 rounded-2xl p-4 flex gap-6 hover:border-brand-primary/20 transition-all shadow-lg">
                                 <div className="w-40 h-40 rounded-xl bg-[#262626] overflow-hidden shrink-0">
                                     {article.coverImage ? (
-                                        <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-transform duration-500" />
+                                        <img src={getAssetUrl(article.coverImage)} alt={article.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-transform duration-500" />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-dark-muted">
                                             <PenTool size={32} opacity={0.2} />

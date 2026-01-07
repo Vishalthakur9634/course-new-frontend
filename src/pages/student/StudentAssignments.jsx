@@ -6,6 +6,7 @@ import {
     ArrowUpCircle, Info, MessageSquare, ExternalLink, Award
 } from 'lucide-react';
 import api from '../../utils/api';
+import { getAssetUrl } from '../../utils/urlUtils';
 
 const StudentAssignments = () => {
     const [courses, setCourses] = useState([]);
@@ -184,7 +185,7 @@ const StudentAssignments = () => {
 
                                 {ass.attachmentUrl && (
                                     <a
-                                        href={ass.attachmentUrl}
+                                        href={getAssetUrl(ass.attachmentUrl)}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="inline-flex items-center gap-2 text-brand-primary font-black uppercase text-[10px] tracking-widest hover:underline"

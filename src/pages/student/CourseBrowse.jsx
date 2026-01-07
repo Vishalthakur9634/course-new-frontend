@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
+import { getAssetUrl } from '../../utils/urlUtils';
 import {
     Search, Filter, Heart, Users, DollarSign, Star, Share2,
     Zap, ChevronDown, Check, X, SlidersHorizontal
@@ -270,7 +271,7 @@ const CourseBrowse = () => {
                                 >
                                     {/* Thumbnail */}
                                     <div className="aspect-video bg-dark-layer2 relative overflow-hidden">
-                                        <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                        <img src={getAssetUrl(course.thumbnail)} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                         <div className="absolute inset-0 bg-gradient-to-t from-dark-bg/80 via-transparent to-transparent opacity-60" />
 
                                         <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">

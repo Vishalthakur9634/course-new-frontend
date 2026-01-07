@@ -10,7 +10,7 @@ export const getBackendUrl = () => {
         console.warn(`[AssetURL] WARNING: VITE_SERVER_URL is missing in production mode! Assets and API calls will fallback to current origin, which may cause 404s if backend is on Render.`);
     }
 
-    console.log(`[AssetURL] Backend URL: '${url}' (Mode: ${mode}, VITE_SERVER_URL: ${envUrl || 'NOT_SET'})`);
+    // console.log(`[AssetURL] Backend URL: '${url}' (Mode: ${mode}, VITE_SERVER_URL: ${envUrl || 'NOT_SET'})`);
 
     return url;
 };
@@ -46,6 +46,6 @@ export const getAssetUrl = (path) => {
 
     // ENSURE we don't return an empty string or malformed URL
     const finalUrl = `${cleanBackendUrl}/${cleanPath}`;
-    console.log(`[AssetURL] Resolved: ${finalUrl}`);
+    // console.log(`[AssetURL] Resolved: ${finalUrl}`);
     return finalUrl;
 };

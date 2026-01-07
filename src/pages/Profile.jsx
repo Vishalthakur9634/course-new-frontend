@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 import {
     User, Mail, BookOpen, Clock, Camera, Save, Globe, Github,
     Linkedin, Twitter, Film, Zap, Sparkles, ChevronRight, MessageSquare, Star,
@@ -181,7 +182,7 @@ const Profile = () => {
                         <div className="relative group/avatar">
                             <div className="w-48 h-48 rounded-[2.5rem] bg-[#0a0a0a] p-1.5 border-2 border-white/5 shadow-3xl overflow-hidden transition-all group-hover/avatar:border-brand-primary/50">
                                 {user?.avatar ? (
-                                    <img src={user.avatar} alt={user.name} className="w-full h-full object-cover rounded-[2rem]" />
+                                    <img src={getAssetUrl(user.avatar)} alt={user.name} className="w-full h-full object-cover rounded-[2rem]" />
                                 ) : (
                                     <div className="w-full h-full bg-brand-primary/10 rounded-[2rem] flex items-center justify-center text-7xl font-bold text-brand-primary uppercase">
                                         {user?.name?.[0]}
@@ -448,7 +449,7 @@ const Profile = () => {
                                 {courses.length > 0 ? courses.map(course => (
                                     <Link key={course._id} to={`/course/${course._id}`} className="group bg-[#141414] border border-white/5 rounded-3xl overflow-hidden hover:border-brand-primary/30 transition-all shadow-2xl flex flex-col h-full">
                                         <div className="aspect-video relative overflow-hidden bg-[#0a0a0a]">
-                                            <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" />
+                                            <img src={getAssetUrl(course.thumbnail)} alt={course.title} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" />
                                             <div className="absolute top-4 right-4 bg-[#0a0a0a]/80 backdrop-blur-md px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase text-brand-primary border border-white/10 shadow-xl">
                                                 {course.category}
                                             </div>
@@ -477,7 +478,7 @@ const Profile = () => {
                             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
                                 {reels.length > 0 ? reels.map(reel => (
                                     <Link key={reel._id} to={`/reels?id=${reel._id}`} className="group aspect-[9/16] bg-[#141414] rounded-2xl border border-white/5 overflow-hidden relative shadow-2xl hover:border-brand-primary/30 transition-all">
-                                        <img src={reel.thumbnailUrl} alt="" className="w-full h-full object-cover opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                                        <img src={getAssetUrl(reel.thumbnailUrl)} alt="" className="w-full h-full object-cover opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-6 flex flex-col justify-end">
                                             <p className="text-[11px] font-bold text-white truncate uppercase tracking-tight mb-2 group-hover:text-brand-primary transition-colors">{reel.title}</p>
                                             <div className="flex items-center gap-2 text-[9px] font-bold text-brand-primary uppercase tracking-[0.2em]">

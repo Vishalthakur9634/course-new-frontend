@@ -244,7 +244,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                                         className="w-full flex items-center gap-3 px-4 py-2 hover:bg-white/5 transition-all group"
                                                     >
                                                         <div className="w-7 h-7 rounded-lg bg-dark-layer2 overflow-hidden flex-shrink-0 border border-white/10">
-                                                            <img src={course.thumbnail} className="w-full h-full object-cover" alt="" />
+                                                            <img src={getAssetUrl(course.thumbnail)} className="w-full h-full object-cover" alt="" />
                                                         </div>
                                                         <div className="text-left min-w-0 flex-1">
                                                             <p className="text-[11px] font-bold text-white group-hover:text-brand-primary transition-colors truncate uppercase">{course.title}</p>
@@ -267,7 +267,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                                             className="w-full flex items-center gap-4 px-5 py-2 hover:bg-white/5 transition-all text-left group"
                                                         >
                                                             <div className="w-6 h-6 rounded-md bg-dark-layer2 overflow-hidden border border-white/10 flex-shrink-0">
-                                                                <img src={course.thumbnail} className="w-full h-full object-cover" alt="" />
+                                                                <img src={getAssetUrl(course.thumbnail)} className="w-full h-full object-cover" alt="" />
                                                             </div>
                                                             <span className="text-[10px] font-bold text-dark-muted group-hover:text-white transition-colors truncate uppercase">{course.title}</span>
                                                         </button>

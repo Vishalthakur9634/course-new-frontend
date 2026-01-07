@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, CreditCard, Lock, CheckCircle, Zap, ShieldCheck, Activity } from 'lucide-react';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 
 const PaymentModal = ({ course, onClose, onSuccess }) => {
     const [loading, setLoading] = useState(false);
@@ -106,7 +107,7 @@ const PaymentModal = ({ course, onClose, onSuccess }) => {
                 {/* DOMAIN BODY */}
                 <div className="p-10">
                     <div className="mb-10 flex items-center gap-6 p-6 bg-[#111] rounded-3xl border border-white/5 group">
-                        <img src={course.thumbnail} alt={course.title} className="w-20 h-20 object-cover rounded-2xl shadow-2xl group-hover:scale-105 transition-transform duration-500" />
+                        <img src={getAssetUrl(course.thumbnail)} alt={course.title} className="w-20 h-20 object-cover rounded-2xl shadow-2xl group-hover:scale-105 transition-transform duration-500" />
                         <div className="space-y-2">
                             <h3 className="text-white font-bold uppercase tracking-tight line-clamp-1">{course.title}</h3>
                             <div className="flex items-center gap-3">

@@ -70,13 +70,20 @@ const Reels = () => {
 
             const { data } = await api.get(url);
 
+            // Filter out known broken reels (missing video files)
+            const knownBrokenFiles = ['1767801460164-2637-161442811_small.mp4'];
+            const filteredData = data.filter(reel => {
+                const videoPath = reel.videoUrl || '';
+                return !knownBrokenFiles.some(broken => videoPath.includes(broken));
+            });
+
             // If a specific ID is provided, move it to the front
-            let sortedData = data;
+            let sortedData = filteredData;
             if (specificReelId) {
-                const targetIndex = data.findIndex(r => r._id === specificReelId);
+                const targetIndex = filteredData.findIndex(r => r._id === specificReelId);
                 if (targetIndex > -1) {
-                    const target = data.splice(targetIndex, 1)[0];
-                    sortedData = [target, ...data];
+                    const target = filteredData.splice(targetIndex, 1)[0];
+                    sortedData = [target, ...filteredData];
                 }
             }
             setReels(sortedData);
@@ -276,6 +283,7 @@ const Reels = () => {
 
 const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
     const videoRef = useRef(null);
+    const playPromiseRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [likes, setLikes] = useState(reel.likes?.length || 0);
     const [hasLiked, setHasLiked] = useState(user ? reel.likes?.includes(user.id || user._id) : false);
@@ -285,27 +293,73 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
     const [viewCount, setViewCount] = useState(reel.views || 0);
     const [isFollowing, setIsFollowing] = useState(false);
     const [doubleTapHeart, setDoubleTapHeart] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
+    const [testResult, setTestResult] = useState(null);
+    const [hasError, setHasError] = useState(false);
 
     useEffect(() => {
-        if (isActive && videoRef.current) {
-            // Explicitly reload to pick up source changes/retries
-            videoRef.current.load();
-            const playPromise = videoRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise
-                    .then(() => {
-                        setIsPlaying(true);
-                        incrementView();
-                        checkFollowing();
-                    })
-                    .catch(error => {
-                        console.log('Autoplay prevented:', error);
-                        setIsPlaying(false);
-                    });
+        const video = videoRef.current;
+        if (!video) return;
+
+        // Cleanup function to abort pending play promises
+        return () => {
+            if (playPromiseRef.current) {
+                video.pause();
+                playPromiseRef.current = null;
             }
-        } else if (videoRef.current) {
-            videoRef.current.pause();
-            videoRef.current.currentTime = 0;
+        };
+    }, []);
+
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (isActive) {
+            // Cancel any pending play promise before starting a new one
+            if (playPromiseRef.current) {
+                video.pause();
+            }
+
+            // Reset and load the video
+            video.currentTime = 0;
+            video.load();
+
+            // Small delay to ensure video is ready
+            const playTimeout = setTimeout(() => {
+                const playPromise = video.play();
+
+                if (playPromise !== undefined) {
+                    playPromiseRef.current = playPromise;
+
+                    playPromise
+                        .then(() => {
+                            if (isActive && video === videoRef.current) {
+                                setIsPlaying(true);
+                                incrementView();
+                                checkFollowing();
+                                playPromiseRef.current = null;
+                            }
+                        })
+                        .catch(error => {
+                            // Ignore AbortError and NotAllowedError - they're expected
+                            if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
+                                console.log('Playback error:', error.name, error.message);
+                            }
+                            setIsPlaying(false);
+                            playPromiseRef.current = null;
+                        });
+                }
+            }, 100);
+
+            return () => clearTimeout(playTimeout);
+        } else {
+            // Pause when not active
+            if (playPromiseRef.current) {
+                video.pause();
+                playPromiseRef.current = null;
+            }
+            video.pause();
+            video.currentTime = 0;
             setIsPlaying(false);
         }
     }, [isActive]);
@@ -398,10 +452,22 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
                     setTestResult('SUCCESS');
                 }}
                 onError={(e) => {
-                    const errorCode = videoRef.current?.error?.code;
-                    const errorMsg = videoRef.current?.error?.message;
-                    console.error(`[Reels] Video error: ${errorCode} - ${errorMsg}`);
-                    setTestResult(`MEDIA_ERR_${errorCode || 'UNKNOWN'}`);
+                    const video = videoRef.current;
+                    let errorType = 'UNKNOWN';
+
+                    if (video?.error) {
+                        const code = video.error.code;
+                        if (code === 1) errorType = 'ABORTED';
+                        else if (code === 2) errorType = 'NETWORK_ERROR';
+                        else if (code === 3) errorType = 'DECODE_ERROR';
+                        else if (code === 4) errorType = 'SOURCE_NOT_SUPPORTED';
+                        else errorType = `CODE_${code}`;
+                    } else if (video?.networkState === 3) {
+                        errorType = '404_NOT_FOUND (FILE MISSING)';
+                    }
+
+                    console.error(`[Reels] Playback Error: ${errorType}`);
+                    setTestResult(errorType);
 
                     // Auto-retry once on error if not already tried
                     if (!retryCount) {
@@ -416,21 +482,33 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
 
             {/* Diagnostic Overlay */}
             {testResult && testResult !== 'SUCCESS' && (
-                <div className="absolute top-24 left-4 right-4 z-[100] p-3 bg-red-600/90 text-white text-[11px] font-bold rounded-xl backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col gap-2">
-                    <p className="flex items-center gap-2">
-                        <X size={14} /> PLAYBACK ERROR: {testResult}
-                    </p>
+                <div className="absolute top-24 left-4 right-4 z-[100] p-4 bg-red-600/95 text-white rounded-2xl backdrop-blur-2xl border border-white/20 shadow-[0_0_50px_rgba(220,38,38,0.5)] flex flex-col gap-3 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-white/20 rounded-lg">
+                            <X size={20} className="text-white" />
+                        </div>
+                        <div>
+                            <h4 className="font-black text-[12px] uppercase tracking-widest">Playback Blocked</h4>
+                            <p className="text-[10px] font-bold opacity-80 uppercase">{testResult}</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-black/20 p-3 rounded-xl space-y-2">
+                        <p className="text-[9px] font-medium leading-relaxed italic opacity-90">
+                            {testResult.includes('404')
+                                ? "This specific video file is physically missing from the server's uploads directory. Please re-upload this reel through the instructor portal."
+                                : "A network or decoding error occurred. Attempting to synchronize..."}
+                        </p>
+                    </div>
+
                     <a
                         href={getAssetUrl(reel.videoUrl)}
                         target="_blank"
                         rel="noreferrer"
-                        className="bg-white/20 px-3 py-1.5 rounded-lg text-center hover:bg-white/30 transition-all uppercase tracking-widest text-[9px]"
+                        className="bg-white text-red-600 px-4 py-2 rounded-xl text-center font-black uppercase tracking-tighter text-[11px] hover:bg-white/90 transition-all pointer-events-auto"
                     >
-                        Click to Open Video Directly
+                        Verify File Manually (Opens in New Tab)
                     </a>
-                    <p className="text-[8px] opacity-70 whitespace-pre-wrap break-all">
-                        PATH: {getAssetUrl(reel.videoUrl)}
-                    </p>
                 </div>
             )}
 

@@ -179,7 +179,7 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
         >
             <video
                 ref={videoRef}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover md:object-contain"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 onClick={togglePlay}
@@ -255,20 +255,39 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
                             {showSettings && (
                                 <div className="absolute bottom-full right-0 mb-4 bg-[#141414] border border-white/10 rounded-xl shadow-2xl p-4 md:p-6 min-w-[200px] md:min-w-[240px] z-[100]">
                                     <div className="space-y-4 md:space-y-6">
+                                        {/* Playback Speed */}
                                         <div className="space-y-2">
-                                            <div className="text-[9px] md:text-[10px] text-white/40 font-semibold uppercase tracking-wider">Speed</div>
+                                            <div className="text-[9px] md:text-[10px] text-white/40 font-semibold uppercase tracking-wider">Playback Speed</div>
                                             <div className="grid grid-cols-4 gap-2">
                                                 {speeds.map(speed => (
                                                     <button
                                                         key={speed}
                                                         onClick={() => changeSpeed(speed)}
-                                                        className={`py-1 rounded text-[9px] md:text-[10px] font-medium transition-all border ${playbackSpeed === speed ? 'bg-brand-primary text-dark-bg border-brand-primary' : 'bg-transparent border-white/5 text-white/60'}`}
+                                                        className={`py-1 rounded text-[9px] md:text-[10px] font-medium transition-all border ${playbackSpeed === speed ? 'bg-brand-primary text-dark-bg border-brand-primary' : 'bg-transparent border-white/5 text-white/60 hover:text-white hover:border-white/10'}`}
                                                     >
                                                         {speed}x
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
+
+                                        {/* Quality Selector (only for HLS) */}
+                                        {availableQualities.length > 0 && (
+                                            <div className="space-y-2 border-t border-white/5 pt-4">
+                                                <div className="text-[9px] md:text-[10px] text-white/40 font-semibold uppercase tracking-wider">Quality</div>
+                                                <div className="space-y-1">
+                                                    {availableQualities.map(quality => (
+                                                        <button
+                                                            key={quality.index}
+                                                            onClick={() => changeQuality(quality.index)}
+                                                            className={`w-full py-2 px-3 rounded text-[10px] md:text-[11px] font-medium transition-all border text-left ${currentQuality === quality.label ? 'bg-brand-primary text-dark-bg border-brand-primary' : 'bg-transparent border-white/5 text-white/60 hover:text-white hover:border-white/10'}`}
+                                                        >
+                                                            {quality.label}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}

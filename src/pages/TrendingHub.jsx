@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 import {
     Flame, TrendingUp, Zap, Sparkles, Filter,
     MoreHorizontal, Eye, ThumbsUp, MessageCircle,
@@ -91,7 +92,7 @@ const TrendingHub = () => {
                     {reels.map((reel, i) => (
                         <div key={i} className="group aspect-[9/16] bg-[#141414] rounded-2xl overflow-hidden border border-white/5 hover:border-brand-primary/30 transition-all cursor-pointer relative shadow-xl">
                             <img
-                                src={reel.thumbnailUrl}
+                                src={getAssetUrl(reel.thumbnailUrl)}
                                 alt={reel.title}
                                 className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110"
                             />
@@ -123,7 +124,7 @@ const TrendingHub = () => {
                         <Link to={`/course/${course._id}`} key={i} className="group bg-[#141414] rounded-3xl border border-white/5 overflow-hidden hover:border-brand-primary/30 transition-all flex flex-col h-full shadow-2xl">
                             <div className="aspect-[16/9] relative overflow-hidden bg-[#262626]">
                                 <img
-                                    src={course.thumbnail}
+                                    src={getAssetUrl(course.thumbnail)}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-all duration-1000 opacity-70 group-hover:opacity-100"
                                     alt={course.title}
                                 />
@@ -167,7 +168,7 @@ const TrendingHub = () => {
                     {articles.map((article, i) => (
                         <Link to={`/blog/${article.slug}`} key={i} className="bg-[#141414] border border-white/5 rounded-3xl p-6 flex flex-col sm:flex-row gap-8 hover:border-brand-primary/30 hover:bg-[#1a1a1a] transition-all group shadow-xl">
                             <div className="w-full sm:w-48 h-48 rounded-2xl bg-[#0a0a0a] overflow-hidden shrink-0 relative border border-white/5 shadow-inner">
-                                <img src={article.coverImage} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-60 group-hover:opacity-100" alt={article.title} />
+                                <img src={getAssetUrl(article.coverImage)} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-60 group-hover:opacity-100" alt={article.title} />
                             </div>
                             <div className="py-2 space-y-4 flex-1 min-w-0">
                                 <div className="flex items-center gap-3 text-[10px] font-bold text-dark-muted uppercase tracking-widest opacity-50">

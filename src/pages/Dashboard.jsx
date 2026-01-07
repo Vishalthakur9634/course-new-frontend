@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 import {
     PlayCircle, Search, Clock, Zap, Award, BookOpen, CheckCircle,
     Flame, Share2, Users, MessageSquare, TrendingUp, Globe, Plus,
@@ -188,7 +189,7 @@ const Dashboard = () => {
                                     >
                                         <Link to={`/course/${enrollment.courseId._id}`} className="bg-[#141414] border border-white/5 rounded-[1.5rem] md:rounded-[2rem] p-4 md:p-6 hover:border-brand-primary/40 transition-all group block shadow-xl hover:shadow-brand-primary/5 relative overflow-hidden h-full flex flex-col">
                                             <div className="aspect-video rounded-xl md:rounded-2xl overflow-hidden mb-4 md:mb-6 bg-[#0a0a0a] relative ring-1 ring-white/5 flex-shrink-0">
-                                                <img src={enrollment.courseId.thumbnail} alt="" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" />
+                                                <img src={getAssetUrl(enrollment.courseId.thumbnail)} alt="" className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                                                 <div className="absolute bottom-3 left-3 right-3 md:bottom-4 md:left-4 md:right-4">
                                                     <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
@@ -280,7 +281,7 @@ const Dashboard = () => {
                                     >
                                         <Link to={`/course/${course._id}`} className="group bg-[#141414] border border-white/5 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden hover:border-brand-primary/30 transition-all duration-700 flex flex-col h-full shadow-2xl relative">
                                             <div className="aspect-[16/10] bg-black relative overflow-hidden ring-1 ring-white/5 flex-shrink-0">
-                                                <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" />
+                                                <img src={getAssetUrl(course.thumbnail)} alt={course.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-1000" />
                                                 <div className="absolute top-4 right-4 md:top-6 md:right-6">
                                                     <span className="bg-black/60 backdrop-blur-xl text-white px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 shadow-3xl">
                                                         {course.category}
@@ -346,7 +347,7 @@ const Dashboard = () => {
                                                 transition={{ delay: i * 0.05 }}
                                                 className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-[#0a0a0a] ring-1 ring-white/10 p-0.5 md:p-1 group-hover/avatar:ring-brand-primary/50 transition-all overflow-hidden shadow-2xl"
                                             >
-                                                <img src={f.avatar || 'https://via.placeholder.com/150'} className="w-full h-full rounded-lg md:rounded-xl object-cover grayscale opacity-60 group-hover/avatar:grayscale-0 group-hover/avatar:opacity-100 transition-all duration-500" alt={f.name} />
+                                                <img src={getAssetUrl(f.avatar) || 'https://via.placeholder.com/150'} className="w-full h-full rounded-lg md:rounded-xl object-cover grayscale opacity-60 group-hover/avatar:grayscale-0 group-hover/avatar:opacity-100 transition-all duration-500" alt={f.name} />
                                             </motion.div>
                                             <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-4 md:h-4 bg-green-500 rounded-full border-2 md:border-[3px] border-[#141414] shadow-2xl" />
                                         </Link>

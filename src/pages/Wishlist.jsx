@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import { getAssetUrl } from '../utils/urlUtils';
 import { Heart, Trash2, DollarSign, Bookmark, ArrowRight, BookOpen } from 'lucide-react';
 
 const Wishlist = () => {
@@ -75,7 +76,7 @@ const Wishlist = () => {
                         >
                             <div className="relative aspect-video bg-[#262626] overflow-hidden">
                                 <img
-                                    src={course.thumbnail}
+                                    src={getAssetUrl(course.thumbnail)}
                                     alt={course.title}
                                     className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-transform duration-700 group-hover:scale-105"
                                 />
