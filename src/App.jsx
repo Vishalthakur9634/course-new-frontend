@@ -40,6 +40,8 @@ import NeuralTutor from './pages/NeuralTutor';
 import SkillTrees from './pages/SkillTrees';
 import ResourceVault from './pages/ResourceVault';
 import DiscoverSectors from './pages/DiscoverSectors';
+import AuraQuest from './pages/AuraQuest';
+import MetaClassroom from './pages/MetaClassroom';
 
 // Instructor Pages
 import InstructorDashboard from './pages/instructor/InstructorDashboard';
@@ -395,6 +397,8 @@ function App() {
                 <Route path="/skill-paths" element={<PrivateRoute><AppLayout><SkillTrees /></AppLayout></PrivateRoute>} />
                 <Route path="/storage-vault" element={<PrivateRoute><AppLayout><ResourceVault /></AppLayout></PrivateRoute>} />
                 <Route path="/discover-sectors" element={<PrivateRoute><AppLayout><DiscoverSectors /></AppLayout></PrivateRoute>} />
+                <Route path="/aura-quest" element={<PrivateRoute><AppLayout><AuraQuest /></AppLayout></PrivateRoute>} />
+                <Route path="/meta-classroom" element={<PrivateRoute><AppLayout><MetaClassroom /></AppLayout></PrivateRoute>} />
             </Routes>
         </Router>
     );

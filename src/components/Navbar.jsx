@@ -121,6 +121,8 @@ const Navbar = ({ onOpenCommandPalette }) => {
             { name: 'Bundles', path: '/bundles', icon: Package },
             { name: 'Leaderboard', path: '/leaderboard', icon: Award },
             { name: 'Community', path: '/community', icon: Grid3x3 },
+            { name: 'Aura', path: '/aura-quest', icon: Zap },
+            { name: 'Meta', path: '/meta-classroom', icon: Video },
             { name: 'Certificates', path: '/certificates', icon: Award },
             { name: 'Announcements', path: '/announcements', icon: Bell },
             { name: 'Profile', path: '/settings', icon: User }, // Added Profile access for mobile bottom nav
@@ -167,7 +169,10 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                 <span className="text-[11px] md:text-lg font-bold uppercase tracking-tight leading-none text-white">
                                     Orbit<span className="text-brand-primary">Quest</span>
                                 </span>
-                                <span className="hidden sm:block text-[8px] md:text-[10px] font-medium text-dark-muted uppercase tracking-wider mt-0.5">Learn & Upskill</span>
+                                <div className="flex items-center gap-1.5">
+                                    <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                                    <span className="text-[7px] md:text-[9px] font-black text-green-500 uppercase tracking-widest leading-none">Transmission Stable</span>
+                                </div>
                             </div>
                         </Link>
 
