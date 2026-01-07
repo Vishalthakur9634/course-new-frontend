@@ -400,8 +400,21 @@ const ReelItem = ({ reel, isActive, isMuted, user, navigate, onShare }) => {
 
             {/* Diagnostic Overlay */}
             {testResult && testResult !== 'SUCCESS' && (
-                <div className="absolute top-24 left-4 right-4 z-50 p-2 bg-red-500/80 text-white text-[10px] font-mono rounded backdrop-blur-md">
-                    DEBUG: {testResult} for {getAssetUrl(reel.videoUrl)}
+                <div className="absolute top-24 left-4 right-4 z-[100] p-3 bg-red-600/90 text-white text-[11px] font-bold rounded-xl backdrop-blur-xl border border-white/20 shadow-2xl flex flex-col gap-2">
+                    <p className="flex items-center gap-2">
+                        <X size={14} /> PLAYBACK ERROR: {testResult}
+                    </p>
+                    <a
+                        href={getAssetUrl(reel.videoUrl)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-white/20 px-3 py-1.5 rounded-lg text-center hover:bg-white/30 transition-all uppercase tracking-widest text-[9px]"
+                    >
+                        Click to Open Video Directly
+                    </a>
+                    <p className="text-[8px] opacity-70 whitespace-pre-wrap break-all">
+                        PATH: {getAssetUrl(reel.videoUrl)}
+                    </p>
                 </div>
             )}
 

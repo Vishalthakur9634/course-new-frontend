@@ -44,5 +44,8 @@ export const getAssetUrl = (path) => {
 
     if (!cleanBackendUrl) return `/${cleanPath}`;
 
-    return `${cleanBackendUrl}/${cleanPath}`;
+    // ENSURE we don't return an empty string or malformed URL
+    const finalUrl = `${cleanBackendUrl}/${cleanPath}`;
+
+    return finalUrl;
 };
