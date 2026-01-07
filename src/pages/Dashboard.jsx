@@ -351,8 +351,8 @@ const Dashboard = () => {
                                             <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 md:w-4 md:h-4 bg-green-500 rounded-full border-2 md:border-[3px] border-[#141414] shadow-2xl" />
                                         </Link>
                                     ))}
-                                    <button className="w-7 h-7 md:w-16 md:h-16 rounded-lg md:rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex items-center justify-center text-dark-muted hover:border-brand-primary hover:text-white transition-all shadow-xl group/add">
-                                        <Plus size={7} className="md:w-[20px] md:h-[20px] group-hover/add:rotate-90 transition-transform" />
+                                    <button className="w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex items-center justify-center text-dark-muted hover:border-brand-primary hover:text-white transition-all shadow-xl group/add">
+                                        <Plus size={12} className="md:w-[20px] md:h-[20px] group-hover/add:rotate-90 transition-transform" />
                                     </button>
                                 </div>
                             </div>

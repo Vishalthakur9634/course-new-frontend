@@ -160,7 +160,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
 
                         <Link to="/" className="flex items-center gap-1 md:gap-3 group">
                             <div className="w-4 h-4 md:w-9 md:h-9 bg-brand-primary rounded-[2px] md:rounded-lg flex items-center justify-center transition-all duration-300 border border-brand-primary/20 shadow-sm relative overflow-hidden">
-                                <Rocket size={18} className="text-dark-bg fill-current relative z-10 md:w-[18px] md:h-[18px]" />
+                                <Rocket size={22} className="text-dark-bg fill-current relative z-10 md:w-[22px] md:h-[22px]" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-[11px] md:text-lg font-bold uppercase tracking-tight leading-none text-white">
@@ -280,7 +280,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                 onClick={() => onOpenCommandPalette && onOpenCommandPalette()}
                                 className="p-1 rounded hover:bg-white/5 text-dark-muted hover:text-white transition-all"
                             >
-                                <Search size={14} />
+                                <Search size={18} />
                             </button>
                         </div>
 
@@ -296,7 +296,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                         onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                                         className={`p-1 md:p-3 rounded md:rounded-xl transition-all relative group ${isNotificationsOpen ? 'bg-brand-primary text-dark-bg' : 'hover:bg-white/5 text-dark-muted hover:text-white'}`}
                                     >
-                                        <Bell size={18} className="md:size-[18px]" />
+                                        <Bell size={22} className="md:size-[22px]" />
                                         <AnimatePresence>
                                             {unreadCount > 0 && (
                                                 <motion.span
@@ -412,7 +412,7 @@ const Navbar = ({ onOpenCommandPalette }) => {
 
             {/* PROFESSIONAL COMPACT BOTTOM NAVIGATION */}
             {token && (
-                <div className="xl:hidden fixed bottom-0 left-0 right-0 h-[52px] bg-[#141414]/95 backdrop-blur-xl border-t border-white/10 z-[1000] pb-safe-area-bottom">
+                <div className="xl:hidden fixed bottom-0 left-0 right-0 h-[60px] bg-[#141414]/95 backdrop-blur-xl border-t border-white/10 z-[1000] pb-safe-area-bottom">
                     <div className="flex items-center h-full overflow-x-auto no-scrollbar px-1">
                         {currentLinks.map((link) => (
                             <Link
@@ -423,11 +423,11 @@ const Navbar = ({ onOpenCommandPalette }) => {
                                     : 'text-dark-muted hover:text-white'
                                     }`}
                             >
-                                <div className={`p-0.5 rounded-lg mb-0 transition-all ${location.pathname === link.path ? 'bg-brand-primary/10' : 'bg-transparent'
+                                <div className={`p-1 rounded-lg mb-0.5 transition-all ${location.pathname === link.path ? 'bg-brand-primary/10' : 'bg-transparent'
                                     }`}>
-                                    <link.icon size={16} className={location.pathname === link.path ? 'fill-current' : ''} />
+                                    <link.icon size={20} className={location.pathname === link.path ? 'fill-current' : ''} />
                                 </div>
-                                <span className="text-[7px] font-bold uppercase tracking-wider truncate max-w-full scale-90 -mt-0.5">
+                                <span className="text-[9px] font-bold uppercase tracking-wider truncate max-w-full -mt-0.5">
                                     {link.name}
                                 </span>
                                 {location.pathname === link.path && (

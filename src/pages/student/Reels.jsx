@@ -235,9 +235,9 @@ const Reels = () => {
             {user && (
                 <button
                     onClick={() => setShowUploadModal(true)}
-                    className="fixed bottom-40 md:bottom-10 right-6 w-7 h-7 rounded-xl bg-brand-primary text-dark-bg flex items-center justify-center shadow-[0_8px_30px_rgba(255,161,22,0.4)] hover:scale-110 active:scale-90 transition-all z-50 pointer-events-auto"
+                    className="fixed bottom-40 md:bottom-10 right-6 w-10 h-10 rounded-xl bg-brand-primary text-dark-bg flex items-center justify-center shadow-[0_8px_30px_rgba(255,161,22,0.4)] hover:scale-110 active:scale-90 transition-all z-50 pointer-events-auto"
                 >
-                    <Plus size={14} strokeWidth={3} />
+                    <Plus size={20} strokeWidth={3} />
                 </button>
             )}
 

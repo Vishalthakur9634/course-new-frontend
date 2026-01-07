@@ -203,9 +203,9 @@ const CommunityHub = () => {
                             </div>
                             <button
                                 onClick={() => setShowCreatePost(true)}
-                                className="bg-brand-primary text-dark-bg p-1.5 md:p-3.5 rounded-lg md:rounded-xl hover:brightness-110 active:scale-95 transition-all shadow-xl shadow-brand-primary/10 border border-brand-primary/20"
+                                className="p-2 md:p-3.5 bg-brand-primary text-dark-bg rounded-lg md:rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-brand-primary/20 flex items-center justify-center"
                             >
-                                <Plus size={10} className="md:w-6 md:h-6" />
+                                <Plus size={16} className="md:w-6 md:h-6" />
                             </button>
                         </div>
                     </motion.header>

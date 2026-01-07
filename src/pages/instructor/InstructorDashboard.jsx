@@ -161,7 +161,7 @@ const InstructorDashboard = () => {
             {/* Quick Actions */}
             <div className="flex gap-4 flex-wrap">
                 <Link to="/instructor/courses" className="flex-1 md:flex-none bg-brand-primary text-white px-4 md:px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 flex items-center justify-center md:justify-start gap-2 shadow-lg shadow-brand-primary/20 text-xs md:text-base">
-                    <Plus size={10} className="md:size-[20px]" />
+                    <Plus size={16} className="md:size-[20px]" />
                     Create New Course
                 </Link>
                 <Link to="/instructor/upload" className="flex-1 md:flex-none bg-dark-layer1 border border-dark-layer2 text-white px-6 py-3 rounded-lg font-bold hover:bg-dark-layer2 flex items-center justify-center md:justify-start gap-2 text-sm md:text-base">
