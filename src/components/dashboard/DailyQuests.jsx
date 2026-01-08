@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
 
 const DailyQuests = ({ missions }) => {
+    console.log("Rendering DailyQuests v2 [FIXED]");
     const [localMissions, setLocalMissions] = useState([]);
 
     useEffect(() => {
