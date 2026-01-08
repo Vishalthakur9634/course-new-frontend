@@ -1,3 +1,6 @@
+import { useState, useEffect } from 'react';
+import { Trophy, CheckCircle, Circle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../utils/api';
 
 const DailyQuests = ({ missions }) => {
