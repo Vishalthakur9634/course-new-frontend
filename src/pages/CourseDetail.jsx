@@ -180,63 +180,65 @@ const CourseDetail = () => {
             {/* HIGH-FIDELITY CONTENT AREA */}
             <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
                 {/* STRATEGIC VIDEO PLAYER */}
-                <div className={`bg-black w-full relative flex-shrink-0 flex items-center justify-center aspect-video md:aspect-auto`} style={{ height: window.innerWidth >= 768 ? `${videoHeight}vh` : 'auto' }}>
-                    {hasAccess ? (
-                        activeVideo ? (
-                            <VideoPlayer
-                                src={getAssetUrl(activeVideo.videoUrl)}
-                                poster={getAssetUrl(activeVideo.thumbnailUrl)}
-                                onProgress={handleProgress}
-                            />
+                <div className="bg-black w-full relative flex-shrink-0 flex items-center justify-start py-4 px-4 md:px-8" style={{ maxHeight: '500px' }}>
+                    <div className="w-full aspect-video max-w-[900px]">
+                        {hasAccess ? (
+                            activeVideo ? (
+                                <VideoPlayer
+                                    src={getAssetUrl(activeVideo.videoUrl)}
+                                    poster={getAssetUrl(activeVideo.thumbnailUrl)}
+                                    onProgress={handleProgress}
+                                />
+                            ) : (
+                                <div className="text-dark-muted font-bold text-[10px] uppercase tracking-[0.4em] opacity-30">Select a syllabus module to begin</div>
+                            )
                         ) : (
-                            <div className="text-dark-muted font-bold text-[10px] uppercase tracking-[0.4em] opacity-30">Select a syllabus module to begin</div>
-                        )
-                    ) : (
-                        <div className="absolute inset-0 bg-[#0a0a0a] flex flex-col items-center justify-center p-4 md:p-8 text-center">
-                            <div className="bg-[#141414] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border border-white/5 max-w-xl w-full shadow-3xl space-y-6 md:space-y-8 relative overflow-hidden group">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-primary to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
-                                <div className="w-16 h-16 md:w-20 md:h-20 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary mx-auto border border-brand-primary/20 shadow-xl">
-                                    <Lock size={32} className="md:w-9 md:h-9" />
-                                </div>
-                                <div className="space-y-2 md:space-y-3">
-                                    <h2 className="text-2xl md:text-4xl font-bold uppercase tracking-tight">Access Restricted</h2>
-                                    <p className="text-dark-muted text-[10px] md:text-[11px] font-bold uppercase tracking-widest opacity-60">Professional Enrollment Required to Access Curriculum</p>
-                                </div>
-
-                                <div className="py-6 md:py-8 border-y border-white/5 space-y-2">
-                                    <p className="text-[9px] md:text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] opacity-40">Program Investment</p>
-                                    <p className="text-4xl md:text-6xl font-bold text-white tracking-tighter">${course.price}</p>
-                                </div>
-
-                                <div className="flex flex-col sm:flex-row gap-4 md:gap-5 pt-4">
-                                    <button
-                                        onClick={() => setShowPaymentModal(true)}
-                                        className="flex-1 bg-brand-primary hover:brightness-110 text-dark-bg font-bold py-4 md:py-5 rounded-2xl text-[10px] md:text-[11px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-brand-primary/20"
-                                    >
-                                        Execute Enrollment
-                                    </button>
-                                    <button
-                                        onClick={toggleWishlist}
-                                        className={`px-8 py-4 md:py-0 rounded-2xl border transition-all flex items-center justify-center ${isWishlisted
-                                            ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
-                                            : 'border-white/10 hover:border-brand-primary/40 text-white bg-[#0a0a0a]'
-                                            }`}
-                                    >
-                                        <Heart size={22} className={isWishlisted ? "fill-brand-primary" : ""} />
-                                    </button>
-                                </div>
-
-                                <div className="flex items-center justify-center gap-4 md:gap-8 pt-4">
-                                    <div className="flex items-center gap-2.5 text-[8px] md:text-[9px] font-bold text-dark-muted uppercase tracking-widest">
-                                        <ShieldCheck size={14} className="text-green-500 md:w-4 md:h-4" /> Secure Registry
+                            <div className="absolute inset-0 bg-[#0a0a0a] flex flex-col items-center justify-center p-4 md:p-8 text-center">
+                                <div className="bg-[#141414] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border border-white/5 max-w-xl w-full shadow-3xl space-y-6 md:space-y-8 relative overflow-hidden group">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-primary to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
+                                    <div className="w-16 h-16 md:w-20 md:h-20 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary mx-auto border border-brand-primary/20 shadow-xl">
+                                        <Lock size={32} className="md:w-9 md:h-9" />
                                     </div>
-                                    <div className="flex items-center gap-2.5 text-[8px] md:text-[9px] font-bold text-dark-muted uppercase tracking-widest">
-                                        <Award size={14} className="text-brand-primary md:w-4 md:h-4" /> Verified Credential
+                                    <div className="space-y-2 md:space-y-3">
+                                        <h2 className="text-2xl md:text-4xl font-bold uppercase tracking-tight">Access Restricted</h2>
+                                        <p className="text-dark-muted text-[10px] md:text-[11px] font-bold uppercase tracking-widest opacity-60">Professional Enrollment Required to Access Curriculum</p>
+                                    </div>
+
+                                    <div className="py-6 md:py-8 border-y border-white/5 space-y-2">
+                                        <p className="text-[9px] md:text-[10px] font-bold text-dark-muted uppercase tracking-[0.4em] opacity-40">Program Investment</p>
+                                        <p className="text-4xl md:text-6xl font-bold text-white tracking-tighter">${course.price}</p>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row gap-4 md:gap-5 pt-4">
+                                        <button
+                                            onClick={() => setShowPaymentModal(true)}
+                                            className="flex-1 bg-brand-primary hover:brightness-110 text-dark-bg font-bold py-4 md:py-5 rounded-2xl text-[10px] md:text-[11px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-brand-primary/20"
+                                        >
+                                            Execute Enrollment
+                                        </button>
+                                        <button
+                                            onClick={toggleWishlist}
+                                            className={`px-8 py-4 md:py-0 rounded-2xl border transition-all flex items-center justify-center ${isWishlisted
+                                                ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
+                                                : 'border-white/10 hover:border-brand-primary/40 text-white bg-[#0a0a0a]'
+                                                }`}
+                                        >
+                                            <Heart size={22} className={isWishlisted ? "fill-brand-primary" : ""} />
+                                        </button>
+                                    </div>
+
+                                    <div className="flex items-center justify-center gap-4 md:gap-8 pt-4">
+                                        <div className="flex items-center gap-2.5 text-[8px] md:text-[9px] font-bold text-dark-muted uppercase tracking-widest">
+                                            <ShieldCheck size={14} className="text-green-500 md:w-4 md:h-4" /> Secure Registry
+                                        </div>
+                                        <div className="flex items-center gap-2.5 text-[8px] md:text-[9px] font-bold text-dark-muted uppercase tracking-widest">
+                                            <Award size={14} className="text-brand-primary md:w-4 md:h-4" /> Verified Credential
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
 
                 {/* DOMAIN DETAILS MATRIX */}

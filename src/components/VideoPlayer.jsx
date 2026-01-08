@@ -171,7 +171,7 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
     return (
         <div
             ref={containerRef}
-            className="relative bg-[#0a0a0a] group w-full h-full font-inter overflow-hidden border border-white/5 shadow-3xl"
+            className="relative bg-[#0a0a0a] group w-full h-full font-inter border border-white/5 shadow-3xl flex items-center justify-center"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onMouseMove={handleMouseEnter}
@@ -179,7 +179,7 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
         >
             <video
                 ref={videoRef}
-                className="w-full h-full object-cover md:object-contain"
+                className="w-full h-full object-contain"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 onClick={togglePlay}
@@ -189,7 +189,7 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
 
             {/* CONTROLS OVERLAY */}
             <div
-                className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-8 md:pt-24 pb-safe-area-bottom px-3 md:px-8 transition-all duration-300 z-[60] ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}
+                className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-8 md:pt-24 pb-safe-area-bottom px-3 md:px-8 transition-all duration-300 z-[100] ${showControls ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}
             >
                 {/* PROGRESS BAR */}
                 <div
@@ -253,7 +253,7 @@ const VideoPlayer = ({ src, poster, onProgress }) => {
                             </button>
 
                             {showSettings && (
-                                <div className="absolute bottom-full right-0 mb-4 bg-[#141414] border border-white/10 rounded-xl shadow-2xl p-4 md:p-6 min-w-[200px] md:min-w-[240px] z-[100]">
+                                <div className="absolute bottom-full right-0 mb-4 bg-[#141414] border border-white/10 rounded-xl shadow-2xl p-4 md:p-6 min-w-[200px] md:min-w-[240px] z-[150]">
                                     <div className="space-y-4 md:space-y-6">
                                         {/* Playback Speed */}
                                         <div className="space-y-2">
