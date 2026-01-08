@@ -23,12 +23,19 @@ const CourseDetail = () => {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const [enrollmentType, setEnrollmentType] = useState('none'); // 'none', 'trial', 'full'
+
+    // Explicit Access States
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isOwner, setIsOwner] = useState(false);
+    const [isEnrolled, setIsEnrolled] = useState(false);
 
     useEffect(() => {
         const userStr = localStorage.getItem('user');
         if (userStr) {
             const userObj = JSON.parse(userStr);
             setCurrentUser(userObj);
+            setIsAdmin(userObj.role === 'superadmin');
             checkWishlistStatus(userObj.id || userObj._id);
         }
 
@@ -40,7 +47,6 @@ const CourseDetail = () => {
 
         fetchCourseData();
 
-        // Handle resize for sidebar
         const handleResize = () => {
             if (window.innerWidth >= 768) {
                 setSidebarOpen(true);
@@ -94,19 +100,43 @@ const CourseDetail = () => {
 
             setCourse(courseRes.data);
 
-            const isEnrolled = userRes.data.enrolledCourses?.some(enrollment => {
-                const courseId = enrollment.courseId?._id || enrollment.courseId;
+            const enrollment = userRes.data.enrolledCourses?.find(e => {
+                const courseId = e.courseId?._id || e.courseId;
                 return courseId === id;
             });
-            const isAdmin = user.role === 'superadmin';
-            const isOwner = courseRes.data.instructorId?._id === userId || courseRes.data.instructorId === userId;
 
-            if (isAdmin || isEnrolled || isOwner) {
+            const enrolled = !!enrollment;
+            const trial = enrollment?.type === 'trial';
+            const owner = courseRes.data.instructorId?._id === userId || courseRes.data.instructorId === userId;
+            const admin = user.role === 'superadmin';
+
+            setIsEnrolled(enrolled && !trial);
+            setIsOwner(owner);
+            setIsAdmin(admin);
+
+            // Grant access for full enrollment, trial, admin, or owner
+            // NOTE: Even if trial, we might want to show LOCKED for some videos eventually,
+            // but for now, trial gives access to the player, but maybe not all validation perks.
+            // Requirement update: Trial users should see "Upgrade" buttons.
+
+            if (admin || (enrolled && !trial) || owner) {
                 setHasAccess(true);
                 if (courseRes.data.videos.length > 0) {
                     setActiveVideo(courseRes.data.videos[0]);
                 }
+            } else if (trial) {
+                // Trial User Logic: Give Access to Player but keep hasAccess 'true' simply so they can see the video?
+                // Or if we want to LOCK specific parts, we need granular logic.
+                // For now, let's say Trial users have access so they can watch content (as per original logic).
+                setHasAccess(true);
+                if (courseRes.data.videos.length > 0) {
+                    setActiveVideo(courseRes.data.videos[0]);
+                }
+            } else {
+                setHasAccess(false);
             }
+
+            setEnrollmentType(trial ? 'trial' : enrolled ? 'full' : 'none');
 
             const progress = {};
             if (userRes.data.watchHistory) {
@@ -122,6 +152,17 @@ const CourseDetail = () => {
             setLoading(false);
         }
     };
+
+    // [NEW] AGGRESSIVE PAYWALL: Auto-open payment modal if not enrolled
+    useEffect(() => {
+        if (!loading && !hasAccess && !isAdmin && !isOwner) {
+            // Small delay for smoother UX
+            const timer = setTimeout(() => {
+                setShowPaymentModal(true);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [loading, hasAccess, isAdmin, isOwner]);
 
     const handleVideoSelect = (video) => {
         if (!hasAccess) return;
@@ -162,8 +203,6 @@ const CourseDetail = () => {
         fetchCourseData();
     };
 
-    const [videoHeight, setVideoHeight] = useState(65);
-
     if (loading) return <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a] text-white font-bold uppercase tracking-widest text-[10px]">Analyzing Curriculum Matrix...</div>;
     if (!course) return <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a] text-white font-bold uppercase tracking-widest text-[10px]">Course Not Found</div>;
 
@@ -190,7 +229,17 @@ const CourseDetail = () => {
                                     onProgress={handleProgress}
                                 />
                             ) : (
-                                <div className="text-dark-muted font-bold text-[10px] uppercase tracking-[0.4em] opacity-30">Select a syllabus module to begin</div>
+                                <div className="flex flex-col items-center justify-center gap-6">
+                                    <div className="text-dark-muted font-bold text-[10px] uppercase tracking-[0.4em] opacity-30">Select a syllabus module to begin</div>
+                                    {enrollmentType === 'trial' && (
+                                        <button
+                                            onClick={() => setShowPaymentModal(true)}
+                                            className="px-6 py-3 bg-brand-primary text-dark-bg font-black text-[10px] uppercase tracking-[0.3em] rounded-xl hover:scale-105 transition-all shadow-xl shadow-brand-primary/20"
+                                        >
+                                            Upgrade to Full Access
+                                        </button>
+                                    )}
+                                </div>
                             )
                         ) : (
                             <div className="absolute inset-0 bg-[#0a0a0a] flex flex-col items-center justify-center p-4 md:p-8 text-center">
@@ -214,8 +263,27 @@ const CourseDetail = () => {
                                             onClick={() => setShowPaymentModal(true)}
                                             className="flex-1 bg-brand-primary hover:brightness-110 text-dark-bg font-bold py-4 md:py-5 rounded-2xl text-[10px] md:text-[11px] uppercase tracking-[0.3em] transition-all shadow-2xl shadow-brand-primary/20"
                                         >
-                                            Execute Enrollment
+                                            {enrollmentType === 'trial' ? 'Upgrade to Full Access' : course.price > 0 ? 'Purchase Full Access' : 'Enroll Now Free'}
                                         </button>
+                                        {course.price > 0 && (
+                                            <button
+                                                onClick={async () => {
+                                                    try {
+                                                        const user = JSON.parse(localStorage.getItem('user'));
+                                                        await api.post('/enrollment/enroll', {
+                                                            courseId: course._id,
+                                                            type: 'trial'
+                                                        });
+                                                        handlePurchaseSuccess();
+                                                    } catch (err) {
+                                                        alert(err.response?.data?.message || 'Trial enrollment failed');
+                                                    }
+                                                }}
+                                                className="flex-1 bg-[#141414] hover:bg-white/5 text-white font-bold py-4 md:py-5 rounded-2xl text-[10px] md:text-[11px] border border-white/5 uppercase tracking-[0.3em] transition-all"
+                                            >
+                                                Start Free Trial
+                                            </button>
+                                        )}
                                         <button
                                             onClick={toggleWishlist}
                                             className={`px-8 py-4 md:py-0 rounded-2xl border transition-all flex items-center justify-center ${isWishlisted
@@ -268,6 +336,17 @@ const CourseDetail = () => {
                             >
                                 <Share2 size={24} />
                             </button>
+
+                            {/* [FIX] FORCE PURCHASE BUTTON VISIBILITY IF NOT FULLY ENROLLED */}
+                            {/* [FIX] FORCE PURCHASE BUTTON VISIBILITY IF NOT FULLY ENROLLED */}
+                            {(!isEnrolled || enrollmentType === 'trial') && !isAdmin && !isOwner && (
+                                <button
+                                    onClick={() => setShowPaymentModal(true)}
+                                    className="bg-brand-primary text-dark-bg px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] hover:brightness-110 transition-all shadow-2xl shadow-brand-primary/20 animate-pulse"
+                                >
+                                    {course.price > 0 ? (enrollmentType === 'trial' ? 'Upgrade Full Access' : 'Purchase Full Access') : 'Enroll Free'}
+                                </button>
+                            )}
                         </div>
                     </header>
 
@@ -329,7 +408,7 @@ const CourseDetail = () => {
                     <button onClick={() => setSidebarOpen(false)} className="md:hidden p-3 bg-white/5 rounded-xl text-dark-muted hover:text-white">
                         <X size={20} />
                     </button>
-                    {/* Desktop Collapse Button could go here */}
+                    {/* Desktop Collapse Button */}
                 </div>
 
                 <div className="flex-1 overflow-y-auto no-scrollbar py-4 md:py-6">
@@ -355,8 +434,14 @@ const CourseDetail = () => {
                                         </div>
                                     )
                                 ) : (
-                                    <div className="w-8 h-8 rounded-xl bg-[#141414] flex items-center justify-center border border-white/5 opacity-40">
-                                        <Lock size={16} className="text-dark-muted" />
+                                    <div
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowPaymentModal(true);
+                                        }}
+                                        className="w-8 h-8 rounded-xl bg-[#141414] flex items-center justify-center border border-white/10 opacity-60 hover:border-brand-primary/40 hover:opacity-100 transition-all cursor-pointer group/lock"
+                                    >
+                                        <Lock size={16} className="text-dark-muted group-hover/lock:text-brand-primary" />
                                     </div>
                                 )}
                             </div>
@@ -378,13 +463,23 @@ const CourseDetail = () => {
                 </div>
             </div>
 
-            {/* Mobile Nav Toggle */}
-            <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="md:hidden absolute bottom-6 right-6 z-50 bg-brand-primary text-dark-bg p-4 rounded-full shadow-2xl hover:scale-105 transition-transform"
-            >
-                {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            {/* FIXED BOTTOM PURCHASE BAR FOR ROBUST VISIBILITY */}
+            {!isEnrolled && !isAdmin && !isOwner && !loading && (
+                <div className="fixed bottom-0 left-0 right-0 z-[100] bg-[#141414] border-t border-brand-primary/20 p-4 md:hidden animate-slide-up shadow-[0_-10px_40px_rgba(0,0,0,0.8)]">
+                    <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
+                        <div className="flex flex-col">
+                            <span className="text-[10px] uppercase tracking-widest text-dark-muted">Get Access</span>
+                            <span className="text-xl font-black text-white">${course?.price || '0'}</span>
+                        </div>
+                        <button
+                            onClick={() => setShowPaymentModal(true)}
+                            className="bg-brand-primary text-dark-bg px-8 py-3 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:brightness-110 shadow-lg shadow-brand-primary/20"
+                        >
+                            {course?.price > 0 ? 'Buy Now' : 'Enroll Free'}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

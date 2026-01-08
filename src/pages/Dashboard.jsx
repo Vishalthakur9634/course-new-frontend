@@ -6,13 +6,15 @@ import {
     PlayCircle, Search, Clock, Zap, Award, BookOpen, CheckCircle,
     Flame, Share2, Users, MessageSquare, TrendingUp, Globe, Plus,
     Heart, Star, ArrowRight, Cpu, Sparkles, GraduationCap, Activity,
-    Target, Trophy, Rocket
+    Target, Trophy, Rocket, ShoppingCart
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NotificationCenter from '../components/NotificationCenter';
 import ActivityHeatmap from '../components/dashboard/ActivityHeatmap';
 import SkillRadar from '../components/dashboard/SkillRadar';
 import DailyQuests from '../components/dashboard/DailyQuests';
+import PaymentModal from '../components/PaymentModal';
+import { useToast } from '../context/ToastContext';
 
 const Dashboard = () => {
     const [courses, setCourses] = useState([]);
@@ -21,8 +23,12 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
-    const [socialPulse, setSocialPulse] = useState([]);
     const [following, setFollowing] = useState([]);
+    const [socialPulse, setSocialPulse] = useState([]);
+    const [gamification, setGamification] = useState(null);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedCourse, setSelectedCourse] = useState(null);
+    const { addToast } = useToast();
 
     useEffect(() => {
         fetchData();
@@ -32,18 +38,20 @@ const Dashboard = () => {
         try {
             const userObj = JSON.parse(localStorage.getItem('user'));
             const userId = userObj.id || userObj._id;
-            const [coursesRes, userRes, enrollmentsRes, followingRes, communityRes] = await Promise.all([
+            const [coursesRes, userRes, enrollmentsRes, followingRes, communityRes, gamificationRes] = await Promise.all([
                 api.get('/courses'),
                 api.get(`/users/profile/${userId}`),
                 api.get('/enrollment/my-courses'),
                 api.get(`/users/following/${userId}`),
-                api.get('/community/posts?limit=5')
+                api.get('/community/posts?limit=5'),
+                api.get('/gamification/xp')
             ]);
             setCourses(coursesRes.data);
             setUser(userRes.data);
             setEnrollments(enrollmentsRes.data || []);
             setFollowing(Array.isArray(followingRes.data) ? followingRes.data : []);
             setSocialPulse(communityRes.data.posts || []);
+            setGamification(gamificationRes.data);
         } catch (error) {
             console.error('Failed to fetch data', error);
             setCourses([]);
@@ -86,6 +94,16 @@ const Dashboard = () => {
 
     return (
         <div className="max-w-[1600px] mx-auto pb-24 px-4 md:px-10 font-inter text-gray-300">
+            {showPaymentModal && selectedCourse && (
+                <PaymentModal
+                    course={selectedCourse}
+                    onClose={() => setShowPaymentModal(false)}
+                    onSuccess={() => {
+                        addToast('Course Access Granted', 'success');
+                        fetchData();
+                    }}
+                />
+            )}
             {/* Split Layout Matrix */}
             <div className="flex flex-col lg:flex-row gap-8 md:gap-12">
 
@@ -219,10 +237,10 @@ const Dashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                         {/* Keep Analytics vertical/grid as they are singular widgets, or maybe carousel them optionally? User said "cards smaller". Let's stick to Grid for widgets as they are large. */}
                         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="bg-[#141414] border border-white/5 rounded-[2rem] p-6 md:p-10 shadow-2xl hover:border-brand-primary/20 transition-all group overflow-hidden relative">
-                            <DailyQuests />
+                            <DailyQuests missions={gamification?.missions} />
                         </motion.div>
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-[#141414] border border-white/5 rounded-[2rem] p-6 md:p-10 shadow-2xl hover:border-brand-primary/20 transition-all group overflow-hidden relative">
-                            <SkillRadar courses={courses} />
+                            <SkillRadar courses={courses} enrollments={enrollments} />
                         </motion.div>
                         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="bg-[#141414] border border-white/5 rounded-[2rem] p-6 md:p-10 shadow-2xl hover:border-brand-primary/20 transition-all group overflow-hidden relative">
                             <ActivityHeatmap />
@@ -297,7 +315,20 @@ const Dashboard = () => {
                                                         <Star size={12} className="md:w-[16px] md:h-[16px]" fill="currentColor" />
                                                         <span>High Fidelity</span>
                                                     </div>
-                                                    <span className="font-black text-lg md:text-3xl text-white tracking-tighter italic">${course.price}</span>
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="font-black text-lg md:text-3xl text-white tracking-tighter italic">${course.price}</span>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                setSelectedCourse(course);
+                                                                setShowPaymentModal(true);
+                                                            }}
+                                                            className="p-2 md:p-3 bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-dark-bg rounded-xl border border-brand-primary/20 transition-all group/buy"
+                                                        >
+                                                            <ShoppingCart size={16} className="md:w-[18px] md:h-[18px]" />
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </Link>

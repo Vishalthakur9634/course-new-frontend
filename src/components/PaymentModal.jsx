@@ -55,11 +55,7 @@ const PaymentModal = ({ course, onClose, onSuccess }) => {
             });
 
             if (response.data.success) {
-                await api.post('/enrollment/enroll', {
-                    courseId: course._id,
-                    paymentId: response.data.paymentId
-                });
-
+                // Backend now handles enrollment automatically during purchase
                 setSuccess(true);
                 setTimeout(() => {
                     onSuccess();
@@ -132,7 +128,31 @@ const PaymentModal = ({ course, onClose, onSuccess }) => {
                                     disabled={loading}
                                     className="w-full mt-4 bg-brand-primary hover:brightness-110 text-dark-bg font-black py-4 px-6 rounded-2xl text-[10px] uppercase tracking-[0.3em] transition-all shadow-xl shadow-brand-primary/20 flex items-center justify-center gap-2 group/btn"
                                 >
-                                    <Zap size={16} className="group-hover:animate-pulse" /> {loading ? 'PROCESSING...' : 'AUTHORIZE ACCESS (BETA)'}
+                                    <Zap size={16} className="group-hover:animate-pulse" /> {loading ? 'PROCESSING...' : 'AUTHORIZE FULL ACCESS'}
+                                </button>
+                                {/* [NEW] Temporary Enroll Free Bypass for testing */}
+                                <button
+                                    onClick={async () => {
+                                        setLoading(true);
+                                        try {
+                                            await api.post('/enrollment/enroll', {
+                                                courseId: course._id,
+                                                type: 'full', // FORCE FULL ENROLLMENT
+                                                force: true // BYPASS PAYMENT CHECK
+                                            });
+                                            setSuccess(true);
+                                            setTimeout(() => {
+                                                onSuccess();
+                                                onClose();
+                                            }, 2000);
+                                        } catch (err) {
+                                            setError('Enrollment Failed: ' + (err.response?.data?.message || err.message));
+                                            setLoading(false);
+                                        }
+                                    }}
+                                    className="w-full mt-2 bg-green-500 hover:brightness-110 text-white font-black py-4 px-6 rounded-2xl text-[10px] uppercase tracking-[0.3em] transition-all shadow-xl shadow-green-500/20 flex items-center justify-center gap-2"
+                                >
+                                    <CheckCircle size={16} /> {loading ? 'ENROLLING...' : 'ENROLL FREE (BETA BYPASS)'}
                                 </button>
                             </div>
                         </div>
@@ -229,7 +249,11 @@ const PaymentModal = ({ course, onClose, onSuccess }) => {
                                 {loading ? (
                                     <span className="animate-pulse">SYNCHRONIZING...</span>
                                 ) : (
-                                    <>Commit Investment</>
+                                    <>
+                                        {localStorage.getItem('user') && JSON.parse(localStorage.getItem('user')).enrolledCourses?.some(e => (e.courseId?._id || e.courseId) === course._id && e.type === 'trial')
+                                            ? 'COMPLETE ENROLLMENT'
+                                            : 'COMMIT INVESTMENT'}
+                                    </>
                                 )}
                             </button>
 

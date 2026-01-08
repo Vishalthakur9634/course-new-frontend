@@ -4,12 +4,17 @@ import api from '../../utils/api';
 import { getAssetUrl } from '../../utils/urlUtils';
 import {
     Search, Filter, Heart, Users, DollarSign, Star, Share2,
-    Zap, ChevronDown, Check, X, SlidersHorizontal
+    Zap, ChevronDown, Check, X, SlidersHorizontal, ShoppingCart
 } from 'lucide-react';
+import PaymentModal from '../../components/PaymentModal';
+import { useToast } from '../../context/ToastContext';
 
 const CourseBrowse = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
+    const { addToast } = useToast();
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedCourse, setSelectedCourse] = useState(null);
 
     // Data State
     const [courses, setCourses] = useState([]);
@@ -134,6 +139,16 @@ const CourseBrowse = () => {
 
     return (
         <div className="min-h-screen bg-dark-bg pb-28 pt-24 px-4 md:px-8 max-w-[1600px] mx-auto">
+            {showPaymentModal && selectedCourse && (
+                <PaymentModal
+                    course={selectedCourse}
+                    onClose={() => setShowPaymentModal(false)}
+                    onSuccess={() => {
+                        addToast('Course Access Granted', 'success');
+                        fetchCourses();
+                    }}
+                />
+            )}
 
             {/* Header & Search */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6 mb-6 md:mb-12">
@@ -311,8 +326,21 @@ const CourseBrowse = () => {
                                             <div className="flex items-center gap-2 text-[10px] font-black text-dark-muted uppercase">
                                                 <Users size={12} /> {course.enrollmentCount || 0}
                                             </div>
-                                            <div className="text-lg font-black text-white">
-                                                ${course.price === 0 ? 'FREE' : course.price}
+                                            <div className="flex items-center gap-4">
+                                                <div className="text-lg font-black text-white">
+                                                    ${course.price === 0 ? 'FREE' : course.price}
+                                                </div>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        setSelectedCourse(course);
+                                                        setShowPaymentModal(true);
+                                                    }}
+                                                    className="p-2 bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-dark-bg rounded-lg border border-brand-primary/20 transition-all group/buy"
+                                                >
+                                                    <ShoppingCart size={16} />
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

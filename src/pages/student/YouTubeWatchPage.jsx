@@ -8,7 +8,7 @@ import {
     Play, CheckCircle, Lock, Layout, Menu, X, ChevronRight,
     BookOpen, GraduationCap, ChevronDown, List, Clock
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import PaymentModal from '../../components/PaymentModal';
 
 const YouTubeWatchPage = () => {
     const { id } = useParams();
@@ -18,6 +18,9 @@ const YouTubeWatchPage = () => {
     const [loading, setLoading] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [completedVideos, setCompletedVideos] = useState([]);
+
+    const [hasAccess, setHasAccess] = useState(true);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -30,9 +33,9 @@ const YouTubeWatchPage = () => {
         setLoading(true);
         try {
             const accessRes = await api.get(`/enrollment/${id}/access`);
+            setHasAccess(accessRes.data.hasAccess);
             if (!accessRes.data.hasAccess) {
-                navigate(`/course/${id}`);
-                return;
+                // We keep them on page but show Locked UI
             }
 
             const { data } = await api.get(`/courses/${id}`);
@@ -54,7 +57,7 @@ const YouTubeWatchPage = () => {
         } catch (error) {
             console.error('Error fetching course:', error);
             if (error.response?.status === 403) {
-                navigate(`/course/${id}`);
+                setHasAccess(false);
             }
         } finally {
             setLoading(false);
@@ -62,6 +65,10 @@ const YouTubeWatchPage = () => {
     };
 
     const handleVideoSelect = (video) => {
+        if (!hasAccess) {
+            setShowPaymentModal(true);
+            return;
+        }
         setActiveVideo(video);
         if (window.innerWidth < 1024) setIsSidebarOpen(false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -78,6 +85,16 @@ const YouTubeWatchPage = () => {
 
     return (
         <div className="flex flex-col h-screen bg-[#0a0a0a] text-white overflow-hidden font-inter">
+            {showPaymentModal && course && (
+                <PaymentModal
+                    course={course}
+                    onClose={() => setShowPaymentModal(false)}
+                    onSuccess={() => {
+                        setShowPaymentModal(false);
+                        fetchData();
+                    }}
+                />
+            )}
             {/* HEADER */}
             <header className="h-16 bg-[#141414] border-b border-white/5 flex items-center justify-between px-6 z-50 shadow-lg">
                 <div className="flex items-center gap-4">
@@ -116,7 +133,24 @@ const YouTubeWatchPage = () => {
                     {/* PLAYER */}
                     <div className="w-full bg-black/20 p-4 lg:p-8">
                         <div className="max-w-7xl mx-auto w-full aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl border border-white/5 relative">
-                            {activeVideo ? (
+                            {!hasAccess ? (
+                                <div className="absolute inset-0 bg-dark-bg/95 flex flex-col items-center justify-center p-8 text-center space-y-6 z-20 backdrop-blur-md">
+                                    <div className="w-20 h-20 bg-brand-primary/10 rounded-full flex items-center justify-center border border-brand-primary/20 shadow-2xl">
+                                        <Lock size={32} className="text-brand-primary" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h2 className="text-2xl font-bold uppercase tracking-tight">Module Encrypted</h2>
+                                        <p className="text-dark-muted text-[11px] font-bold uppercase tracking-widest opacity-60">Professional Enrollment Required to Decrypt Content</p>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowPaymentModal(true)}
+                                        className="px-10 py-5 bg-brand-primary text-dark-bg font-black text-xs uppercase tracking-[0.4em] rounded-2xl hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,161,22,0.3)] mt-4"
+                                    >
+                                        Purchase Full Access
+                                    </button>
+                                </div>
+                            ) : null}
+                            {activeVideo && hasAccess ? (
                                 <VideoPlayer
                                     src={activeVideo.videoUrl}
                                     poster={getAssetUrl(course.thumbnail)}
@@ -146,12 +180,12 @@ const YouTubeWatchPage = () => {
                                         }
                                     }}
                                 />
-                            ) : (
+                            ) : hasAccess ? (
                                 <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-dark-muted">
                                     <Play size={48} className="opacity-20" />
                                     <p className="text-xs font-medium uppercase tracking-widest opacity-40">Select a video to start</p>
                                 </div>
-                            )}
+                            ) : null}
                         </div>
                     </div>
 
@@ -212,7 +246,7 @@ const YouTubeWatchPage = () => {
                                         onClick={() => handleVideoSelect(video)}
                                         className={`w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all border ${isActive
                                             ? 'bg-brand-primary/10 border-brand-primary/30'
-                                            : 'bg-[#0a0a0a]/20 border-transparent hover:bg-white/5'}`}
+                                            : 'bg-[#0a0a0a]/20 border-transparent hover:bg-white/5'} ${!hasAccess ? 'opacity-40 grayscale-[0.5]' : ''}`}
                                     >
                                         <div className="shrink-0">
                                             {isActive ? (
@@ -221,6 +255,10 @@ const YouTubeWatchPage = () => {
                                                 </div>
                                             ) : isCompleted ? (
                                                 <CheckCircle size={20} className="text-green-500" />
+                                            ) : !hasAccess ? (
+                                                <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                                                    <Lock size={14} className="text-dark-muted" />
+                                                </div>
                                             ) : (
                                                 <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[11px] font-medium text-dark-muted">
                                                     {idx + 1}

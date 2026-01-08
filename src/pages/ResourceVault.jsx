@@ -25,6 +25,21 @@ const ResourceVault = () => {
         file.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleDownload = (file) => {
+        if (!file.url) {
+            alert('File source not synchronized');
+            return;
+        }
+        window.open(file.url, '_blank');
+    };
+
+    const totalStorage = 1000; // 1GB in MB
+    const usedStorage = resources.reduce((acc, file) => {
+        const size = parseFloat(file.size) || 0;
+        return acc + size;
+    }, 0);
+    const usagePercent = (usedStorage / totalStorage) * 100;
+
     if (loading) return (
         <div className="flex items-center justify-center min-h-[400px]">
             <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
@@ -65,10 +80,10 @@ const ResourceVault = () => {
                             <div className="space-y-3">
                                 <div className="flex justify-between text-[11px] font-bold uppercase tracking-widest">
                                     <span className="text-dark-muted">Current Load</span>
-                                    <span className="text-white">74.2%</span>
+                                    <span className="text-white">{usagePercent.toFixed(1)}%</span>
                                 </div>
                                 <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                                    <div className="h-full bg-brand-primary" style={{ width: '74.2%' }} />
+                                    <div className="h-full bg-brand-primary" style={{ width: `${usagePercent}%` }} />
                                 </div>
                             </div>
                         </div>
@@ -129,7 +144,10 @@ const ResourceVault = () => {
                                             <td className="px-8 py-6 text-[11px] font-bold text-dark-muted opacity-60">{file.date}</td>
                                             <td className="px-8 py-6 text-right">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    <button className="p-2.5 bg-white/5 hover:bg-brand-primary/20 rounded-xl text-brand-primary border border-white/5 transition-all shadow-md">
+                                                    <button
+                                                        onClick={() => handleDownload(file)}
+                                                        className="p-2.5 bg-white/5 hover:bg-brand-primary/20 rounded-xl text-brand-primary border border-white/5 transition-all shadow-md"
+                                                    >
                                                         <Download size={16} />
                                                     </button>
                                                     <button className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl text-dark-muted border border-white/5 transition-all">

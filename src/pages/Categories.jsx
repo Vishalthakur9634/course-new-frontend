@@ -2,14 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { getAssetUrl } from '../utils/urlUtils';
-import { Grid, BookOpen, Layers, Search, TrendingUp, Star } from 'lucide-react';
+import { Grid, BookOpen, Layers, Search, TrendingUp, Star, ShoppingCart } from 'lucide-react';
+import PaymentModal from '../components/PaymentModal';
+import { useToast } from '../context/ToastContext';
 
 const Categories = () => {
     const [courses, setCourses] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [loading, setLoading] = useState(true);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedCourse, setSelectedCourse] = useState(null);
     const navigate = useNavigate();
+    const { addToast } = useToast();
 
     useEffect(() => {
         fetchCourses();
@@ -42,6 +47,16 @@ const Categories = () => {
 
     return (
         <div className="max-w-[1400px] mx-auto space-y-12 pb-32 px-4 md:px-8 font-inter">
+            {showPaymentModal && selectedCourse && (
+                <PaymentModal
+                    course={selectedCourse}
+                    onClose={() => setShowPaymentModal(false)}
+                    onSuccess={() => {
+                        addToast('Course Access Granted', 'success');
+                        fetchCourses();
+                    }}
+                />
+            )}
             <header className="space-y-4 py-10 border-b border-white/5">
                 <div className="flex items-center gap-4">
                     <div className="p-2.5 bg-brand-primary/10 rounded-xl border border-brand-primary/20">
@@ -120,8 +135,8 @@ const Categories = () => {
                                     {course.description}
                                 </p>
                                 <div className="flex items-center justify-between pt-8 border-t border-white/5 mt-auto">
-                                    <div className="flex items-center gap-6">
-                                        <span className="text-2xl font-bold text-white tracking-tight">
+                                    <div className="flex flex-col">
+                                        <span className="text-2xl font-black text-white tracking-tight">
                                             ${course.price}
                                         </span>
                                         <div className="flex items-center gap-2 text-[10px] font-bold text-dark-muted uppercase tracking-widest opacity-60">
@@ -129,9 +144,21 @@ const Categories = () => {
                                             {course.videos?.length || 0} Modules
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-1.5 text-yellow-500 font-bold text-xs">
-                                        <Star size={14} fill="currentColor" />
-                                        4.9
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedCourse(course);
+                                                setShowPaymentModal(true);
+                                            }}
+                                            className="p-3 bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-dark-bg rounded-xl border border-brand-primary/20 transition-all group/buy"
+                                        >
+                                            <ShoppingCart size={18} />
+                                        </button>
+                                        <div className="flex items-center gap-1.5 text-yellow-500 font-bold text-xs">
+                                            <Star size={14} fill="currentColor" />
+                                            4.9
+                                        </div>
                                     </div>
                                 </div>
                             </div>
