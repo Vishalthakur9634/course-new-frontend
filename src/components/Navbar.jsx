@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Home, Compass, BookOpen, Monitor, Award,
-    Search, Bell, Menu, X, Rocket, User,
-    LogOut, Settings, BarChart2, Briefcase, Zap,
-    Code, MessageSquare, Video, ArrowRight,
-    Users, ShoppingBag, Calendar // Added locally to ensure no crashes
+    Search, Bell, Rocket, User,
+    LogOut, BookOpen, ArrowRight
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { getAssetUrl } from '../utils/assets';
+import api from '../utils/api';
+import { navConfigs } from '../utils/navigation';
 
 const Navbar = () => {
     const { user, token } = useAuth();
@@ -22,29 +21,67 @@ const Navbar = () => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
 
-    // --- NAVIGATION LINKS CONFIGURATION ---
-    // Reduced to 4 items as requested
-    const studentLinks = [
-        { name: 'Home', path: '/', icon: Home },
-        { name: 'Browse', path: '/courses', icon: Compass },
-        { name: 'Learning', path: '/my-learning', icon: BookOpen },
-        { name: 'Playground', path: '/playground', icon: Code },
-    ];
+    // Search State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const [allCourses, setAllCourses] = useState([]);
+    const searchRef = useRef(null);
 
-    const instructorLinks = [
-        { name: 'Dashboard', path: '/instructor/dashboard', icon: BarChart2 },
-        { name: 'Courses', path: '/instructor/courses', icon: BookOpen },
-        { name: 'Bootcamps', path: '/instructor/bootcamps', icon: Zap },
-        { name: 'Marketplace', path: '/instructor/marketplace', icon: ShoppingBag },
-    ];
+    const userRole = user?.role || 'student';
+    // Links from shared config
+    const allLinks = navConfigs[userRole] || navConfigs.student;
 
-    const currentLinks = user?.role === 'instructor' ? instructorLinks : studentLinks;
+    // Filter out dividers for Navbar usage
+    const cleanLinks = allLinks.filter(item => item.type !== 'divider');
+
+    // Desktop: First 4 links only
+    const desktopLinks = cleanLinks.slice(0, 4);
+
+    // Mobile: All links (user requested "all pages should be there on the bottombar")
+    const mobileLinks = cleanLinks;
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Fetch courses for search
+    useEffect(() => {
+        const fetchSearchData = async () => {
+            try {
+                const response = await api.get('/courses');
+                setAllCourses(response.data);
+                setSuggestions(response.data); // Initial populate
+            } catch (error) {
+                console.error("Failed to load search data", error);
+            }
+        };
+
+        if (showSearch && allCourses.length === 0) {
+            fetchSearchData();
+        }
+    }, [showSearch]);
+
+    // Filter suggestions
+    useEffect(() => {
+        if (!searchQuery.trim()) {
+            setSuggestions(allCourses.slice(0, 5));
+        } else {
+            const lowerQuery = searchQuery.toLowerCase();
+            const filtered = allCourses.filter(course =>
+                course.title.toLowerCase().includes(lowerQuery) ||
+                course.category?.toLowerCase().includes(lowerQuery)
+            );
+            setSuggestions(filtered.slice(0, 5));
+        }
+    }, [searchQuery, allCourses]);
+
+    const handleSearch = (query) => {
+        if (!query.trim()) return;
+        navigate(`/courses?search=${encodeURIComponent(query)}`);
+        setShowSearch(false);
+    };
 
     return (
         <>
@@ -71,7 +108,7 @@ const Navbar = () => {
 
                         {/* Desktop Navigation */}
                         <div className="hidden xl:flex items-center gap-1 p-1 bg-white/5 rounded-full border border-white/5 backdrop-blur-sm">
-                            {currentLinks.map((link) => (
+                            {desktopLinks.map((link) => (
                                 <Link
                                     key={link.path}
                                     to={link.path}
@@ -99,49 +136,82 @@ const Navbar = () => {
                     {/* Right Module */}
                     <div className="flex items-center gap-3 md:gap-6">
                         {/* Search Trigger */}
-                        <button
-                            onClick={() => setShowSearch(!showSearch)}
-                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${showSearch ? 'bg-brand-primary text-dark-bg shadow-[0_0_20px_rgba(255,161,22,0.4)]' : 'bg-white/5 text-dark-muted hover:text-white hover:bg-white/10'}`}
-                        >
-                            <Search size={18} />
-                        </button>
+                        <div className="relative group" ref={searchRef}>
+                            <button
+                                onClick={() => setShowSearch(!showSearch)}
+                                className={`h-10 rounded-full flex items-center justify-center transition-all ${showSearch
+                                        ? 'bg-brand-primary text-dark-bg shadow-[0_0_20px_rgba(255,161,22,0.4)] w-10'
+                                        : 'bg-white/5 text-dark-muted hover:text-white hover:bg-white/10 w-10 md:w-auto md:px-4 md:gap-3'
+                                    }`}
+                            >
+                                <Search size={18} />
+                                {!showSearch && <span className="hidden md:block text-xs font-bold uppercase tracking-wider">Search</span>}
+                            </button>
 
-                        {/* Search Overlay */}
-                        <AnimatePresence>
-                            {showSearch && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                    // WIDENED SEARCH BAR to 600px
-                                    className="absolute top-full right-4 md:right-32 mt-4 w-[90vw] md:w-[600px] bg-[#141414] border border-white/10 rounded-2xl shadow-2xl p-4 overflow-hidden z-50 backdrop-blur-3xl"
-                                >
-                                    <div className="relative">
-                                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-muted" size={18} />
-                                        <input
-                                            autoFocus
-                                            type="text"
-                                            placeholder="Search deeply..."
-                                            className="w-full bg-black/50 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:border-brand-primary/50 outline-none placeholder:text-dark-muted font-medium"
-                                        />
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                            <span className="px-2 py-1 rounded bg-white/10 text-[10px] font-bold text-dark-muted border border-white/5">CMD+K</span>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4">
-                                        <div className="text-[10px] font-bold text-dark-muted uppercase tracking-widest mb-2 px-1">Quick Access</div>
-                                        <div className="space-y-1">
-                                            {['React Performance', 'System Design', 'AI Algorithms'].map(term => (
-                                                <button key={term} className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 text-sm text-dark-muted hover:text-white transition-colors flex items-center justify-between group">
-                                                    <span>{term}</span>
-                                                    <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-brand-primary" />
+                            {/* Search Overlay */}
+                            <AnimatePresence>
+                                {showSearch && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                        // WIDENED SEARCH BAR to 600px
+                                        className="absolute top-full right-0 mt-4 w-[90vw] md:w-[600px] bg-[#141414] border border-white/10 rounded-2xl shadow-2xl p-4 overflow-hidden z-50 backdrop-blur-3xl"
+                                    >
+                                        <div className="relative">
+                                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-muted" size={18} />
+                                            <input
+                                                autoFocus
+                                                type="text"
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchQuery)}
+                                                placeholder="Search courses, mentors, paths..."
+                                                className="w-full bg-black/50 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:border-brand-primary/50 outline-none placeholder:text-dark-muted font-medium"
+                                            />
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleSearch(searchQuery)}
+                                                    className="px-3 py-1.5 rounded-lg bg-brand-primary/20 text-brand-primary hover:bg-brand-primary hover:text-dark-bg transition-all text-[10px] font-bold uppercase tracking-widest border border-brand-primary/20"
+                                                >
+                                                    Enter
                                                 </button>
-                                            ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                        <div className="mt-4">
+                                            <div className="text-[10px] font-bold text-dark-muted uppercase tracking-widest mb-2 px-1">
+                                                {searchQuery ? 'Best Matches' : 'Trending in Database'}
+                                            </div>
+                                            <div className="space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
+                                                {suggestions.length > 0 ? (
+                                                    suggestions.map((item) => (
+                                                        <button
+                                                            key={item._id}
+                                                            onClick={() => {
+                                                                navigate(`/course/${item._id}`);
+                                                                setShowSearch(false);
+                                                            }}
+                                                            className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 text-sm text-dark-muted hover:text-white transition-colors flex items-center justify-between group"
+                                                        >
+                                                            <div className="flex flex-col overflow-hidden">
+                                                                <span className="truncate font-semibold text-white/90">{item.title}</span>
+                                                                <span className="text-[10px] uppercase tracking-wider text-dark-muted">{item.category}</span>
+                                                            </div>
+                                                            <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-brand-primary flex-shrink-0" />
+                                                        </button>
+                                                    ))
+                                                ) : (
+                                                    <div className="px-4 py-8 text-center border-t border-white/5 mt-2">
+                                                        <Search size={24} className="mx-auto text-dark-muted mb-2 opacity-50" />
+                                                        <p className="text-xs text-dark-muted font-medium">No results found in the archives.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
 
 
                         {token ? (
@@ -251,33 +321,35 @@ const Navbar = () => {
 
             {/* PROFESSIONAL COMPACT BOTTOM NAVIGATION */}
             {token && (
-                <div className="xl:hidden fixed bottom-0 left-0 right-0 h-[72px] bg-[#141414]/95 backdrop-blur-xl border-t border-white/10 z-[1000] pb-safe-area-bottom">
-                    <div className="flex items-center h-full overflow-x-auto no-scrollbar px-4 gap-4">
-                        {currentLinks.map((link) => (
+                <div className="xl:hidden fixed bottom-0 left-0 right-0 h-[80px] bg-[#0a0a0a] border-t border-white/10 z-[1000] pb-safe-area-bottom shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+                    <div className="flex items-center h-full overflow-x-auto px-2 gap-2 w-full no-scrollbar">
+                        {mobileLinks.map((link) => (
                             <Link
                                 key={link.path}
                                 to={link.path}
-                                className={`flex flex-col items-center justify-center flex-shrink-0 min-w-[72px] h-full px-1 transition-all relative ${location.pathname === link.path
+                                className={`flex flex-col items-center justify-center flex-shrink-0 min-w-[70px] h-full px-1 transition-all relative ${location.pathname === link.path
                                     ? 'text-brand-primary'
                                     : 'text-dark-muted hover:text-white'
                                     }`}
                             >
-                                <div className={`p-1.5 rounded-lg mb-0.5 transition-all ${location.pathname === link.path ? 'bg-brand-primary/10' : 'bg-transparent'
+                                <div className={`p-1.5 rounded-xl mb-1 transition-all ${location.pathname === link.path ? 'bg-brand-primary/10 scale-110' : 'bg-transparent'
                                     }`}>
-                                    <link.icon size={20} className={location.pathname === link.path ? 'fill-current' : ''} />
+                                    <link.icon size={22} className={location.pathname === link.path ? 'fill-current' : ''} />
                                 </div>
-                                <span className="text-[9px] font-bold uppercase tracking-wider whitespace-nowrap -mt-0.5">
-                                    {link.name}
+                                <span className="text-[10px] font-bold uppercase tracking-wider whitespace-nowrap leading-none">
+                                    {link.label}
                                 </span>
                                 {location.pathname === link.path && (
                                     <motion.div
                                         layoutId="bottomNavIndicator"
-                                        className="absolute top-0 w-8 h-0.5 bg-brand-primary shadow-[0_0_10px_rgba(255,161,22,0.8)]"
+                                        className="absolute top-0 w-12 h-0.5 bg-brand-primary shadow-[0_0_10px_rgba(255,161,22,0.8)]"
                                     />
                                 )}
                             </Link>
                         ))}
                     </div>
+                    {/* Gradient Fade to indicate scrolling */}
+                    <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/80 to-transparent pointer-events-none" />
                 </div>
             )}
         </>
