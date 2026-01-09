@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
     Users, GraduationCap, Search, Filter, MapPin,
@@ -102,9 +102,9 @@ const AlumniNetwork = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {alumni.map((member) => (
+                        {alumni.map((member, idx) => (
                             <motion.div
-                                key={member.id}
+                                key={member._id || member.id || idx}
                                 className="bg-dark-layer1 border border-white/5 rounded-3xl p-6 group hover:border-orange-500/30 transition-all"
                             >
                                 <div className="flex items-center justify-between mb-6">
@@ -136,7 +136,7 @@ const AlumniNetwork = () => {
                                 </div>
 
                                 <div className="flex flex-wrap gap-2 mb-8">
-                                    {member.skills.map(skill => (
+                                    {(member.skills || []).map(skill => (
                                         <span key={skill} className="px-2 py-1 bg-dark-layer2 border border-white/5 rounded-lg text-[8px] font-bold text-dark-muted uppercase tracking-widest">
                                             {skill}
                                         </span>

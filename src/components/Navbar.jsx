@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Search, Bell, Rocket, User,
-    LogOut, BookOpen, ArrowRight
+    LogOut, BookOpen, ArrowRight,
+    Home, Compass, Heart, MessageSquare, Moon, Sun, Command
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -11,33 +12,39 @@ import { getAssetUrl } from '../utils/assets';
 import api from '../utils/api';
 import { navConfigs } from '../utils/navigation';
 
-const Navbar = () => {
+const Navbar = ({ onOpenCommandPalette }) => {
     const { user, token } = useAuth();
     const { addToast } = useToast();
     const location = useLocation();
     const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
-    const [showSearch, setShowSearch] = useState(false);
 
     // Search State
     const [searchQuery, setSearchQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
-    const [allCourses, setAllCourses] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [showMobileSearch, setShowMobileSearch] = useState(false);
     const searchRef = useRef(null);
 
     const userRole = user?.role || 'student';
     // Links from shared config
     const allLinks = navConfigs[userRole] || navConfigs.student;
 
-    // Filter out dividers for Navbar usage
+    // Filter out dividers for mobile
     const cleanLinks = allLinks.filter(item => item.type !== 'divider');
 
-    // Desktop: First 4 links only
-    const desktopLinks = cleanLinks.slice(0, 4);
+    // Custom Desktop Links matching the screenshot
+    // Screenshot shows: Home, Browse, My Learning, Wishlist, Messages
+    const specificDesktopLinks = [
+        { label: 'Home', path: '/', icon: Home },
+        { label: 'Browse', path: '/courses', icon: Compass },
+        { label: 'My Learning', path: '/my-learning', icon: BookOpen },
+        { label: 'Wishlist', path: '/wishlist', icon: Heart },
+        { label: 'Messages', path: '/messages', icon: MessageSquare },
+    ];
 
-    // Mobile: All links (user requested "all pages should be there on the bottombar")
+    // Mobile: All links
     const mobileLinks = cleanLinks;
 
     useEffect(() => {
@@ -46,264 +53,227 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Fetch courses for search
+    // Fetch and filter search suggestions
     useEffect(() => {
         const fetchSearchData = async () => {
-            try {
-                const response = await api.get('/courses');
-                setAllCourses(response.data);
-                setSuggestions(response.data); // Initial populate
-            } catch (error) {
-                console.error("Failed to load search data", error);
+            if (searchQuery.length > 0) {
+                try {
+                    // Use backend search endpoint
+                    const response = await api.get(`/courses?search=${encodeURIComponent(searchQuery)}`);
+                    setSuggestions(response.data.slice(0, 5));
+                    setShowSuggestions(true);
+                } catch (error) {
+                    console.error("Failed to load search data", error);
+                    setSuggestions([]);
+                }
+            } else {
+                setSuggestions([]);
+                setShowSuggestions(false);
             }
         };
 
-        if (showSearch && allCourses.length === 0) {
-            fetchSearchData();
-        }
-    }, [showSearch]);
-
-    // Filter suggestions
-    useEffect(() => {
-        if (!searchQuery.trim()) {
-            setSuggestions(allCourses.slice(0, 5));
-        } else {
-            const lowerQuery = searchQuery.toLowerCase();
-            const filtered = allCourses.filter(course =>
-                course.title.toLowerCase().includes(lowerQuery) ||
-                course.category?.toLowerCase().includes(lowerQuery)
-            );
-            setSuggestions(filtered.slice(0, 5));
-        }
-    }, [searchQuery, allCourses]);
+        const timeoutId = setTimeout(fetchSearchData, 300);
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery]);
 
     const handleSearch = (query) => {
         if (!query.trim()) return;
         navigate(`/courses?search=${encodeURIComponent(query)}`);
-        setShowSearch(false);
+        setShowSuggestions(false);
+        setShowMobileSearch(false);
     };
 
     return (
         <>
-            <nav className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${scrolled ? 'bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent py-5'
-                }`}>
-                <div className="w-full max-w-[95%] md:max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center gap-4">
-                    {/* Brand Module */}
-                    <div className="flex items-center gap-3 md:gap-10">
+            <nav className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${scrolled ? 'bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/5 py-2' : 'bg-transparent py-4'}`}>
+                <div className="w-full max-w-[98%] mx-auto px-4 flex items-center justify-between gap-4">
 
-                        <Link to="/" className="flex items-center gap-3 group">
-                            <div className="w-8 h-8 md:w-10 md:h-10 bg-brand-primary rounded-lg flex items-center justify-center transition-all duration-300 border border-brand-primary/20 shadow-sm relative overflow-hidden">
-                                <Rocket size={20} className="text-dark-bg fill-current relative z-10 md:w-[24px] md:h-[24px]" />
+                    {/* LEFT: Logo + Nav Links */}
+                    <div className="flex items-center gap-8">
+                        {/* Brand */}
+                        <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
+                            <div className="w-9 h-9 bg-brand-primary rounded-lg flex items-center justify-center transition-all duration-300 border border-brand-primary/20 shadow-sm relative overflow-hidden">
+                                <Rocket size={20} className="text-dark-bg fill-current relative z-10" />
                             </div>
-                            <div className="flex flex-col">
-                                <span className="text-sm md:text-xl font-bold uppercase tracking-tight leading-none text-white">
+                            <div className="flex flex-col hidden sm:flex">
+                                <span className="text-lg font-bold uppercase tracking-tight leading-none text-white">
                                     Orbit<span className="text-brand-primary">Quest</span>
                                 </span>
-                                <div className="flex items-center gap-1.5">
-                                    <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                                <div className="flex items-center gap-1.5 mt-0.5">
                                     <span className="text-[9px] font-black text-green-500 uppercase tracking-widest leading-none">Transmission Stable</span>
                                 </div>
                             </div>
                         </Link>
 
-                        {/* Desktop Navigation */}
-                        <div className="hidden xl:flex items-center gap-1 p-1 bg-white/5 rounded-full border border-white/5 backdrop-blur-sm">
-                            {desktopLinks.map((link) => (
+                        {/* Desktop Navigation Links (Text + Icon) */}
+                        <div className="hidden xl:flex items-center gap-6">
+                            {specificDesktopLinks.map((link) => (
                                 <Link
                                     key={link.path}
                                     to={link.path}
-                                    className={`relative px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 ${location.pathname === link.path
-                                        ? 'text-dark-bg'
+                                    className={`flex items-center gap-2 text-[13px] font-medium transition-colors ${location.pathname === link.path
+                                        ? 'text-white'
                                         : 'text-dark-muted hover:text-white'
                                         }`}
                                 >
-                                    {location.pathname === link.path && (
-                                        <motion.div
-                                            layoutId="navPill"
-                                            className="absolute inset-0 bg-brand-primary rounded-full shadow-[0_0_20px_rgba(255,161,22,0.4)]"
-                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                        />
-                                    )}
-                                    <span className="relative z-10 flex items-center gap-2">
-                                        <link.icon size={14} className={location.pathname === link.path ? 'fill-current' : ''} />
-                                        {link.name}
-                                    </span>
+                                    <link.icon size={16} className={location.pathname === link.path ? 'text-brand-primary' : ''} />
+                                    <span>{link.label}</span>
                                 </Link>
                             ))}
                         </div>
                     </div>
 
-                    {/* Right Module */}
-                    <div className="flex items-center gap-3 md:gap-6">
-                        {/* Search Trigger */}
-                        <div className="relative group" ref={searchRef}>
-                            <button
-                                onClick={() => setShowSearch(!showSearch)}
-                                className={`h-10 rounded-full flex items-center justify-center transition-all ${showSearch
-                                        ? 'bg-brand-primary text-dark-bg shadow-[0_0_20px_rgba(255,161,22,0.4)] w-10'
-                                        : 'bg-white/5 text-dark-muted hover:text-white hover:bg-white/10 w-10 md:w-auto md:px-4 md:gap-3'
-                                    }`}
-                            >
-                                <Search size={18} />
-                                {!showSearch && <span className="hidden md:block text-xs font-bold uppercase tracking-wider">Search</span>}
-                            </button>
+                    {/* RIGHT: Search + Actions */}
+                    <div className="flex items-center gap-4">
 
-                            {/* Search Overlay */}
+                        {/* Mobile Search Toggle */}
+                        <button
+                            onClick={() => setShowMobileSearch(!showMobileSearch)}
+                            className="md:hidden p-2 text-dark-muted hover:text-white transition-colors"
+                        >
+                            <Search size={22} />
+                        </button>
+
+                        {/* Search Bar (Desktop) */}
+                        <div className="hidden md:block relative w-[300px]" ref={searchRef}>
+                            <div className="relative group">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-muted group-focus-within:text-white transition-colors">
+                                    <Search size={14} />
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Search courses..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchQuery)}
+                                    className="w-full bg-[#1A1A1A] border border-white/5 rounded-lg pl-9 pr-12 py-2.5 text-xs text-white placeholder:text-dark-muted focus:outline-none focus:border-white/10 focus:bg-[#202020] transition-all"
+                                />
+                                {/* Command Shortcut Hint */}
+                                <div
+                                    onClick={onOpenCommandPalette}
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1.5 py-0.5 rounded border border-white/10 bg-white/5 text-[10px] text-dark-muted font-mono cursor-pointer hover:bg-white/10"
+                                >
+                                    <Command size={10} /> <span>K</span>
+                                </div>
+                            </div>
+
+                            {/* Search Suggestions Dropdown */}
                             <AnimatePresence>
-                                {showSearch && (
+                                {showSuggestions && suggestions.length > 0 && (
                                     <motion.div
-                                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                        // WIDENED SEARCH BAR to 600px
-                                        className="absolute top-full right-0 mt-4 w-[90vw] md:w-[600px] bg-[#141414] border border-white/10 rounded-2xl shadow-2xl p-4 overflow-hidden z-50 backdrop-blur-3xl"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                        className="absolute top-full left-0 right-0 mt-2 bg-[#141414] border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50"
                                     >
-                                        <div className="relative">
-                                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-dark-muted" size={18} />
-                                            <input
-                                                autoFocus
-                                                type="text"
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchQuery)}
-                                                placeholder="Search courses, mentors, paths..."
-                                                className="w-full bg-black/50 border border-white/10 rounded-xl pl-12 pr-4 py-4 text-white focus:border-brand-primary/50 outline-none placeholder:text-dark-muted font-medium"
-                                            />
-                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                                <button
-                                                    onClick={() => handleSearch(searchQuery)}
-                                                    className="px-3 py-1.5 rounded-lg bg-brand-primary/20 text-brand-primary hover:bg-brand-primary hover:text-dark-bg transition-all text-[10px] font-bold uppercase tracking-widest border border-brand-primary/20"
-                                                >
-                                                    Enter
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="mt-4">
-                                            <div className="text-[10px] font-bold text-dark-muted uppercase tracking-widest mb-2 px-1">
-                                                {searchQuery ? 'Best Matches' : 'Trending in Database'}
-                                            </div>
-                                            <div className="space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
-                                                {suggestions.length > 0 ? (
-                                                    suggestions.map((item) => (
-                                                        <button
-                                                            key={item._id}
-                                                            onClick={() => {
-                                                                navigate(`/course/${item._id}`);
-                                                                setShowSearch(false);
-                                                            }}
-                                                            className="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 text-sm text-dark-muted hover:text-white transition-colors flex items-center justify-between group"
-                                                        >
-                                                            <div className="flex flex-col overflow-hidden">
-                                                                <span className="truncate font-semibold text-white/90">{item.title}</span>
-                                                                <span className="text-[10px] uppercase tracking-wider text-dark-muted">{item.category}</span>
-                                                            </div>
-                                                            <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-brand-primary flex-shrink-0" />
-                                                        </button>
-                                                    ))
-                                                ) : (
-                                                    <div className="px-4 py-8 text-center border-t border-white/5 mt-2">
-                                                        <Search size={24} className="mx-auto text-dark-muted mb-2 opacity-50" />
-                                                        <p className="text-xs text-dark-muted font-medium">No results found in the archives.</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
+                                        {suggestions.map((item) => (
+                                            <button
+                                                key={item._id}
+                                                onClick={() => handleSearch(item.title)}
+                                                className="w-full text-left px-4 py-2 hover:bg-white/5 text-xs text-dark-muted hover:text-white transition-colors flex items-center gap-2"
+                                            >
+                                                <Search size={12} />
+                                                <span className="truncate">{item.title}</span>
+                                            </button>
+                                        ))}
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
 
+                        {/* Divider */}
+                        <div className="w-[1px] h-6 bg-white/10 hidden md:block" />
 
+                        {/* Theme Toggle (Visual Only) */}
+                        <button className="hidden md:flex w-9 h-9 items-center justify-center rounded-full text-dark-muted hover:text-white hover:bg-white/5 transition-all">
+                            <Moon size={18} />
+                        </button>
+
+                        {/* Notification Bell (Orange Button) */}
+                        <Link
+                            to="/notifications"
+                            className="hidden md:flex w-10 h-10 items-center justify-center rounded-xl bg-brand-primary text-black hover:bg-brand-hover transition-all relative shadow-[0_0_15px_rgba(255,161,22,0.3)]"
+                        >
+                            <Bell size={20} className="fill-current" />
+                            <span className="absolute top-2 right-2.5 w-2 h-2 bg-black rounded-full border border-brand-primary" />
+                        </Link>
+
+                        {/* Profile Menu */}
                         {token ? (
-                            <div className="flex items-center gap-3 md:gap-4">
-                                {/* Notifications */}
-                                <button className="relative w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all group hidden md:flex">
-                                    <Bell size={18} className="text-dark-muted group-hover:text-white transition-colors" />
-                                    <span className="absolute top-2.5 right-3 w-2 h-2 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse" />
+                            <div className="relative">
+                                <button
+                                    onClick={() => setShowProfileMenu(!showProfileMenu)}
+                                    className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 hover:border-brand-primary/50 transition-all"
+                                >
+                                    <img src={getAssetUrl(user.avatar) || `https://ui-avatars.com/api/?name=${user.name}&background=random`} alt="" className="w-full h-full object-cover" />
                                 </button>
 
-                                {/* User Menu */}
-                                <div className="relative">
-                                    <button
-                                        onClick={() => setShowProfileMenu(!showProfileMenu)}
-                                        className="flex items-center gap-3 pl-1 pr-1 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all group"
-                                    >
-                                        <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 group-hover:border-brand-primary/50 transition-all">
-                                            <img src={getAssetUrl(user.avatar) || `https://ui-avatars.com/api/?name=${user.name}&background=random`} alt="" className="w-full h-full object-cover" />
-                                        </div>
-                                        <div className="hidden md:block text-left mr-2">
-                                            <div className="text-xs font-bold text-white leading-none mb-0.5">{user.name?.split(' ')[0]}</div>
-                                            <div className="text-[9px] font-bold text-brand-primary uppercase tracking-wider">{user.role}</div>
-                                        </div>
-                                    </button>
-
-                                    {/* Profile Dropdown */}
-                                    <AnimatePresence>
-                                        {showProfileMenu && (
-                                            <motion.div
-                                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                                className="absolute top-full right-0 mt-4 w-72 bg-[#141414] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50"
-                                            >
-                                                <div className="p-6 bg-gradient-to-b from-white/5 to-transparent border-b border-white/5">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="w-12 h-12 rounded-xl bg-white/10 overflow-hidden border border-white/10">
-                                                            <img src={getAssetUrl(user.avatar) || `https://ui-avatars.com/api/?name=${user.name}&background=ffcc00&color=000`} className="w-full h-full rounded-lg object-cover" alt="" />
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className="text-sm font-bold text-white truncate uppercase tracking-tight">{user.name}</p>
-                                                            <p className="text-[10px] text-brand-primary font-bold truncate uppercase tracking-wider mt-0.5">{user.role}</p>
-                                                        </div>
+                                {/* Profile Dropdown */}
+                                <AnimatePresence>
+                                    {showProfileMenu && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            className="absolute top-full right-0 mt-4 w-72 bg-[#141414] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50"
+                                        >
+                                            <div className="p-6 bg-gradient-to-b from-white/5 to-transparent border-b border-white/5">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-xl bg-white/10 overflow-hidden border border-white/10">
+                                                        <img src={getAssetUrl(user.avatar) || `https://ui-avatars.com/api/?name=${user.name}&background=ffcc00&color=000`} className="w-full h-full rounded-lg object-cover" alt="" />
                                                     </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-bold text-white truncate uppercase tracking-tight">{user.name}</p>
+                                                        <p className="text-[10px] text-brand-primary font-bold truncate uppercase tracking-wider mt-0.5">{user.role}</p>
+                                                    </div>
+                                                </div>
 
+                                                <Link
+                                                    to={user.role === 'instructor' ? `/instructor/profile/${user.id || user._id}` : `/u/${user.id || user._id}`}
+                                                    className="mt-6 flex items-center justify-center gap-2 w-full py-3 bg-brand-primary text-dark-bg rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-brand-hover transition-all"
+                                                >
+                                                    View Profile <ArrowRight size={14} />
+                                                </Link>
+                                            </div>
+
+                                            <div className="p-3 space-y-1">
+                                                {[
+                                                    { label: 'Account Settings', icon: User, path: '/profile' },
+                                                    { label: 'My Learning', icon: BookOpen, path: '/my-learning', role: 'student' }
+                                                ].filter(item => !item.role || item.role === user.role).map((item, idx) => (
                                                     <Link
-                                                        to={user.role === 'instructor' ? `/instructor/profile/${user.id || user._id}` : `/u/${user.id || user._id}`}
-                                                        className="mt-6 flex items-center justify-center gap-2 w-full py-3 bg-brand-primary text-dark-bg rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-brand-hover transition-all"
+                                                        key={idx}
+                                                        to={item.path}
+                                                        onClick={() => setShowProfileMenu(false)}
+                                                        className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 text-dark-muted hover:text-white transition-all group"
                                                     >
-                                                        View Profile <ArrowRight size={14} />
-                                                    </Link>
-                                                </div>
-
-                                                <div className="p-3 space-y-1">
-                                                    {[
-                                                        { label: 'Account Settings', icon: User, path: '/profile' },
-                                                        { label: 'My Learning', icon: BookOpen, path: '/my-learning', role: 'student' }
-                                                    ].filter(item => !item.role || item.role === user.role).map((item, idx) => (
-                                                        <Link
-                                                            key={idx}
-                                                            to={item.path}
-                                                            onClick={() => setShowProfileMenu(false)}
-                                                            className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 text-dark-muted hover:text-white transition-all group"
-                                                        >
-                                                            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-all">
-                                                                <item.icon size={16} />
-                                                            </div>
-                                                            <span className="text-[10px] font-bold uppercase tracking-wider">{item.label}</span>
-                                                        </Link>
-                                                    ))}
-
-                                                    <button
-                                                        onClick={() => {
-                                                            localStorage.clear();
-                                                            navigate('/login');
-                                                            setShowProfileMenu(false);
-                                                        }}
-                                                        className="w-full flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-red-500/10 text-red-500/70 hover:text-red-500 transition-all mt-4 border border-transparent hover:border-red-500/20"
-                                                    >
-                                                        <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
-                                                            <LogOut size={16} />
+                                                        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-brand-primary/10 group-hover:text-brand-primary transition-all">
+                                                            <item.icon size={16} />
                                                         </div>
-                                                        <span className="text-[10px] font-bold uppercase tracking-wider">Sign Out</span>
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
+                                                        <span className="text-[10px] font-bold uppercase tracking-wider">{item.label}</span>
+                                                    </Link>
+                                                ))}
+
+                                                <button
+                                                    onClick={() => {
+                                                        localStorage.clear();
+                                                        navigate('/login');
+                                                        setShowProfileMenu(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-red-500/10 text-red-500/70 hover:text-red-500 transition-all mt-4 border border-transparent hover:border-red-500/20"
+                                                >
+                                                    <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
+                                                        <LogOut size={16} />
+                                                    </div>
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider">Sign Out</span>
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                            <div className="flex items-center gap-4">
                                 <Link to="/login" className="text-xs font-bold uppercase tracking-wider text-dark-muted hover:text-white transition-colors">
                                     Sign In
                                 </Link>
@@ -317,9 +287,54 @@ const Navbar = () => {
                         )}
                     </div>
                 </div>
+
+                {/* Mobile Search Overlay */}
+                <AnimatePresence>
+                    {showMobileSearch && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="xl:hidden absolute top-full left-0 right-0 p-4 bg-[#0a0a0a] border-b border-white/10 shadow-2xl z-[900]"
+                        >
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleSearch(searchQuery);
+                                }}
+                                className="relative"
+                            >
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-muted" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Search courses..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder:text-dark-muted focus:outline-none focus:border-brand-primary/50"
+                                    autoFocus
+                                />
+                            </form>
+                            {/* Mobile Suggestions */}
+                            {suggestions.length > 0 && (
+                                <div className="mt-2 bg-[#141414] border border-white/10 rounded-xl overflow-hidden">
+                                    {suggestions.map((item) => (
+                                        <button
+                                            key={item._id}
+                                            onClick={() => handleSearch(item.title)}
+                                            className="w-full text-left px-4 py-3 border-b border-white/5 last:border-0 hover:bg-white/5 text-sm text-dark-muted hover:text-white flex items-center gap-3"
+                                        >
+                                            <Search size={14} />
+                                            <span className="truncate">{item.title}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
 
-            {/* PROFESSIONAL COMPACT BOTTOM NAVIGATION */}
+            {/* Mobile Bottom Navigation */}
             {token && (
                 <div className="xl:hidden fixed bottom-0 left-0 right-0 h-[80px] bg-[#0a0a0a] border-t border-white/10 z-[1000] pb-safe-area-bottom shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
                     <div className="flex items-center h-full overflow-x-auto px-2 gap-2 w-full no-scrollbar">
@@ -348,7 +363,6 @@ const Navbar = () => {
                             </Link>
                         ))}
                     </div>
-                    {/* Gradient Fade to indicate scrolling */}
                     <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/80 to-transparent pointer-events-none" />
                 </div>
             )}

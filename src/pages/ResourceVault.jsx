@@ -119,8 +119,8 @@ const ResourceVault = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-white/5">
-                                    {filteredResources.length > 0 ? filteredResources.map(file => (
-                                        <tr key={file.id} className="hover:bg-white/[0.02] transition-colors group">
+                                    {filteredResources.length > 0 ? filteredResources.map((file, idx) => (
+                                        <tr key={file._id || file.id || idx} className="hover:bg-white/[0.02] transition-colors group">
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-5">
                                                     <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-dark-bg group-hover:border-brand-primary transition-all shadow-lg">

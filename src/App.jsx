@@ -355,6 +355,7 @@ function App() {
                 {/* Student Routes */}
                 <Route path="/dashboard" element={<PrivateRoute><RoleRoute allowedRoles={['student', 'instructor', 'superadmin']}><AppLayout><Dashboard /></AppLayout></RoleRoute></PrivateRoute>} />
                 <Route path="/browse" element={<PrivateRoute><RoleRoute allowedRoles={['student', 'instructor', 'superadmin']}><AppLayout><CourseBrowse /></AppLayout></RoleRoute></PrivateRoute>} />
+                <Route path="/courses" element={<PrivateRoute><RoleRoute allowedRoles={['student', 'instructor', 'superadmin']}><AppLayout><CourseBrowse /></AppLayout></RoleRoute></PrivateRoute>} />
                 <Route path="/instructors" element={<PrivateRoute><RoleRoute allowedRoles={['student', 'instructor', 'superadmin']}><AppLayout><InstructorList /></AppLayout></RoleRoute></PrivateRoute>} />
                 <Route path="/my-instructors" element={<PrivateRoute><RoleRoute allowedRoles={['student', 'instructor', 'superadmin']}><AppLayout><MyInstructors /></AppLayout></RoleRoute></PrivateRoute>} />
                 <Route path="/profile" element={<PrivateRoute><AppLayout><Profile /></AppLayout></PrivateRoute>} />

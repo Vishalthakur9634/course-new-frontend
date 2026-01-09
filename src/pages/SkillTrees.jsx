@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GitBranch, Box, Lock, Unlock, Database, Zap, ArrowRight, Shield, Sparkles, GraduationCap, CheckCircle, BarChart, Target } from 'lucide-react';
+import { GitBranch, Box, Lock, Unlock, Database, Zap, ArrowRight, Shield, Sparkles, GraduationCap, CheckCircle, BarChart, Target, BookOpen } from 'lucide-react';
 import api from '../utils/api';
 
 const SkillTrees = () => {

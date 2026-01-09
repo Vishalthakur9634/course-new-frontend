@@ -13,10 +13,10 @@ import {
 
 export const navConfigs = {
     student: [
-        { icon: Home, label: 'Home', path: '/' }, // Added Home for consistency
-        { icon: Compass, label: 'Browse', path: '/courses' }, // Renamed for consistency with Navbar
+        { icon: Home, label: 'Home', path: '/' },
+        { icon: Compass, label: 'Browse', path: '/courses' },
         { icon: BookOpen, label: 'My Learning', path: '/my-learning' },
-        { icon: Code, label: 'Playground', path: '/playground' },
+        { icon: Code, label: 'Playground', path: '/code-playground' }, // Fixed path
         // Expanded sidebar items
         { type: 'divider', label: 'Browse' },
         { icon: Grid, label: 'Categories', path: '/categories' },
@@ -27,11 +27,15 @@ export const navConfigs = {
         { icon: Radio, label: 'Social Media', path: '/social' },
         { icon: TrendingUp, label: 'Trending', path: '/trending' },
         { icon: Globe, label: 'Discover', path: '/discover-sectors' },
-        { type: 'divider', label: 'Advanced' },
-        { icon: Cpu, label: 'AI Assistant', path: '/study-ai' },
+        { type: 'divider', label: 'Futuristic' },
+        { icon: Cpu, label: 'AI Assistant', path: '/ai-assistant' }, // Fixed path
+        { icon: Brain, label: 'Neural Tutor', path: '/intelligent-tutor' },
         { icon: Brain, label: 'Interview Prep', path: '/intelligent-tutor/interview' },
         { icon: GitBranch, label: 'Learning Paths', path: '/learning-paths' },
-        { icon: Database, label: 'Storage', path: '/storage-vault' },
+        { icon: GitBranch, label: 'Skill Trees', path: '/skill-paths' },
+        { icon: Database, label: 'Storage Vault', path: '/storage-vault' },
+        { icon: Sparkles, label: 'Aura Quest', path: '/aura-quest' },
+        { icon: Monitor, label: 'Meta Classroom', path: '/meta-classroom' },
         { type: 'divider', label: 'Ecosystem' },
         { icon: Users, label: 'Study Groups', path: '/study-groups' },
         { icon: Users, label: 'Mentorship', path: '/mentorship' },
@@ -44,7 +48,6 @@ export const navConfigs = {
         { icon: Grid, label: 'Projects', path: '/projects' },
         { icon: Rocket, label: 'Bootcamps', path: '/bootcamps' },
         { type: 'divider', label: 'Learning' },
-        // { icon: Code, label: 'Code Playground', path: '/playground' }, // Duplicated above for Navbar priority
         { icon: Trophy, label: 'Achievements', path: '/achievements' },
         { icon: ClipboardList, label: 'Assignments', path: '/assignments' },
         { icon: PenTool, label: 'Practice', path: '/practice' },
@@ -97,7 +100,6 @@ export const navConfigs = {
         { type: 'divider', label: 'Expert Tools' },
         { icon: BarChart3, label: 'Advanced Analytics', path: '/instructor/analytics-advanced' },
         { icon: Briefcase, label: 'Hiring Channel', path: '/hiring' },
-        // { icon: ShoppingBag, label: 'Marketplace', path: '/instructor/marketplace' }, // Duplicated
         { icon: Award, label: 'Licensing Hub', path: '/instructor/licensing' },
         { icon: Rocket, label: 'Bootcamp Manager', path: '/instructor/bootcamp-manager' },
         { icon: Users, label: 'Study Group Lead', path: '/instructor/study-groups' },
@@ -114,8 +116,12 @@ export const navConfigs = {
         { icon: Grid, label: 'Projects Marketplace', path: '/projects' },
         { icon: Rocket, label: 'Bootcamp Hub', path: '/bootcamps' },
         { type: 'divider', label: 'Advanced Tools' },
-        { icon: Cpu, label: 'AI Assistant', path: '/study-ai' },
+        { icon: Cpu, label: 'AI Assistant', path: '/ai-assistant' },
+        { icon: Brain, label: 'Neural Tutor', path: '/intelligent-tutor' },
+        { icon: GitBranch, label: 'Skill Trees', path: '/skill-paths' },
         { icon: Database, label: 'Storage Vault', path: '/storage-vault' },
+        { icon: Sparkles, label: 'Aura Quest', path: '/aura-quest' },
+        { icon: Monitor, label: 'Meta Classroom', path: '/meta-classroom' },
         { type: 'divider', label: 'Account' },
         { icon: Smartphone, label: 'Mobile Sync', path: '/mobile-sync' },
         { icon: Bell, label: 'Notifications', path: '/notifications' },

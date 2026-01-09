@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
     Map, TrendingUp, Award, Clock, BookOpen, CheckCircle,
     Lock, Star, Target, Plus, Search, Filter, ArrowRight,
-    PlayCircle, Users, BarChart3
+    PlayCircle, Users, BarChart3, Zap
 } from 'lucide-react';
 import FeatureCard from '../../components/FeatureCard';
 import StatWidget from '../../components/StatWidget';
