@@ -44,10 +44,10 @@ const RoleSidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
 
     const navConfigs = {
         student: [
-            { icon: Grid, label: 'Dashboard', path: '/dashboard' },
+            { icon: Grid, label: 'Dashboard', path: '/' },
             { icon: BookOpen, label: 'My Learning', path: '/my-learning' },
             { type: 'divider', label: 'Browse' },
-            { icon: Search, label: 'Browse Courses', path: '/browse' },
+            { icon: Search, label: 'Browse Courses', path: '/courses' },
             { icon: Grid, label: 'Categories', path: '/categories' },
             { icon: Users, label: 'Instructors', path: '/instructors' },
             { icon: Star, label: 'My Instructors', path: '/my-instructors' },
@@ -57,7 +57,7 @@ const RoleSidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
             { icon: TrendingUp, label: 'Trending', path: '/trending' },
             { icon: Globe, label: 'Discover', path: '/discover-sectors' },
             { type: 'divider', label: 'Advanced' },
-            { icon: Cpu, label: 'AI Assistant', path: '/ai-assistant' },
+            { icon: Cpu, label: 'AI Assistant', path: '/study-ai' },
             { icon: Brain, label: 'Interview Prep', path: '/intelligent-tutor/interview' }, // [NEW]
             { icon: GitBranch, label: 'Learning Paths', path: '/learning-paths' },
             { icon: Database, label: 'Storage', path: '/storage-vault' },
@@ -73,7 +73,7 @@ const RoleSidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
             { icon: Grid, label: 'Projects', path: '/projects' },
             { icon: Rocket, label: 'Bootcamps', path: '/bootcamps' },
             { type: 'divider', label: 'Learning' },
-            { icon: Code, label: 'Code Playground', path: '/code-playground' },
+            { icon: Code, label: 'Code Playground', path: '/playground' },
             { icon: Trophy, label: 'Achievements', path: '/achievements' },
             { icon: ClipboardList, label: 'Assignments', path: '/assignments' },
             { icon: PenTool, label: 'Practice', path: '/practice' },
@@ -95,7 +95,7 @@ const RoleSidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
             { icon: Settings, label: 'Settings', path: '/profile' },
         ],
         instructor: [
-            { icon: BarChart3, label: 'Dashboard', path: '/instructor' },
+            { icon: BarChart3, label: 'Dashboard', path: '/instructor/dashboard' },
             { icon: BookOpen, label: 'My Courses', path: '/instructor/courses' },
             { icon: Upload, label: 'Add Course', path: '/instructor/upload' },
             { type: 'divider', label: 'Management' },
@@ -131,7 +131,7 @@ const RoleSidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
             { icon: Code, label: 'Code Challenges', path: '/instructor/code-challenges' },
             { icon: Calendar, label: 'Event Manager', path: '/instructor/events-manage' },
             { type: 'divider', label: 'Discovery' },
-            { icon: Search, label: 'Browse Courses', path: '/browse' },
+            { icon: Search, label: 'Browse Courses', path: '/courses' },
             { icon: Grid, label: 'Categories', path: '/categories' },
             { icon: TrendingUp, label: 'Trending', path: '/trending' },
             { icon: Globe, label: 'Discover', path: '/discover-sectors' },
@@ -140,7 +140,7 @@ const RoleSidebar = ({ user, onLogout, isCollapsed, setIsCollapsed }) => {
             { icon: Grid, label: 'Projects Marketplace', path: '/projects' },
             { icon: Rocket, label: 'Bootcamp Hub', path: '/bootcamps' },
             { type: 'divider', label: 'Advanced Tools' },
-            { icon: Cpu, label: 'AI Assistant', path: '/ai-assistant' },
+            { icon: Cpu, label: 'AI Assistant', path: '/study-ai' },
             { icon: Database, label: 'Storage Vault', path: '/storage-vault' },
             { type: 'divider', label: 'Account' },
             { icon: Smartphone, label: 'Mobile Sync', path: '/mobile-sync' },

@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Calendar, Users, Clock, Plus, Zap, Star, Shield,
     Video, MessageSquare, ClipboardList, TrendingUp,
-    ChevronRight, MoreHorizontal, LayoutGrid
+    ChevronRight, MoreHorizontal, LayoutGrid, X, Trash2, Loader2
 } from 'lucide-react';
 import StatWidget from '../../components/StatWidget';
+import { useToast } from '../../context/ToastContext';
 
 const BootcampManager = () => {
     const [view, setView] = useState('grid');
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [bootcamps, setBootcamps] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { addToast } = useToast();
 
-    const bootcamps = [
+    // Default Demo Data
+    const defaultBootcamps = [
         {
             id: 1,
             title: 'MERN Stack Mastery 2026',
@@ -19,7 +25,7 @@ const BootcampManager = () => {
             sessions: '12/15',
             status: 'active',
             nextSession: 'Jan 12, 06:00 PM',
-            revenue: '$12,450'
+            revenue: 12450
         },
         {
             id: 2,
@@ -29,26 +35,62 @@ const BootcampManager = () => {
             sessions: '4/20',
             status: 'active',
             nextSession: 'Jan 10, 10:00 AM',
-            revenue: '$18,900'
-        },
-        {
-            id: 3,
-            title: 'System Design Architecture',
-            cohort: 'Upcoming',
-            students: 120,
-            sessions: '0/10',
-            status: 'planning',
-            nextSession: 'Feb 01, 04:00 PM',
-            revenue: '$45,000'
+            revenue: 18900
         }
     ];
 
+    useEffect(() => {
+        // Simulate fetching or load from LocalStorage for persistence demo
+        const saved = localStorage.getItem('instructor_bootcamps');
+        if (saved) {
+            setBootcamps(JSON.parse(saved));
+        } else {
+            setBootcamps(defaultBootcamps);
+        }
+        setLoading(false);
+    }, []);
+
+    useEffect(() => {
+        if (!loading) {
+            localStorage.setItem('instructor_bootcamps', JSON.stringify(bootcamps));
+        }
+    }, [bootcamps, loading]);
+
+    const items = bootcamps;
+
+    // Dynamic Stats
     const stats = [
-        { label: 'Active Bootcamps', value: 2, icon: Calendar },
-        { label: 'Total Enrolled', value: 193, icon: Users },
+        { label: 'Active Bootcamps', value: items.filter(b => b.status === 'active').length, icon: Calendar },
+        { label: 'Total Enrolled', value: items.reduce((acc, b) => acc + (parseInt(b.students) || 0), 0), icon: Users },
         { label: 'Avg. Completion', value: 94, suffix: '%', icon: Star },
-        { label: 'Cumulative Revenue', value: 76350, prefix: '$', icon: TrendingUp }
+        { label: 'Cumulative Revenue', value: items.reduce((acc, b) => acc + (parseInt(b.revenue) || 0), 0), prefix: '$', icon: TrendingUp }
     ];
+
+    const handleDelete = (id) => {
+        if (window.confirm('Are you sure you want to cancel this bootcamp?')) {
+            setBootcamps(prev => prev.filter(b => b.id !== id));
+            addToast('Bootcamp cancelled successfully', 'success');
+        }
+    };
+
+    const handleCreate = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const newBootcamp = {
+            id: Date.now(),
+            title: formData.get('title'),
+            cohort: formData.get('cohort'),
+            students: 0,
+            sessions: '0/' + formData.get('sessions'),
+            status: 'planning', // Default new status
+            nextSession: formData.get('startDate'),
+            revenue: 0,
+            price: formData.get('price')
+        };
+        setBootcamps([newBootcamp, ...bootcamps]);
+        setShowCreateModal(false);
+        addToast('New Bootcamp initialized successfully', 'success');
+    };
 
     return (
         <div className="min-h-screen bg-dark-bg font-orbit p-4 md:p-8">
@@ -64,7 +106,10 @@ const BootcampManager = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all flex items-center gap-2">
+                    <button
+                        onClick={() => setShowCreateModal(true)}
+                        className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all flex items-center gap-2"
+                    >
                         <Plus size={20} />
                         Launch New Bootcamp
                     </button>
@@ -87,47 +132,124 @@ const BootcampManager = () => {
             </div>
 
             {/* Active Bootcamps */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {bootcamps.map((bc) => (
-                    <motion.div
-                        key={bc.id}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-dark-layer1 border border-white/5 rounded-2xl overflow-hidden group hover:border-orange-500/30 transition-all"
-                    >
-                        <div className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${bc.status === 'active' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-orange-500/10 text-orange-500 border border-orange-500/20'
-                                    }`}>
-                                    {bc.status}
-                                </span>
-                                <span className="text-xs font-bold text-dark-muted">{bc.cohort}</span>
-                            </div>
-                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-orange-500 transition-colors">{bc.title}</h3>
-                            <div className="grid grid-cols-2 gap-4 mt-6">
-                                <div className="bg-dark-bg/50 rounded-xl p-3 border border-white/5">
-                                    <div className="text-[10px] font-bold text-dark-muted uppercase mb-1">Students</div>
-                                    <div className="text-lg font-bold text-white">{bc.students}</div>
+            <div className={`grid ${view === 'grid' ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1'} gap-8`}>
+                <AnimatePresence>
+                    {items.map((bc) => (
+                        <motion.div
+                            key={bc.id}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            className={`bg-dark-layer1 border border-white/5 rounded-2xl overflow-hidden group hover:border-orange-500/30 transition-all ${view === 'list' ? 'flex items-center p-4 gap-6' : ''}`}
+                        >
+                            <div className={view === 'list' ? 'flex-1 grid grid-cols-4 items-center' : 'p-6'}>
+                                <div className={view === 'list' ? 'col-span-1' : 'flex items-center justify-between mb-4'}>
+                                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest inline-block ${bc.status === 'active' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-orange-500/10 text-orange-500 border border-orange-500/20'
+                                        }`}>
+                                        {bc.status}
+                                    </span>
+                                    {view !== 'list' && <span className="text-xs font-bold text-dark-muted">{bc.cohort}</span>}
                                 </div>
-                                <div className="bg-dark-bg/50 rounded-xl p-3 border border-white/5">
-                                    <div className="text-[10px] font-bold text-dark-muted uppercase mb-1">Revenue</div>
-                                    <div className="text-lg font-bold text-green-500">{bc.revenue}</div>
+                                <div className={view === 'list' ? 'col-span-1' : ''}>
+                                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-orange-500 transition-colors">{bc.title}</h3>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div className="px-6 py-4 bg-dark-bg/30 border-t border-white/5 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <Clock size={14} className="text-orange-500" />
-                                <span className="text-xs text-white font-medium">{bc.nextSession}</span>
+                                {view === 'grid' && (
+                                    <div className="grid grid-cols-2 gap-4 mt-6">
+                                        <div className="bg-dark-bg/50 rounded-xl p-3 border border-white/5">
+                                            <div className="text-[10px] font-bold text-dark-muted uppercase mb-1">Students</div>
+                                            <div className="text-lg font-bold text-white">{bc.students}</div>
+                                        </div>
+                                        <div className="bg-dark-bg/50 rounded-xl p-3 border border-white/5">
+                                            <div className="text-[10px] font-bold text-dark-muted uppercase mb-1">Revenue</div>
+                                            <div className="text-lg font-bold text-green-500">${parseInt(bc.revenue).toLocaleString()}</div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-                            <button className="text-orange-500 font-bold text-xs hover:underline flex items-center gap-1">
-                                Manage <ChevronRight size={14} />
-                            </button>
-                        </div>
-                    </motion.div>
-                ))}
+
+                            <div className={`${view === 'list' ? 'flex items-center gap-4' : 'px-6 py-4 bg-dark-bg/30 border-t border-white/5 flex items-center justify-between'}`}>
+                                {view !== 'list' && (
+                                    <div className="flex items-center gap-2">
+                                        <Clock size={14} className="text-orange-500" />
+                                        <span className="text-xs text-white font-medium">{bc.nextSession}</span>
+                                    </div>
+                                )}
+                                <div className="flex items-center gap-2">
+                                    <button className="text-orange-500 font-bold text-xs hover:underline flex items-center gap-1 bg-orange-500/10 px-3 py-2 rounded-lg hover:bg-orange-500/20 transition-all">
+                                        Manage <ChevronRight size={14} />
+                                    </button>
+                                    <button onClick={() => handleDelete(bc.id)} className="p-2 text-dark-muted hover:text-red-500 transition-colors">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
             </div>
+
+            {/* Create Modal */}
+            <AnimatePresence>
+                {showCreateModal && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+                            onClick={() => setShowCreateModal(false)}
+                        />
+                        <motion.form
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            onSubmit={handleCreate}
+                            className="relative w-full max-w-lg bg-dark-layer1 border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6"
+                        >
+                            <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                                <h2 className="text-2xl font-bold text-white uppercase italic">Initialize <span className="text-orange-500">Bootcamp</span></h2>
+                                <button type="button" onClick={() => setShowCreateModal(false)} className="text-dark-muted hover:text-white"><X size={24} /></button>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="text-xs font-bold text-dark-muted uppercase tracking-widest pl-1">Bootcamp Title</label>
+                                    <input name="title" type="text" className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-orange-500 outline-none mt-1" required placeholder="e.g. Full Stack Masterclass" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-xs font-bold text-dark-muted uppercase tracking-widest pl-1">Cohort Name</label>
+                                        <input name="cohort" type="text" className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-orange-500 outline-none mt-1" required placeholder="e.g. Alpha-1" />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-dark-muted uppercase tracking-widest pl-1">Price ($)</label>
+                                        <input name="price" type="number" className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-orange-500 outline-none mt-1" required placeholder="99.00" />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-xs font-bold text-dark-muted uppercase tracking-widest pl-1">Total Sessions</label>
+                                        <input name="sessions" type="number" className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-orange-500 outline-none mt-1" required placeholder="20" />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-dark-muted uppercase tracking-widest pl-1">Start Date</label>
+                                        <input name="startDate" type="date" className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-orange-500 outline-none mt-1" required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all flex items-center justify-center gap-2"
+                            >
+                                <Zap size={20} />
+                                Launch Cohort
+                            </button>
+                        </motion.form>
+                    </div>
+                )}
+            </AnimatePresence>
 
             {/* Quick Actions & Calendar Preview */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">

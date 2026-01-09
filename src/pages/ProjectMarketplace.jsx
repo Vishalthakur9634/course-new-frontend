@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     FolderKanban, Search, Filter, Clock, DollarSign, Users,
     Star, Send, BookmarkPlus, Award, TrendingUp, Plus, X, Loader2, Trash2,
-    Rocket, Briefcase, Building2
+    Rocket, Briefcase, Zap, CheckCircle
 } from 'lucide-react';
 import FeatureCard from '../components/FeatureCard';
 import StatWidget from '../components/StatWidget';
@@ -77,7 +77,7 @@ const ProjectMarketplace = () => {
         setIsApplying(true);
         try {
             await api.post(`/projects/${selectedProject._id}/apply`, proposalData);
-            addToast('Deployment Proposal Transmitted', 'success');
+            addToast('Proposal Submitted Successfully', 'success');
             setShowApplyModal(false);
             setProposalData({ proposal: '' });
             fetchProjects();
@@ -116,41 +116,38 @@ const ProjectMarketplace = () => {
 
     return (
         <div className="min-h-screen bg-dark-bg font-orbit p-4 md:p-8 relative overflow-hidden">
-            {/* Cyber Grid Background */}
-            <div className="fixed inset-0 cyber-grid opacity-[0.03] pointer-events-none z-0" />
+            {/* Background Effects */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="absolute top-[-10%] left-[30%] w-[600px] h-[600px] bg-purple-600/10 blur-[150px] rounded-full mix-blend-screen" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/10 blur-[130px] rounded-full mix-blend-screen" />
+            </div>
 
-            {/* Floating Orbs */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '3s' }} />
-
-            <div className="relative z-10">
+            <div className="relative z-10 max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-                    <div className="relative">
-                        <div className="absolute -top-4 -left-4 w-20 h-20 bg-blue-500/20 blur-2xl rounded-full animate-pulse" />
-                        <h1 className="text-5xl font-black text-white mb-3 tracking-tighter flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-2xl bg-dark-layer1 border border-white/10 flex items-center justify-center p-3 relative group overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                <Rocket size={32} className="text-blue-500 group-hover:scale-110 transition-transform" />
+                    <div>
+                        <h1 className="text-5xl font-black text-white mb-3 tracking-tight flex items-center gap-4">
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center shadow-2xl shadow-purple-500/20 rotate-3 group-hover:rotate-0 transition-all">
+                                <Rocket className="text-white" size={32} />
                             </div>
-                            PROJECTS <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">MARKET</span>
+                            PROJECT <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500">MARKET</span>
                         </h1>
-                        <p className="text-dark-muted text-lg flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
-                            Active Collaboration Terminal • 2.4k Talents Online
-                        </p>
+                        <p className="text-lg text-dark-muted font-medium ml-2">Active collaboration terminal for ambitious developers.</p>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="hidden lg:flex flex-col items-end px-4 border-r border-white/10">
-                            <span className="text-[10px] font-bold text-dark-muted uppercase tracking-widest">Global Activity</span>
-                            <span className="text-lg font-black text-white">482 <span className="text-blue-500">Live Proposals</span></span>
+                    <div className="flex items-center gap-6">
+                        <div className="hidden lg:flex flex-col items-end px-6 border-r border-white/10">
+                            <span className="text-[10px] font-black text-dark-muted uppercase tracking-[0.2em] mb-1">Global Activity</span>
+                            <span className="text-lg font-black text-white flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                482 <span className="text-purple-500">Live Contracts</span>
+                            </span>
                         </div>
                         {canManageProjects && (
                             <button
                                 onClick={() => setShowCreateModal(true)}
-                                className="px-8 py-4 bg-white text-black font-black rounded-2xl hover:bg-blue-500 hover:text-white transition-all transform hover:-translate-y-1 active:scale-95 shadow-xl"
+                                className="bg-white text-black px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-purple-600 hover:text-white transition-all transform hover:-translate-y-1 shadow-xl flex items-center gap-3"
                             >
-                                LIST PROJECT
+                                <Plus size={20} /> List Project
                             </button>
                         )}
                     </div>
@@ -158,74 +155,104 @@ const ProjectMarketplace = () => {
 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     {stats.map((stat, idx) => (
-                        <div key={idx} className="bg-dark-layer1/40 backdrop-blur-xl border border-white/5 p-6 rounded-3xl group hover:border-blue-500/30 transition-all">
-                            <div className="flex items-center gap-4 mb-3">
-                                <div className="p-3 rounded-xl bg-white/5 text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                                    {idx === 0 ? <Rocket size={20} /> : idx === 1 ? <Users size={20} /> : idx === 2 ? <Briefcase size={20} /> : <TrendingUp size={20} />}
-                                </div>
-                                <span className="text-sm font-bold text-dark-muted uppercase tracking-wider">{stat.label}</span>
+                        <div key={idx} className="bg-[#0a0a0a] border border-white/5 p-6 rounded-[2rem] group hover:border-purple-500/30 transition-all relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-10 transition-opacity">
+                                {idx === 0 ? <Rocket size={64} /> : idx === 1 ? <FolderKanban size={64} /> : idx === 2 ? <Users size={64} /> : <TrendingUp size={64} />}
                             </div>
-                            <div className="flex items-baseline gap-2">
+                            <div className="flex items-center gap-4 mb-3 relative z-10">
+                                <div className="p-3 rounded-xl bg-white/5 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors">
+                                    {idx === 0 ? <Rocket size={20} /> : idx === 1 ? <FolderKanban size={20} /> : idx === 2 ? <Users size={20} /> : <TrendingUp size={20} />}
+                                </div>
+                                <span className="text-xs font-black text-dark-muted uppercase tracking-widest">{stat.label}</span>
+                            </div>
+                            <div className="flex items-baseline gap-2 relative z-10">
                                 <span className="text-3xl font-black text-white truncate">{stat.value}</span>
-                                <span className="text-xs font-bold text-green-500">{stat.trend}</span>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <div className="mb-6 flex justify-between items-center">
-                    <div className="flex gap-2 p-1 bg-dark-layer1 rounded-xl border border-white/5 w-fit">
-                        {['browse', 'my-applications', 'saved'].map((tab) => (
-                            <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-6 py-2.5 rounded-lg font-semibold text-sm transition-all ${activeTab === tab
-                                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                                    : 'text-dark-muted hover:text-white hover:bg-white/5'
-                                    }`}
-                            >
-                                {tab.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
-                            </button>
-                        ))}
-                    </div>
+                <div className="mb-8 flex justify-between items-center bg-[#0a0a0a] p-2 rounded-[1.5rem] border border-white/5 w-fit">
+                    {['browse', 'my-applications', 'saved'].map((tab) => (
+                        <button
+                            key={tab}
+                            onClick={() => setActiveTab(tab)}
+                            className={`px-8 py-3 rounded-xl font-bold text-sm transition-all uppercase tracking-wider ${activeTab === tab
+                                ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
+                                : 'text-dark-muted hover:text-white hover:bg-white/5'
+                                }`}
+                        >
+                            {tab.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                        </button>
+                    ))}
                 </div>
 
                 {activeTab === 'browse' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {projects.length > 0 ? projects.map((project) => (
-                            <FeatureCard
+                            <motion.div
                                 key={project._id}
-                                icon={FolderKanban}
-                                title={project.title}
-                                description={project.description}
-                                badge={project.difficulty}
-                                stats={[
-                                    { label: 'Budget', value: project.budget },
-                                    { label: 'Duration', value: project.duration },
-                                    { label: 'Proposals', value: project.proposals || 0 }
-                                ]}
-                                primaryAction={{
-                                    label: 'Apply Now',
-                                    onClick: () => {
-                                        setSelectedProject(project);
-                                        setShowApplyModal(true);
-                                    }
-                                }}
-                                secondaryAction={(user.role === 'superadmin' || user.role === 'admin' || project.postedBy?._id === user._id) ? {
-                                    label: 'Delete',
-                                    onClick: () => handleDelete(project._id),
-                                    variant: 'danger'
-                                } : {
-                                    label: 'Save',
-                                    onClick: () => console.log('Save', project._id)
-                                }}
-                                gradient="from-purple-500/10 to-pink-500/10"
-                                glowColor="purple-500"
-                            />
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                whileHover={{ y: -5 }}
+                                className="bg-[#0a0a0a] rounded-[2.5rem] border border-white/5 p-8 relative overflow-hidden group hover:border-purple-500/30 transition-all shadow-2xl"
+                            >
+                                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition-colors" />
+
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-purple-500 group-hover:text-white transition-all">
+                                        <FolderKanban size={28} className="text-dark-muted group-hover:text-white transition-colors" />
+                                    </div>
+                                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${project.difficulty === 'Beginner' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
+                                            project.difficulty === 'Intermediate' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' :
+                                                'bg-red-500/10 text-red-500 border-red-500/20'
+                                        }`}>
+                                        {project.difficulty}
+                                    </span>
+                                </div>
+
+                                <h3 className="text-2xl font-black text-white mb-2 leading-tight group-hover:text-purple-400 transition-colors">{project.title}</h3>
+                                <p className="text-dark-muted text-sm font-medium leading-relaxed mb-6 line-clamp-3">{project.description}</p>
+
+                                <div className="grid grid-cols-2 gap-4 mb-6">
+                                    <div className="bg-white/5 rounded-xl p-3">
+                                        <span className="block text-[10px] uppercase tracking-wider text-dark-muted font-bold mb-1">Budget</span>
+                                        <span className="text-white font-bold flex items-center gap-1"><DollarSign size={14} className="text-green-500" /> {project.budget}</span>
+                                    </div>
+                                    <div className="bg-white/5 rounded-xl p-3">
+                                        <span className="block text-[10px] uppercase tracking-wider text-dark-muted font-bold mb-1">Duration</span>
+                                        <span className="text-white font-bold flex items-center gap-1"><Clock size={14} className="text-blue-500" /> {project.duration}</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between gap-4 mt-auto">
+                                    {(user.role === 'superadmin' || user.role === 'admin' || project.postedBy?._id === user._id) ? (
+                                        <button
+                                            onClick={() => handleDelete(project._id)}
+                                            className="px-6 py-3 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all"
+                                        >
+                                            Delete
+                                        </button>
+                                    ) : (
+                                        <button className="px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all">
+                                            <BookmarkPlus size={20} />
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            setSelectedProject(project);
+                                            setShowApplyModal(true);
+                                        }}
+                                        className="flex-1 py-3 bg-white text-black rounded-xl font-black text-xs uppercase tracking-widest hover:bg-purple-500 hover:text-white transition-all transform hover:-translate-y-1 shadow-lg"
+                                    >
+                                        Apply Now
+                                    </button>
+                                </div>
+                            </motion.div>
                         )) : (
-                            <div className="col-span-full text-center py-20 bg-dark-layer1 rounded-2xl border border-white/5">
-                                <FolderKanban size={48} className="text-dark-muted mx-auto mb-4 opacity-20" />
-                                <h3 className="text-xl font-bold text-white mb-2">No projects found</h3>
+                            <div className="col-span-full text-center py-32 bg-[#0a0a0a] rounded-[2.5rem] border border-white/5">
+                                <FolderKanban size={64} className="text-dark-muted mx-auto mb-6 opacity-20" />
+                                <h3 className="text-2xl font-black text-white mb-2">No Projects Found</h3>
                                 <p className="text-dark-muted">Try checking back later for new opportunities</p>
                             </div>
                         )}
@@ -235,27 +262,29 @@ const ProjectMarketplace = () => {
                 {activeTab === 'my-applications' && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {myApplications.length > 0 ? myApplications.map((app) => (
-                            <div key={app._id} className="bg-dark-layer1 border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden group">
-                                <div className={`absolute top-6 right-6 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${app.status === 'Accepted' ? 'bg-green-500 text-white shadow-[0_0_20px_rgba(34,197,94,0.3)]' :
-                                        app.status === 'Rejected' ? 'bg-red-500 text-white' :
-                                            'bg-white/5 text-dark-muted border border-white/10'
+                            <div key={app._id} className="bg-[#0a0a0a] border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden group hover:border-white/10 transition-all">
+                                <div className={`absolute top-6 right-6 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${app.status === 'Accepted' ? 'bg-green-500/10 text-green-500 border border-green-500/20' :
+                                    app.status === 'Rejected' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
+                                        'bg-white/5 text-dark-muted border border-white/10'
                                     }`}>
+                                    {app.status === 'Accepted' && <CheckCircle size={12} />}
                                     {app.status}
                                 </div>
                                 <h3 className="text-2xl font-black text-white italic tracking-tighter uppercase mb-2">{app.projectId?.title || 'Unknown Project'}</h3>
-                                <p className="text-dark-muted text-sm font-bold mb-6 italic leading-relaxed">"{app.proposal?.substring(0, 100)}..."</p>
+                                <p className="text-dark-muted text-sm font-medium mb-6 italic leading-relaxed pl-4 border-l-2 border-purple-500/30">"{app.proposal?.substring(0, 100)}..."</p>
                                 <div className="flex items-center justify-between p-4 bg-dark-bg/50 rounded-2xl border border-white/5">
                                     <div className="flex flex-col gap-1">
                                         <span className="text-[8px] font-black text-dark-muted uppercase tracking-[0.2em]">Submitted On</span>
                                         <span className="text-white text-xs font-bold">{new Date(app.createdAt).toLocaleDateString()}</span>
                                     </div>
-                                    <Rocket size={18} className="text-blue-500" />
+                                    <Rocket size={18} className="text-purple-500" />
                                 </div>
                             </div>
                         )) : (
-                            <div className="col-span-full py-24 text-center space-y-6 opacity-30">
-                                <Send size={64} className="mx-auto" />
-                                <p className="text-xl font-black uppercase tracking-[0.5em]">No Proposals Transmitted</p>
+                            <div className="col-span-full py-32 text-center bg-[#0a0a0a] rounded-[2.5rem] border border-white/5">
+                                <Send size={64} className="mx-auto text-dark-muted opacity-20 mb-6" />
+                                <h3 className="text-2xl font-black text-white mb-2">No Applications</h3>
+                                <p className="text-dark-muted">You haven't submitted any proposals yet.</p>
                             </div>
                         )}
                     </div>
@@ -268,7 +297,7 @@ const ProjectMarketplace = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                                className="absolute inset-0 bg-black/90 backdrop-blur-md"
                                 onClick={() => setShowCreateModal(false)}
                             />
                             <motion.form
@@ -276,28 +305,28 @@ const ProjectMarketplace = () => {
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0.9, opacity: 0 }}
                                 onSubmit={handleCreateProject}
-                                className="relative w-full max-w-2xl bg-dark-layer1 border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6 overflow-y-auto max-h-[90vh]"
+                                className="relative w-full max-w-2xl bg-[#0a0a0a] border border-white/10 rounded-[2.5rem] p-10 shadow-2xl space-y-6 overflow-y-auto max-h-[90vh]"
                             >
-                                <div className="flex justify-between items-center">
-                                    <h2 className="text-2xl font-bold text-white uppercase italic">List New <span className="text-purple-500">Project</span></h2>
-                                    <button type="button" onClick={() => setShowCreateModal(false)} className="text-dark-muted hover:text-white"><X size={24} /></button>
+                                <div className="flex justify-between items-center border-b border-white/5 pb-6">
+                                    <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">List <span className="text-purple-500">Project</span></h2>
+                                    <button type="button" onClick={() => setShowCreateModal(false)} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-dark-muted hover:text-white hover:bg-white/10 transition-colors"><X size={20} /></button>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-dark-muted uppercase tracking-widest">Project Title</label>
+                                        <label className="text-xs font-black text-dark-muted uppercase tracking-widest pl-1">Project Title</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-purple-500 outline-none"
+                                            className="w-full bg-dark-bg border border-white/5 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-bold placeholder:text-white/20"
                                             value={formData.title}
                                             onChange={e => setFormData({ ...formData, title: e.target.value })}
                                             required
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-dark-muted uppercase tracking-widest">Difficulty</label>
+                                        <label className="text-xs font-black text-dark-muted uppercase tracking-widest pl-1">Difficulty</label>
                                         <select
-                                            className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-purple-500 outline-none"
+                                            className="w-full bg-dark-bg border border-white/5 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-bold"
                                             value={formData.difficulty}
                                             onChange={e => setFormData({ ...formData, difficulty: e.target.value })}
                                         >
@@ -307,20 +336,20 @@ const ProjectMarketplace = () => {
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-dark-muted uppercase tracking-widest">Budget (e.g. $500 - $1000)</label>
+                                        <label className="text-xs font-black text-dark-muted uppercase tracking-widest pl-1">Budget</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-purple-500 outline-none"
+                                            className="w-full bg-dark-bg border border-white/5 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-bold placeholder:text-white/20"
                                             value={formData.budget}
                                             onChange={e => setFormData({ ...formData, budget: e.target.value })}
                                             required
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-bold text-dark-muted uppercase tracking-widest">Duration (e.g. 2 weeks)</label>
+                                        <label className="text-xs font-black text-dark-muted uppercase tracking-widest pl-1">Duration</label>
                                         <input
                                             type="text"
-                                            className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-purple-500 outline-none"
+                                            className="w-full bg-dark-bg border border-white/5 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-bold placeholder:text-white/20"
                                             value={formData.duration}
                                             onChange={e => setFormData({ ...formData, duration: e.target.value })}
                                             required
@@ -329,11 +358,11 @@ const ProjectMarketplace = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-dark-muted uppercase tracking-widest">Required Skills</label>
+                                    <label className="text-xs font-black text-dark-muted uppercase tracking-widest pl-1">Required Skills</label>
                                     <input
                                         type="text"
                                         placeholder="React, Firebase, Tailwind..."
-                                        className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-purple-500 outline-none"
+                                        className="w-full bg-dark-bg border border-white/5 rounded-xl p-4 text-white focus:border-purple-500 outline-none font-bold placeholder:text-white/20"
                                         value={formData.skills}
                                         onChange={e => setFormData({ ...formData, skills: e.target.value })}
                                         required
@@ -341,9 +370,9 @@ const ProjectMarketplace = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-dark-muted uppercase tracking-widest">Description</label>
+                                    <label className="text-xs font-black text-dark-muted uppercase tracking-widest pl-1">Description</label>
                                     <textarea
-                                        className="w-full bg-dark-bg border border-white/5 rounded-xl p-3 text-white focus:border-purple-500 outline-none h-32"
+                                        className="w-full bg-dark-bg border border-white/5 rounded-xl p-4 text-white focus:border-purple-500 outline-none h-32 font-medium placeholder:text-white/20 resize-none"
                                         value={formData.description}
                                         onChange={e => setFormData({ ...formData, description: e.target.value })}
                                         required
@@ -353,10 +382,10 @@ const ProjectMarketplace = () => {
                                 <button
                                     type="submit"
                                     disabled={isSaving}
-                                    className="w-full py-4 bg-purple-500 text-white font-bold rounded-xl hover:bg-purple-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20 disabled:opacity-50"
+                                    className="w-full py-5 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-black rounded-2xl hover:shadow-[0_20px_40px_rgba(147,51,234,0.3)] transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98]"
                                 >
-                                    {isSaving ? <Loader2 className="animate-spin" size={20} /> : <Plus size={20} />}
-                                    List Project Opportunity
+                                    {isSaving ? <Loader2 className="animate-spin" size={24} /> : <Plus size={24} />}
+                                    Launch Project Listing
                                 </button>
                             </motion.form>
                         </div>
@@ -379,7 +408,7 @@ const ProjectMarketplace = () => {
                                 animate={{ scale: 1, opacity: 1, y: 0 }}
                                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
                                 onSubmit={handleApply}
-                                className="relative w-full max-w-xl bg-dark-layer1 border border-purple-500/30 rounded-[2.5rem] p-10 shadow-[0_0_50px_rgba(168,85,247,0.2)] space-y-8"
+                                className="relative w-full max-w-xl bg-[#0a0a0a] border border-purple-500/30 rounded-[2.5rem] p-10 shadow-[0_0_50px_rgba(168,85,247,0.2)] space-y-8"
                             >
                                 <div className="absolute top-0 right-0 p-8">
                                     <button type="button" onClick={() => setShowApplyModal(false)} className="text-dark-muted hover:text-white transition-colors">
@@ -393,10 +422,10 @@ const ProjectMarketplace = () => {
                                 </div>
 
                                 <div className="space-y-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-dark-muted uppercase tracking-[0.2em] ml-1">Implementation Strategy / Proposal</label>
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black text-dark-muted uppercase tracking-[0.2em] ml-1">Strategy & Implementation</label>
                                         <textarea
-                                            className="w-full bg-dark-bg/50 border border-white/5 rounded-2xl p-4 text-white focus:border-purple-500 outline-none h-60 transition-all placeholder:text-white/10 font-bold resize-none"
+                                            className="w-full bg-dark-bg border border-white/5 rounded-2xl p-4 text-white focus:border-purple-500 outline-none h-60 transition-all placeholder:text-white/20 font-medium resize-none"
                                             placeholder="Outline your approach, timeline, and relevant experience..."
                                             value={proposalData.proposal}
                                             onChange={e => setProposalData({ ...proposalData, proposal: e.target.value })}
@@ -408,7 +437,7 @@ const ProjectMarketplace = () => {
                                 <button
                                     type="submit"
                                     disabled={isApplying}
-                                    className="w-full py-5 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-black rounded-2xl hover:shadow-[0_20px_40px_rgba(168,85,247,0.3)] transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg uppercase tracking-widest"
+                                    className="w-full py-5 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-black rounded-2xl hover:shadow-[0_20px_40px_rgba(168,85,247,0.3)] transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg uppercase tracking-widest hover:scale-[1.02]"
                                 >
                                     {isApplying ? <Loader2 className="animate-spin" size={24} /> : <Rocket size={24} />}
                                     Transmit Proposal

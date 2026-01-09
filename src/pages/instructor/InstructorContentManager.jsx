@@ -5,6 +5,7 @@ import {
     FolderOpen, Clock, HardDrive, Plus, X, Check, Eye,
     MoreVertical, Copy, Share2, Tag, BookOpen, ChevronDown
 } from 'lucide-react';
+import { getAssetUrl } from '../../utils/urlUtils';
 import api from '../../utils/api';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -108,8 +109,30 @@ const InstructorContentManager = () => {
                     setUploadProgress(prev => Math.min(prev + 10, 90));
                 }, 200);
 
-                await api.post('/upload', formData, {
+                const response = await api.post('/upload', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
+                });
+
+                // Create resource metadata
+                const typeMap = {
+                    'jpg': 'image', 'jpeg': 'image', 'png': 'image', 'gif': 'image', 'webp': 'image',
+                    'mp4': 'video', 'webm': 'video', 'mov': 'video',
+                    'pdf': 'pdf', 'doc': 'doc', 'docx': 'doc',
+                    'js': 'code', 'jsx': 'code', 'html': 'code', 'css': 'code', 'json': 'code'
+                };
+                const ext = file.name.split('.').pop().toLowerCase();
+                const type = typeMap[ext] || 'file';
+                const sizeVal = file.size > 1024 * 1024
+                    ? (file.size / (1024 * 1024)).toFixed(1) + ' MB'
+                    : (file.size / 1024).toFixed(1) + ' KB';
+
+                await api.post('/instructor/resources', {
+                    name: file.name,
+                    url: response.data.url,
+                    type,
+                    size: sizeVal,
+                    courseId: null, // Optional, could add selector
+                    tags: []
                 });
 
                 clearInterval(progressInterval);
@@ -396,7 +419,7 @@ const InstructorContentManager = () => {
                                     {/* Thumbnail */}
                                     <div className="aspect-video bg-dark-layer2 rounded-xl mb-3 relative overflow-hidden flex items-center justify-center">
                                         {resource.type === 'image' ? (
-                                            <img src={resource.url} alt="" className="w-full h-full object-cover" />
+                                            <img src={getAssetUrl(resource.url)} alt="" className="w-full h-full object-cover" />
                                         ) : (
                                             <Icon size={48} className="text-brand-primary/40" />
                                         )}
@@ -615,7 +638,7 @@ const InstructorContentManager = () => {
                             {/* Preview */}
                             {selectedResource.type === 'image' && (
                                 <img
-                                    src={selectedResource.url}
+                                    src={getAssetUrl(selectedResource.url)}
                                     alt={selectedResource.name}
                                     className="w-full rounded-xl mb-6"
                                 />
